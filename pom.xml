@@ -124,5 +124,17 @@
         <version>3.2.3</version>
       </plugin>
     </plugins>
+
+      <resources>
+          <resource>
+              <directory>src/main/resources</directory>
+              <includes>
+                  <include>**/*.xml</include>
+                  <include>**/*.properties</include>
+              </includes>
+          </resource>
+      </resources>
   </build>
+
+
 </project>

@@ -20,7 +20,7 @@
 
  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
-        <property name="mapperLocations" value="classpath:/mappers/ex08/*.xml"/>
+<!--        <property name="mapperLocations" value="classpath:/mappers/ex08/*.xml"/>-->
         <property name="configuration">
             <bean class="org.apache.ibatis.session.Configuration">
                 <property name="mapUnderscoreToCamelCase" value="true"/>
@@ -35,7 +35,7 @@
   <tx:annotation-driven/>
 
   <!-- ★ 컨트롤러는 제외하고 스캔 -->
-  <context:component-scan base-package="app.labs.ex08.mybatis.hr"/>
-  <mybatis-spring:scan base-package="app.labs.ex08.mybatis.hr"/>
+  <context:component-scan base-package="app.snapshot.qure"/>
+  <mybatis-spring:scan base-package="app.snapshot.qure"/>
    
 </beans>
