@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="app.labs.ex08.mybatis.hr.dao.IEmpRepository">
+ 	
+ 	<select id ="getEmpCount" parameterType="int" resultType="int">
+ 		select count(*) from employees
+ 		<if test="deptId != null">
+ 			where department_id=#{deptId} <!-- 파라메터명 기준 -->
+ 		</if>
+ 	</select>
+ 	
+ 	<resultMap id="empMap" type="app.labs.ex08.mybatis.hr.model.Emp">
+        <result property="employeeId" column="EMPLOYEE_ID" />
+        <result property="firstName" column="FIRST_NAME" />
+        <result property="lastName" column="LAST_NAME" />
+        <result property="email" column="EMAIL" />
+        <result property="phoneNumber" column="PHONE_NUMBER" />
+        <result property="hireDate" column="HIRE_DATE" />
+        <result property="jobId" column="JOB_ID" />
+        <result property="salary" column="SALARY" />
+        <result property="commissionPct" column="COMMISSION_PCT" />
+        <result property="managerId" column="MANAGER_ID" />
+        <result property="departmentId" column="DEPARTMENT_ID" />
+    </resultMap>
+    
+ 
+ 	<!-- <select id="getEmpList" resultType="app.labs.ex08.mybatis.hr.model.Emp"> 기본형 제외하곤 자동으로 List 붙여줌 --> 
+ 	<select id="getEmpList" resultMap="empMap">  
+ 		select * from employees
+ 	</select>
+ 	
+ 	<select id = "getEmpInfo" parameterType="int" resultType="app.labs.ex08.mybatis.hr.model.Emp">
+ 		SELECT  EMPLOYEE_ID     AS     employeeId,
+                FIRST_NAME      AS     firstName,
+                LAST_NAME       AS     lastName,
+                EMAIL           AS     email,
+                PHONE_NUMBER    AS     phoneNumber,
+                TO_CHAR(HIRE_DATE, 'yyyy-mm-dd')        AS    hireDate,
+                JOB_ID          AS    jobId,
+                SALARY          AS    salary,
+                COMMISSION_PCT  AS    commissionPct,
+                MANAGER_ID      AS    managerId,
+                DEPARTMENT_ID   AS    departmentId
+       	 FROM EMPLOYEES 
+        WHERE EMPLOYEE_ID = #{empId}
+ 	</select>
+ 	
+ 	<insert id ="insertEmp" parameterType="app.labs.ex08.mybatis.hr.model.Emp">
+ 		insert into employees(
+ 			employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id
+ 		)values(
+ 			#{employeeId}, #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{hireDate}, #{jobId}, #{salary}, #{commissionPct}, #{managerId}, #{departmentId}
+ 		)
+ 	</insert>
+ 	
+ 	<update id ="updateEmp" parameterType="app.labs.ex08.mybatis.hr.model.Emp">
+ 		update employees
+ 			set first_name=#{firstName}, last_name=#{lastName}, 
+ 			email=#{email}, salary=#{salary}
+ 		where employee_id=#{employeeId}
+ 	</update>
+ 
+ 	<delete id= "deleteEmp">	<!-- 타입이 여러개면 파라메터 타입 안쓰고 @Param 쓴다 -->
+ 		delete from employees 
+ 			where employee_id=#{empId} 
+ 				and email=#{email}
+ 	</delete>
+ 	<delete id="deleteJobHistory">
+ 		delete from job_history 
+ 			where employee_id=#{empId}
+ 	</delete>
+ 	
+ 	<select id="getAllDeptId" resultType="hashmap">
+ 		select DEPARTMENT_ID as "departmentId", DEPARTMENT_NAME as "departmentName"
+ 			from departments
+ 	</select>
+ 	
+ 	<select id="getAllJobId" resultType="hashmap">
+ 		select JOB_ID as "jobId", JOB_TITLE as "jobTitle" 
+ 			from jobs
+ 	</select>
+ 	
+ 	<select id="getAllManagerId" resultType="hashmap">
+ 		SELECT DISTINCT e1.manager_id AS "manager_id", e2.first_name AS "manager_name"
+ 			FROM   employees e1
+ 			JOIN   employees e2 ON e2.employee_id = e1.manager_id
+ 		ORDER  BY e1.manager_id
+ 	</select>
+ </mapper>
