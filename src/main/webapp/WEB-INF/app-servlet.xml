@@ -15,8 +15,7 @@
     <mvc:annotation-driven/>
 
     <!-- 정적 리소스 (선택) -->
-    <mvc:resources mapping="/static/**" location="/static/"/>
-
+    <mvc:resources mapping="/resources/**" location="classpath:/static/"/>
     <!-- JSP 뷰 리졸버 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>

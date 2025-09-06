@@ -1,0 +1,140 @@
+/* /resources/css/facilities.css */
+
+:root{
+    --bg:#fff7f0;
+    --panel:#ffffff;
+    --line:#efe7dd;
+    --text:#3c3c3c;
+    --muted:#9ca3af;
+    --brand:#FFE59A;
+    --brand-strong:#f2c65b;
+    --ok:#22c55e;
+    --warn:#f59e0b;
+    --danger:#ef4444;
+
+    /* 그리드 폭 */
+    --w-id: 120px;      /* 설비 id */
+    --w-domain: 110px;  /* 도메인 */
+    --w-equip: 140px;   /* 설비명 */
+    --w-date: 150px;    /* 최근 점검일자 */
+    --w-status: 120px;  /* 상태 */
+    --w-actions: 64px;  /* 삭제 */
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('../fonts/PretendardVariable.ttf') format('truetype');
+    font-weight: 100 900;   /* Variable 폰트 */
+    font-style: normal;
+    font-display: swap;
+}
+
+body{
+    font-family:'Pretendard', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+    background:var(--bg);
+    color:var(--text);
+    font:14px/1.5 "Pretendard",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+}
+
+.page{max-width:1040px;margin:24px auto;padding:0 16px}
+
+/* 카드 */
+.card{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.06);overflow:hidden}
+
+/* 툴바 */
+.toolbar{display:flex;gap:12px;align-items:center;padding:16px 16px 8px 16px}
+.search{position:relative;flex:1}
+.search input{width:100%;border:1px solid var(--line);border-radius:999px;padding:12px 44px 12px 16px;background:#fff;outline:none}
+.search .glass{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.6}
+.btn{appearance:none;border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer}
+.btn:hover{background:#fafafa}
+.btn-brand{background:var(--brand);border-color:#eacb6a;font-weight:700}
+.btn-ghost{background:#fff}
+a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
+
+.top-actions{margin:12px 16px 0 16px;display:flex;justify-content:flex-end}
+
+/* 노란 배너(제목) */
+.banner{background:var(--brand);color:#5a4a21;font-weight:700;padding:14px 18px;border-radius:14px;margin:8px 16px 4px 16px}
+
+/* 리스트 컨테이너 */
+.list{display:flex;flex-direction:column;gap:12px;padding:8px 16px 16px 16px}
+.list-head{padding:0 16px;margin-top:6px}
+
+/* ===== 핵심: 헤더/바디 동일 Grid ===== */
+.row,
+.row.head{
+    display:grid;
+    grid-template-columns:
+    var(--w-id)      /* 설비 id   */
+    1fr              /* 시설명     */
+    var(--w-domain)  /* 도메인     */
+    var(--w-equip)   /* 설비명     */
+    var(--w-date)    /* 최근 점검  */
+    var(--w-status)  /* 상태       */
+    var(--w-actions) /* 삭제       */;
+    align-items:center;
+    column-gap:0;
+}
+
+/* 바디 행 스타일 */
+.row{
+    background:#fff;border:1px solid var(--line);
+    border-radius:16px;padding:0; /* 패딩은 셀에 */
+}
+.row:hover{box-shadow:0 6px 18px rgba(0,0,0,.05)}
+
+/* 셀 패딩(헤더/바디 공통) */
+.row .cell, .row.head .cell{padding:14px 16px;min-width:0}
+
+/* 헤더 줄 */
+.row.head{
+    background:var(--brand);color:#5a4a21;font-weight:800;
+    border:none;box-shadow:none;border-radius:20px;
+}
+
+/* 각 컬럼 공통 스타일 */
+.col-id{
+    color:#6b7280;
+    font-family: inherit;                 /* Pretendard 상속 */
+    font-variant-numeric: tabular-nums;   /* 숫자 폭 고정 */
+    font-feature-settings: "tnum" 1;      /* 브라우저 호환용 */}
+.col-facility{color:#6b7280; font-weight:700}
+.col-domain{color:#6b7280}
+.col-equip{color:#6b7280}
+.col-updated{color:#6b7280}
+.col-status{color:#6b7280}
+.col-actions{display:flex;justify-content:center}
+
+/* 링크 스타일 */
+.col-id a{color:inherit;text-decoration:none}
+.col-id a:hover{text-decoration:underline}
+
+/* 상태 Pill */
+.status-pill{display:inline-flex;align-items:center;gap:8px;background:#f6f6f6;border-radius:999px;padding:6px 10px;font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.ok{background:var(--ok)}
+.dot.warn{background:var(--warn)}
+.dot.danger{background:var(--danger)}
+
+/* 삭제 버튼 */
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;display:grid;place-items:center}
+.icon-btn:hover{background:#fff9e6;border-color:#f7d58a}
+.icon-btn svg{width:18px;height:18px}
+
+/* 빈 상태 */
+.empty{padding:40px;text-align:center;color:var(--muted)}
+
+/* 반응형: 숨길 열은 헤더/바디 함께 변경 */
+@media (max-width: 860px){
+    .col-domain,.col-equip,.col-updated{display:none}
+    .row, .row.head{
+        grid-template-columns:
+      var(--w-id) 1fr var(--w-status) var(--w-actions);
+    }
+}
