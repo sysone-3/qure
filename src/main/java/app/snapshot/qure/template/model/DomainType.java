@@ -1,4 +1,4 @@
-package app.snapshot.qure.template.dto;
+package app.snapshot.qure.template.model;
 
 public enum DomainType {
     CLEANING("CLEANING"),

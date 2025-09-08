@@ -1,4 +1,4 @@
-package app.snapshot.qure.template.dto;
+package app.snapshot.qure.template.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
