@@ -16,7 +16,7 @@
 
   <!-- View Resolver 설정-->
   <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <beans:property name="prefix" value="/WEB-INF/classes/views/mybatis/"/>
+    <beans:property name="prefix" value="/WEB-INF/views/"/>
     <beans:property name="suffix" value=".jsp"/>
   </beans:bean>
 
@@ -37,6 +37,6 @@
   </beans:bean>
 
  
-  <context:component-scan base-package="app.labs.ex08.mybatis.hr" />
+  <context:component-scan base-package="app.snapshot.qure" />
    
 </beans:beans>
