@@ -1,32 +1,45 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>템플릿 목록</title>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
 </head>
 <body>
-<h1>템플릿 목록</h1>
-<a href="create.jsp">+ 새 템플릿 만들기</a>
-
-<table border="1" cellspacing="0" cellpadding="8">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>이름</th>
-        <th>설명</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>1</td>
-        <td>템플릿 A</td>
-        <td>샘플 설명</td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>템플릿 B</td>
-        <td>샘플 설명</td>
-    </tr>
-    </tbody>
-</table>
+<div style="width: 900px; margin-left:auto; margin-right: auto;">
+    <h1>템플릿 목록</h1>
+    <table border="1" style="width:100%">
+        <thead>
+        <tr>
+            <th>TEMPLATE_ID</th>
+            <th>DOMAIN</th>
+            <th>NAME</th>
+            <th>VERSION</th>
+            <th>IS_ACTIVE</th>
+            <th>CREATED_AT</th>
+            <th>FACILITY_ID</th>
+            <th>CYCLE</th>
+            <th>CYCLE_UNIT</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach var="temp" items="${templateList }">
+            <tr>
+                <td>${temp.templateId }</td>
+                <td>${temp.domain}</td>
+                <td>${temp.name}</td>
+                <td>${temp.version}</td>
+                <td>${temp.isActive}</td>
+                <td>${temp.createdAt}</td>
+                <td>${temp.facilityId}</td>
+                <td>${temp.cycle}</td>
+                <td>${temp.cycleUnit}</td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
