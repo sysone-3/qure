@@ -33,5 +33,20 @@
     </bean>
     
     <tx:annotation-driven/>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 매퍼 XML 위치 지정 -->
+        <property name="mapperLocations" value="classpath:mappers/FacilitiesMapper.xml"/>
+        <!-- DTO 패키지 alias 등록 -->
+        <property name="typeAliasesPackage" value="app.snapshot.qure.facilities.dto"/>
+    </bean>
+
+    <!-- 매퍼 인터페이스 자동 스캔 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- Mapper 인터페이스 패키지 -->
+        <property name="basePackage" value="app.snapshot.qure.facilities.repository"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
     
 </beans>

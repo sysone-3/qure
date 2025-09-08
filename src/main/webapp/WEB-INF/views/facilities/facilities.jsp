@@ -85,9 +85,9 @@
                                            statusText eq '미흡' ? 'warn' :
                                            statusText eq '긴급' ? 'danger' : 'warn'}"/>
                                     <span class="status-pill">
-                  <span class="dot ${statusClass}"></span>
-                  <span>${statusText}</span>
-                </span>
+                                      <span class="dot ${statusClass}"></span>
+                                      <span>${statusText}</span>
+                                    </span>
                                 </div>
 
                                 <!-- 삭제 -->

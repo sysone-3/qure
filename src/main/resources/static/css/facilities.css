@@ -141,3 +141,111 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
       var(--w-id) 1fr var(--w-status) var(--w-actions);
     }
 }
+
+
+/* facilities_detail */
+.detail-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px;
+    font-family: Pretendard, sans-serif;
+    color: #333;
+}
+
+/* 상단 카드 */
+.facility-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+}
+
+.facility-card h2 {
+    font-size: 20px;
+    font-weight: bold;
+}
+.facility-card p {
+    font-size: 14px;
+    color: #666;
+}
+.btn-edit {
+    padding: 6px 14px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+/* QR + 버튼 */
+.checklist-section {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 16px;
+}
+.qr-box img {
+    width: 100px;
+    height: 100px;
+}
+.btn-download {
+    display: block;
+    margin-top: 8px;
+    text-align: center;
+    font-size: 12px;
+}
+.checklist-buttons .btn-template {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 6px 12px;
+    border: 1px solid #e5c84b;
+    border-radius: 20px;
+    background: #fff8d1;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+/* 기간 선택 */
+.date-range {
+    margin: 16px 0;
+    font-size: 14px;
+}
+.date-range input {
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+/* 테이블 */
+.inspection-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.inspection-table th, .inspection-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 14px;
+}
+.inspection-table th {
+    background: #f9fafb;
+    font-weight: 600;
+}
+
+/* 상태 pill */
+.status {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+}
+.status.완료 { background: #22c55e; }
+.status.이상 { background: #f59e0b; }
+.status.지연 { background: #ef4444; }

@@ -1,8 +1,10 @@
 package app.snapshot.qure.facilities.service;
 
+import java.security.Timestamp;
 import java.util.List;
-import java.util.Map;
 
+import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
+import app.snapshot.qure.facilities.dto.InspectionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,9 +44,28 @@ public class FacilitiesService implements IFacilitiesService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public FacilitiesDto findById(int facilityId) {
+        return facilitiesRepository.getFacilitiesInfo(facilityId); // 없으면 null
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ChecklistTemplateDto> findTemplatesByFacilityId(int facilityId) {
+        return facilitiesRepository.findTemplatesByFacilityId(facilityId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<InspectionDto> findInspectionByFacilityId(int facilityId) {
+        return facilitiesRepository.findInspectionByFacilityId(facilityId);
+    }
+
+    @Override
     @Transactional
     public int deleteFacilities(int facilityId, String email) {
         return facilitiesRepository.deleteFacilities(facilityId, email);
     }
+
 }
 

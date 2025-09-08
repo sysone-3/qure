@@ -1,10 +1,11 @@
 package app.snapshot.qure.facilities.repository;
 
-import java.sql.ResultSet;
+import java.security.Timestamp;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
+import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
+import app.snapshot.qure.facilities.dto.InspectionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -37,6 +38,31 @@ public class FacilitiesRepository implements IFacilitiesRepository {
         return f;
     };
 
+
+    private static final RowMapper<ChecklistTemplateDto> TEMPLATE_MAPPER = (rs, rowNum) -> {
+        ChecklistTemplateDto t = new ChecklistTemplateDto();
+        t.setTemplateId(rs.getInt("TEMPLATE_ID"));
+        t.setDomain(rs.getString("DOMAIN"));
+        t.setName(rs.getString("NAME"));
+        t.setVersion(rs.getObject("VERSION") == null ? 0 : rs.getInt("VERSION"));
+        t.setIsActive(rs.getString("IS_ACTIVE"));
+        t.setCreatedAt(rs.getTimestamp("CREATED_AT"));
+        t.setFacilityId(rs.getObject("FACILITY_ID") == null ? 0 : rs.getInt("FACILITY_ID"));
+        // (선택) CYCLE 컬럼이 있으면:
+        try { t.setCycle(rs.getObject("CYCLE") == null ? null : rs.getInt("CYCLE")); } catch (SQLException ignore) {}
+        return t;
+    };
+
+    private static final RowMapper<InspectionDto> INSPECTION_MAPPER = (rs, rowNum) -> {
+        InspectionDto i = new InspectionDto();
+        i.setInspectionId(rs.getInt("INSPECTION_ID"));
+        i.setSubmittedAt(rs.getTimestamp("SUBMITTED_AT"));
+        i.setResult(rs.getString("RESULT"));
+        i.setFacilityId(rs.getObject("FACILITY_ID") == null ? 0 : rs.getInt("FACILITY_ID"));
+        i.setInspectorId(rs.getObject("INSPECTOR_ID") == null ? 0 : rs.getInt("INSPECTOR_ID"));
+       return i;
+    };
+
     @Override
     public List<FacilitiesDto> getFacilitiesList() {
         String sql = """
@@ -63,7 +89,8 @@ public class FacilitiesRepository implements IFacilitiesRepository {
     @Override
     public FacilitiesDto getFacilitiesInfo(int facilityId) {
         String sql = "SELECT * FROM FACILITIES WHERE FACILITY_ID = ?";
-        return jdbcTemplate.queryForObject(sql, MAPPER, facilityId);
+        List<FacilitiesDto> list = jdbcTemplate.query(sql, MAPPER, facilityId);
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
@@ -117,4 +144,30 @@ public class FacilitiesRepository implements IFacilitiesRepository {
         String sql = "DELETE FROM FACILITIES WHERE FACILITY_ID = ?";
         return jdbcTemplate.update(sql, facilityId);
     }
+
+    // 점검 템플릿 목록
+    @Override
+    public List<ChecklistTemplateDto> findTemplatesByFacilityId(int facilityId) {
+        String sql = """
+        SELECT TEMPLATE_ID, DOMAIN, NAME, VERSION, IS_ACTIVE, CREATED_AT, FACILITY_ID
+          FROM CHECKLIST_TEMPLATES
+         WHERE FACILITY_ID = ?
+         ORDER BY CREATED_AT DESC, TEMPLATE_ID DESC
+    """;
+        return jdbcTemplate.query(sql, TEMPLATE_MAPPER, facilityId);
+    }
+
+    // 점검 상세보기
+    @Override
+    public List<InspectionDto> findInspectionByFacilityId(int facilityId) {
+        String sql = """
+        SELECT INSPECTION_ID, SUBMITTED_AT, RESULT, FACILITY_ID, INSPECTOR_ID
+          FROM INSPECTIONS
+         WHERE FACILITY_ID = ?
+         ORDER BY SUBMITTED_AT DESC, INSPECTION_ID DESC
+    """;
+        return jdbcTemplate.query(sql, INSPECTION_MAPPER, facilityId);
+    }
+
+
 }
