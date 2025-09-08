@@ -26,7 +26,7 @@ public class FacilitiesController {
                         ? facilitiesService.getFacilitiesList()
                         : facilitiesService.searchFacilities(q.trim());
         model.addAttribute("facilities", facilities);
-        return "facilities/index"; // /WEB-INF/views/facilities/list.jsp
+        return "facilities/facilities"; // /WEB-INF/views/facilities/facilities.jsp
     }
 
     // 삭제

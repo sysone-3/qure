@@ -28,7 +28,8 @@
                 <!-- 상단 우측 설비 추가 -->
                 <div class="top-actions">
                     <a class="btn btn-brand" href="<c:url value='/facilities/new'/>">설비 추가</a>
-                </div>        </form>
+                </div>
+            </form>
 
             <!-- 헤더 -->
             <div class="list-head">
@@ -45,6 +46,9 @@
 
             <!-- 바디 -->
             <div class="list">
+                <c:if test="${not empty msg}">
+                    <p style="margin:16px;color:#6b7280">${msg}</p>
+                </c:if>
                 <c:choose>
                     <c:when test="${not empty facilities}">
                         <c:forEach var="f" items="${facilities}">
@@ -60,17 +64,12 @@
                                 <!-- 도메인 -->
                                 <div class="cell col-domain">${f.domain}</div>
 
-                                <!-- 설비명 (현재 zone 사용; 장비명이 따로 있으면 f.equipmentName 으로 교체) -->
-                                <div class="cell col-equip">
-                                    <c:out value="${empty f.zone ? '—' : f.zone}"/>
-                                </div>
+                                <!-- 설비명  -->
+                                <div class="cell col-equip">${f.zone} </div>
 
                                 <!-- 최근 점검일자 -->
                                 <div class="cell col-updated">
                                     <c:choose>
-                                        <c:when test="${not empty f.updatedAt}">
-                                            <fmt:formatDate value="${f.updatedAt}" pattern="yyyy.MM.dd"/>
-                                        </c:when>
                                         <c:when test="${not empty f.updatedAt}">
                                             <fmt:formatDate value="${f.updatedAt}" pattern="yyyy.MM.dd"/>
                                         </c:when>
@@ -83,8 +82,8 @@
                                     <c:set var="statusText" value="${empty f.status ? '미표기' : f.status}"/>
                                     <c:set var="statusClass"
                                            value="${statusText eq '정상' ? 'ok' :
-                               statusText eq '미흡' ? 'warn' :
-                               statusText eq '긴급' ? 'danger' : 'warn'}"/>
+                                           statusText eq '미흡' ? 'warn' :
+                                           statusText eq '긴급' ? 'danger' : 'warn'}"/>
                                     <span class="status-pill">
                   <span class="dot ${statusClass}"></span>
                   <span>${statusText}</span>
@@ -94,7 +93,7 @@
                                 <!-- 삭제 -->
                                 <div class="cell col-actions">
                                     <form method="post" action="<c:url value='/facilities/${f.facilityId}/delete'/>"
-                                          onsubmit="return confirm('삭제하시겠습니까? (ID: ${f.facilityId})');">
+                                          onsubmit="return confirm('삭제하시겠습니까? 한 번 삭제 후 복구 불가능합니다. (ID: ${f.facilityId})');">
                                         <button type="submit" class="icon-btn" title="삭제">
                                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                                 <path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"
@@ -111,11 +110,6 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-
-
-            <c:if test="${not empty msg}">
-            <p style="margin:16px;color:#6b7280">${msg}</p>
-        </c:if>
         </div>
     </div>
     </body>

@@ -9,7 +9,7 @@
 
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
-        <!-- ★ qure_high + TNS_ADMIN 경로 지정 -->
+        <!--  qure_high + TNS_ADMIN 경로 지정 -->
         <property name="url" value="jdbc:oracle:thin:@qure_high?TNS_ADMIN=C:/lect_labs/labs_java/Wallet_qure"/>
         <property name="username" value="admin"/>
         <property name="password" value="Snapshotqure!!1"/>
