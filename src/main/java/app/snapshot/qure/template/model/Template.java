@@ -1,11 +1,11 @@
-package app.snapshot.qure.template.dto;
+package app.snapshot.qure.template.model;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class TemplateDto {
+public class Template {
     private Long templateId;
     private DomainType domain;
     private String name;
