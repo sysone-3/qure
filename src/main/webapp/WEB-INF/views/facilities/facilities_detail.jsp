@@ -18,12 +18,16 @@
             <p>${facility.address}</p>
         </div>
         <div class="actions">
-            <a href="<c:url value='/facilities/${facility.facilityId}/edit'/>" class="btn-edit">수정</a>
+            <form method="post" action="<c:url value='/facilities/${facility.facilityId}/delete'/>"
+                  onsubmit="return confirm('삭제하시겠습니까? 한 번 삭제 후 복구 불가능합니다. (ID: ${facility.facilityId})');">
+                <button type="submit" class="icon-btn" title="삭제">삭제</button>
+            </form>
+            <a href="<c:url value='/facilities/${facility.facilityId}/edit'/>" class="icon-btn">수정</a>
         </div>
     </div>
 
     <!-- QR + 점검표 버튼 -->
-    <div class="checklist-section">
+    <div class="checklist-section qr-box-card">
         <div class="qr-box">
             <img src="<c:url value='/qrcode/${facility.facilityId}'/>" alt="QR 코드">
             <a href="<c:url value='/qrcode/${facility.facilityId}/download'/>" class="btn-download">⬇️</a>
@@ -35,12 +39,15 @@
         </div>
     </div>
 
+
     <!-- 기간 선택 -->
-    <form method="get" action="<c:url value='/facilities/${facility.facilityId}'/>" class="date-range">
-        <input type="date" name="start" value="${start}" onchange="this.form.submit()">
-        ~
-        <input type="date" name="end"   value="${end}"   onchange="this.form.submit()">
-    </form>
+    <div class ="date-range-card">
+        <form id="rangeForm" method="get" action="<c:url value='/facilities/${facility.facilityId}'/>" class="date-range">
+            <input type="date" name="start" id="start" value="${start}">
+            ~
+            <input type="date" name="end"   id="end"   value="${end}">
+        </form>
+    </div>
 
     <!-- 점검 내역 테이블 -->
     <div class="inspection-table">
@@ -87,5 +94,23 @@
     </div>
 
 </div>
+
+<script>
+    (function(){
+        const f = document.getElementById('rangeForm');
+        const s = document.getElementById('start');
+        const e = document.getElementById('end');
+        function maybeSubmit(){
+            if(!s.value || !e.value) return;               // 둘 다 있을 때만
+            if(e.value < s.value){                         // 역전 방지
+                alert('끝 날짜가 시작 날짜보다 빠릅니다.');
+                return;
+            }
+            f.submit();
+        }
+        s.addEventListener('change', maybeSubmit);
+        e.addEventListener('change', maybeSubmit);
+    })();
+</script>
 </body>
 </html>

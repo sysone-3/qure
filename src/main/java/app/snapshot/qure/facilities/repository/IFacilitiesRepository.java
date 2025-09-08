@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.security.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper  // MyBatis Mapper 인터페이스
@@ -27,4 +28,7 @@ public interface IFacilitiesRepository {
     List<ChecklistTemplateDto> findTemplatesByFacilityId(@Param("facilityId") int facilityId);
 
     List<InspectionDto> findInspectionByFacilityId(@Param("facilityId") int facilityId);
+
+    List<InspectionDto> findInspectionByFacilityIdAndPeriod(int facilityId, LocalDate startD, LocalDate endD);
+
 }

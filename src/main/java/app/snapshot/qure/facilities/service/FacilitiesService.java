@@ -1,6 +1,7 @@
 package app.snapshot.qure.facilities.service;
 
 import java.security.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
@@ -55,10 +56,18 @@ public class FacilitiesService implements IFacilitiesService {
         return facilitiesRepository.findTemplatesByFacilityId(facilityId);
     }
 
+
+
     @Override
     @Transactional(readOnly = true)
     public List<InspectionDto> findInspectionByFacilityId(int facilityId) {
         return facilitiesRepository.findInspectionByFacilityId(facilityId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<InspectionDto> findInspectionByFacilityIdAndPeriod(int facilityId, LocalDate startD, LocalDate endD) {
+        return facilitiesRepository.findInspectionByFacilityIdAndPeriod(facilityId, startD, endD);
     }
 
     @Override

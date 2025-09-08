@@ -45,7 +45,10 @@ public class FacilitiesController {
     // 상세 조회
     @GetMapping("/{id}")
     public String detail(
-            @PathVariable("id") int id, Model model, RedirectAttributes ra) {
+            @PathVariable("id") int id,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            Model model, RedirectAttributes ra) {
 
         FacilitiesDto facility = facilitiesService.findById(id);
         if (facility == null) {
@@ -53,21 +56,36 @@ public class FacilitiesController {
             return "redirect:/facilities";
         }
 
-        List<InspectionDto> inspections = facilitiesService.findInspectionByFacilityId(id);
-        // 설비별 템플릿 데이터
-        List<ChecklistTemplateDto> templates = facilitiesService.findTemplatesByFacilityId(id);
+        // 파라미터 보정 (한쪽만 들어와도 안전)
+        LocalDate startD = (start != null && !start.isBlank()) ? LocalDate.parse(start) : null;
+        LocalDate endD   = (end   != null && !end.isBlank())   ? LocalDate.parse(end)   : null;
 
+        if (startD == null && endD == null) {
+            endD   = LocalDate.now();
+            startD = endD.minusDays(30);
+        } else if (startD == null) {
+            startD = endD.minusDays(30);
+        } else if (endD == null) {
+            endD = startD.plusDays(30);
+        }
+        if (endD.isBefore(startD)) { // 역전 방지
+            LocalDate tmp = startD; startD = endD; endD = tmp;
+        }
+        ZoneId zone = ZoneId.systemDefault();
+        Timestamp startTs    = Timestamp.from(startD.atStartOfDay(zone).toInstant());
+        Timestamp endTsPlus1 = Timestamp.from(endD.plusDays(1).atStartOfDay(zone).toInstant());
+
+        List<InspectionDto> inspections =
+                facilitiesService.findInspectionByFacilityIdAndPeriod(id, startD, endD);
+
+        // 나머지 그대로
+        List<ChecklistTemplateDto> templates = facilitiesService.findTemplatesByFacilityId(id);
         model.addAttribute("facility", facility);
         model.addAttribute("templates", templates);
-          model.addAttribute("inspections", inspections);
-
-        return "facilities/facilities_detail"; // /WEB-INF/views/facilities/facilities_detail.jsp
-    }
-
-    /** (선택) POST로 상세를 열어야 할 폼이 있다면 이쪽으로 위임 */
-    @PostMapping("/{id}/detail")
-    public String detailPost(@PathVariable("id") int id) {
-        return "redirect:/facilities/" + id;
+        model.addAttribute("inspections", inspections);
+        model.addAttribute("start", startD.toString());
+        model.addAttribute("end",   endD.toString());
+        return "facilities/facilities_detail";
     }
 
 

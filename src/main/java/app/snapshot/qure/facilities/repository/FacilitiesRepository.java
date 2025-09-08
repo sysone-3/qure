@@ -2,6 +2,7 @@ package app.snapshot.qure.facilities.repository;
 
 import java.security.Timestamp;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
@@ -157,16 +158,24 @@ public class FacilitiesRepository implements IFacilitiesRepository {
         return jdbcTemplate.query(sql, TEMPLATE_MAPPER, facilityId);
     }
 
-    // 점검 상세보기
     @Override
     public List<InspectionDto> findInspectionByFacilityId(int facilityId) {
+        return List.of();
+    }
+
+    // 점검 상세보기
+    @Override
+    public List<InspectionDto> findInspectionByFacilityIdAndPeriod(int facilityId, LocalDate startD, LocalDate endD) {
         String sql = """
         SELECT INSPECTION_ID, SUBMITTED_AT, RESULT, FACILITY_ID, INSPECTOR_ID
           FROM INSPECTIONS
          WHERE FACILITY_ID = ?
+           AND TRUNC(SUBMITTED_AT) BETWEEN ? AND ?
          ORDER BY SUBMITTED_AT DESC, INSPECTION_ID DESC
     """;
-        return jdbcTemplate.query(sql, INSPECTION_MAPPER, facilityId);
+        java.sql.Date sd = java.sql.Date.valueOf(startD);
+        java.sql.Date ed = java.sql.Date.valueOf(endD);
+        return jdbcTemplate.query(sql, INSPECTION_MAPPER, facilityId, sd, ed);
     }
 
 

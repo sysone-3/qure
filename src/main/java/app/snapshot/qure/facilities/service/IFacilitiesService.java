@@ -1,6 +1,7 @@
 package app.snapshot.qure.facilities.service;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -24,5 +25,7 @@ public interface IFacilitiesService {
     List<InspectionDto> findInspectionByFacilityId(int facilityId);
 
     int deleteFacilities(int facilityId, String email);
+
+    List<InspectionDto> findInspectionByFacilityIdAndPeriod(int facilityId, LocalDate startD, LocalDate endD);
 
 }
