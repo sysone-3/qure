@@ -10,6 +10,7 @@ public class TemplateDto {
     private DomainType domain;
     private String name;
     private int cycle;
+    private CycleUnit cycleUnit;
     private int version;
     private ActiveStatus isActive;
     private LocalDateTime createdAt;
