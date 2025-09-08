@@ -6,7 +6,6 @@ import app.snapshot.qure.facilities.dto.InspectionDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.security.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,6 +28,8 @@ public interface IFacilitiesRepository {
 
     List<InspectionDto> findInspectionByFacilityId(@Param("facilityId") int facilityId);
 
-    List<InspectionDto> findInspectionByFacilityIdAndPeriod(int facilityId, LocalDate startD, LocalDate endD);
+    List<InspectionDto> findInspectionByFacilityIdAndPeriod(@Param("facilityId") int facilityId,
+                                                            @Param("startD") LocalDate startD,
+                                                            @Param("endD") LocalDate endD);
 
 }

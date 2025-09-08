@@ -10,21 +10,21 @@
          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- DB id,pw 정보 설정파일 연결 -->
-    <context:property-placeholder location="classpath:application.properties"/>
+    <context:property-placeholder location="classpath:application-db.properties"/>
 
     <!-- DataSource -->
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${db.driver:oracle.jdbc.OracleDriver}"/>
-        <property name="url"             value="${db.url}"/>
-        <property name="username"        value="${db.user}"/>
-        <property name="password"        value="${db.pass}"/>
+        <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+        <property name="url"             value="jdbc:oracle:thin:@qure_high?TNS_ADMIN=C:/lect_labs/labs_java/Wallet_qure"/>
+        <property name="username"        value="admin"/>
+        <property name="password"        value="Snapshotqure!!1"/>
     </bean>
 
     <!-- MyBatis -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath*:mappers/**/*.xml"/>
-        <property name="typeAliasesPackage" value="app.snapshot.qure.mobile.dto"/>
+        <property name="typeAliasesPackage" value="app.snapshot.qure.facilities.dto"/>
         <property name="configuration">
             <bean class="org.apache.ibatis.session.Configuration">
                 <property name="mapUnderscoreToCamelCase" value="true"/>
@@ -32,10 +32,15 @@
         </property>
     </bean>
 
+    <!-- SqlSessionTemplate -->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref="sqlSessionFactory"/>
+    </bean>
+
     <!-- Mapper 인터페이스 스캔 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="app.snapshot.qure.mobile.repository"/>
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="app.snapshot.qure.facilities.repository,app.snapshot.qure.template.repository"/>
+        <property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate"/>
     </bean>
 
     <!-- TX -->

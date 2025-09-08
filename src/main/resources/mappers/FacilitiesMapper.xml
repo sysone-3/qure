@@ -5,6 +5,7 @@
 
 <mapper namespace="app.snapshot.qure.facilities.repository.IFacilitiesRepository">
 
+    <!-- Dto 매핑 -->
     <resultMap id="facilityMap" type="app.snapshot.qure.facilities.dto.FacilitiesDto">
         <result property="facilityId" column="FACILITY_ID"/>
         <result property="domain" column="DOMAIN"/>
@@ -33,23 +34,35 @@
         <result property="cycle" column="CYCLE"/>
     </resultMap>
 
+    <resultMap id="inspectionMap" type="app.snapshot.qure.facilities.dto.InspectionDto">
+        <result property="inspectionId" column="INSPECTION_ID"/>
+        <result property="submittedAt" column="SUBMITTED_AT"/>
+        <result property="result" column="RESULT"/>
+        <result property="facilityId" column="FACILITY_ID"/>
+        <result property="inspectorId" column="INSPECTOR_ID"/>
+    </resultMap>
+
     <!-- 목록 -->
     <select id="getFacilitiesList" resultMap="facilityMap">
-        SELECT * FROM FACILITIES ORDER BY FACILITY_ID DESC
+        SELECT *
+        FROM FACILITIES
+        ORDER BY FACILITY_ID DESC
     </select>
 
-    <!-- 검색 -->
+    <!-- 검색 (Oracle 문자열 연결 주의) -->
     <select id="searchFacilities" parameterType="string" resultMap="facilityMap">
         SELECT *
         FROM FACILITIES
-        WHERE LOWER(NAME) LIKE CONCAT('%', LOWER(#{q}), '%')
-           OR LOWER(DOMAIN) LIKE CONCAT('%', LOWER(#{q}), '%')
+        WHERE LOWER(NAME)   LIKE '%' || LOWER(#{q}) || '%'
+           OR LOWER(DOMAIN) LIKE '%' || LOWER(#{q}) || '%'
         ORDER BY FACILITY_ID DESC
     </select>
 
     <!-- 단건 조회 -->
     <select id="getFacilitiesInfo" parameterType="int" resultMap="facilityMap">
-        SELECT * FROM FACILITIES WHERE FACILITY_ID = #{facilityId}
+        SELECT *
+        FROM FACILITIES
+        WHERE FACILITY_ID = #{facilityId}
     </select>
 
     <!-- 등록 -->
@@ -84,7 +97,7 @@
         WHERE FACILITY_ID = #{facilityId}
     </update>
 
-    <!-- 삭제 -->
+    <!-- 삭제 (email 파라미터는 사용하지 않음) -->
     <delete id="deleteFacilities">
         DELETE FROM FACILITIES WHERE FACILITY_ID = #{facilityId}
     </delete>
@@ -95,6 +108,23 @@
         FROM CHECKLIST_TEMPLATES
         WHERE FACILITY_ID = #{facilityId}
         ORDER BY CREATED_AT DESC
+    </select>
+
+    <!-- 점검 목록 (설비별) -->
+    <select id="findInspectionByFacilityId" parameterType="int" resultMap="inspectionMap">
+        SELECT INSPECTION_ID, SUBMITTED_AT, RESULT, FACILITY_ID, INSPECTOR_ID
+        FROM INSPECTIONS
+        WHERE FACILITY_ID = #{facilityId}
+        ORDER BY SUBMITTED_AT DESC, INSPECTION_ID DESC
+    </select>
+
+    <!-- 점검 목록 (설비별 + 기간) -->
+    <select id="findInspectionByFacilityIdAndPeriod" resultMap="inspectionMap">
+        SELECT INSPECTION_ID, SUBMITTED_AT, RESULT, FACILITY_ID, INSPECTOR_ID
+        FROM INSPECTIONS
+        WHERE FACILITY_ID = #{facilityId}
+          AND TRUNC(SUBMITTED_AT) BETWEEN #{startD} AND #{endD}
+        ORDER BY SUBMITTED_AT DESC, INSPECTION_ID DESC
     </select>
 
 </mapper>
