@@ -10,7 +10,7 @@
          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- DB id,pw 정보 설정파일 연결 -->
-    <context:property-placeholder location="classpath:application.properties"/>
+    <context:property-placeholder location="classpath:application-db.properties"/>
 
     <!-- DataSource -->
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
@@ -34,7 +34,7 @@
 
     <!-- Mapper 인터페이스 스캔 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="app.snapshot.qure.mobile.repository"/>
+        <property name="basePackage" value="app.snapshot.qure"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
@@ -42,5 +42,6 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
     <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>
