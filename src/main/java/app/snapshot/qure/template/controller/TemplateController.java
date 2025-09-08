@@ -1,18 +1,27 @@
 package app.snapshot.qure.template.controller;
 
+import app.snapshot.qure.template.model.Template;
+import app.snapshot.qure.template.service.ITemplateService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
+@Slf4j
 @Controller
 public class TemplateController {
 
-    @GetMapping("/template/list")
-    public String showList() {
-        return "template/list"; // /WEB-INF/classes/views/template/list.jsp
-    }
+    @Autowired
+    ITemplateService templateService;
 
-    @GetMapping("/template/create")
-    public String showCreate() {
-        return "template/create"; // /WEB-INF/classes/views/template/create.jsp
+    @RequestMapping(value="/template/list")
+    public String getAllTemplates(Model model){
+        List<Template> list = templateService.getTemplateList();
+        model.addAttribute("templateList", list);
+
+        return "template/list";
     }
 }
