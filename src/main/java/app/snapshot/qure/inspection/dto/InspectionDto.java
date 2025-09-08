@@ -9,8 +9,6 @@ public class InspectionDto {
     private Long inspectionId;
     private LocalDateTime submittedAt;
     private String result;
-    private Double gpsLat;
-    private Double gpsLng;
     private Long facilityId;
     private Long inspectorId;
 }
