@@ -11,8 +11,8 @@
   <!-- MVC 기본 -->
   <annotation-driven/>
 
-  <!-- 정적 리소스: src/main/resources/assets -> /WEB-INF/classes/assets/ -->
-  <resources mapping="/assets/**" location="/WEB-INF/classes/assets/"/>
+    <!-- get 경로 매핑 -->
+    <resources mapping="/assets/**" location="/WEB-INF/assets/"/>
 
   <!-- JSP 뷰 리졸버 -->
   <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

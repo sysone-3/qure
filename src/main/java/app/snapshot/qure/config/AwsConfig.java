@@ -3,7 +3,9 @@ package app.snapshot.qure.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -23,10 +25,15 @@ public class AwsConfig {
   private String region;
 
   @Bean
-  public S3Client s3Client() {
+  public S3Client s3Client(
+        @Value("${aws.accessKeyId}") String accessKey,
+        @Value("${aws.secretAccessKey}") String secretKey
+  ) {
     return S3Client.builder()
-        .region(Region.of(region))
-        .credentialsProvider(DefaultCredentialsProvider.create())
-        .build();
+      .region(Region.of(region))
+        .credentialsProvider(
+          StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey))
+        )
+    .build();
   }
 }

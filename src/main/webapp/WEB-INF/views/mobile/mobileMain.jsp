@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
   <link rel="stylesheet" href="<c:url value='/assets/css/mobileMain.css'/>">
+
 </head>
 <body>
   <main id="landingRoot" class="wrap">

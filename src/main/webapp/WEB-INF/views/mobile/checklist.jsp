@@ -7,8 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>${template.name} · 점검 체크리스트</title>
-
-  <link rel="stylesheet" href="<c:url value='/assets/css/checklist.css'/>">
+  <link rel="stylesheet" href="<c:url value='/assets/css/checklist.css'/>" />
 </head>
 <body>
 <div class="wrap">

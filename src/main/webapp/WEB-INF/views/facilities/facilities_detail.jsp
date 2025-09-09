@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>${facility.name} 상세</title>
-    <link rel="stylesheet" href="<c:url value='/resources/css/facilities.css'/>">
+    <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
 </head>
 <body>
 <div class="detail-page">
