@@ -34,6 +34,28 @@ public class FacilitiesController {
         return "facilities/facilities"; // /WEB-INF/views/facilities/facilities.jsp
     }
 
+    // 설비 등록
+    @GetMapping("/new")
+    public String addForm(Model model) {
+        model.addAttribute("facility", new FacilitiesDto()); // 빈 폼 바인딩
+        return "facilities/facilities_add";
+    }
+
+    @PostMapping
+    public String create(@ModelAttribute("facility") FacilitiesDto facility,
+                         RedirectAttributes ra) {
+        int rows = facilitiesService.insertFacilities(facility);
+        if (rows > 0) {
+            ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
+            // insert 시 selectKey로 facilityId가 채워짐
+            return "redirect:/facilities/" + facility.getFacilityId();
+        } else {
+            ra.addFlashAttribute("msg", "등록에 실패했습니다. 다시 시도해주세요.");
+            return "redirect:/facilities/new";
+        }
+    }
+
+
     // 삭제
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id, RedirectAttributes ra) {

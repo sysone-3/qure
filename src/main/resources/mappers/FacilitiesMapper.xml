@@ -65,19 +65,26 @@
         WHERE FACILITY_ID = #{facilityId}
     </select>
 
-    <!-- 등록 -->
+    <!-- 등록: FACILITY_ID를 시퀀스로 생성 -->
     <insert id="insertFacilities" parameterType="app.snapshot.qure.facilities.dto.FacilitiesDto">
+        <!-- ① 오라클 시퀀스로 PK 채우기 -->
+        <selectKey keyProperty="facilityId" resultType="int" order="BEFORE">
+            SELECT FACILITY_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+
+        <!-- INSERT -->
         INSERT INTO FACILITIES(
-            FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
-            GPS_LAT, GPS_LNG, STATUS, MEMO, CREATED_AT, UPDATED_AT,
-            MANAGERS_ID, INSPECTOR_ID
+        FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
+        GPS_LAT, GPS_LNG, STATUS, MEMO, CREATED_AT, UPDATED_AT,
+        MANAGERS_ID, INSPECTOR_ID
         ) VALUES (
-                     #{facilityId}, #{domain}, #{name}, #{floor}, #{zone}, #{address},
-                     #{gpsLat}, #{gpsLng}, #{status}, #{memo},
-                     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
-                     #{managersId}, #{inspectorId}
-                 )
+        #{facilityId}, #{domain}, #{name}, #{floor}, #{zone}, #{address},
+        #{gpsLat}, #{gpsLng}, #{status}, #{memo},
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+        #{managersId}, #{inspectorId}
+        )
     </insert>
+
 
     <!-- 수정 -->
     <update id="updateFacilities" parameterType="app.snapshot.qure.facilities.dto.FacilitiesDto">
