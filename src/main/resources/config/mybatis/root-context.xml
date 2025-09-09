@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
@@ -8,14 +7,17 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-  
-  <!-- DB id,pw 정보 설정파일 연결 -->       
-  <context:property-placeholder location="classpath:application.properties"/>
-  
+
+  <!-- 둘 다 지원(없으면 무시) -->
+  <context:property-placeholder
+      location="classpath:application-db.properties,classpath:application.properties"
+      ignore-unresolvable="true"/>
+
+  <!-- Service/Repo 스캔. Controller는 servlet-context에서 스캔 -->
   <context:component-scan base-package="app.snapshot.qure">
-  	<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
   </context:component-scan>
-         
+
   <!-- DataSource -->
   <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="${db.driver:oracle.jdbc.OracleDriver}"/>
@@ -36,9 +38,9 @@
     </property>
   </bean>
 
-  <!-- Mapper 인터페이스 스캔 -->
+  <!-- Mapper 인터페이스 스캔: 팀 범위로 통일(네 패키지 포함됨) -->
   <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-    <property name="basePackage" value="app.snapshot.qure.mobile.repository"/>
+    <property name="basePackage" value="app.snapshot.qure"/>
     <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
   </bean>
 

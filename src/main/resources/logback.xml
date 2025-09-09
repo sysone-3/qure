@@ -10,10 +10,9 @@
     </encoder>
   </appender>
 
-  <!-- === what we need for this issue === -->
   <!-- print mapped handler methods at startup -->
   <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="DEBUG"/>
-  <!-- (optional) bean-name url mappings -->
+  <!-- bean-name url mappings -->
   <logger name="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" level="DEBUG"/>
 
   <!-- quiet down noisy libs -->
