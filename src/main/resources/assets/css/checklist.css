@@ -1,0 +1,190 @@
+:root {
+  --brand: #9EDBCF;       /* 필요 시 #FFE59A */
+  --brand-weak: #EAF7F4;
+  --bg: #FFFFFF;
+  --line: #E5EBEF;
+  --text: #1B1D1F;
+  --muted: #6B7680;
+  --danger: #E53935;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px 88px;
+}
+
+.head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 6px 0 10px;
+}
+
+.pill {
+  font-size: 12px;
+  background: var(--brand-weak);
+  color: #06453D;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 6px 0 2px;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 10px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 14px;
+  margin: 12px 0;
+}
+
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.req {
+  color: var(--danger);
+  margin-left: 4px;
+}
+
+.guide {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.radio input {
+  accent-color: var(--brand);
+}
+
+.num {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.num input[type=number] {
+  flex: 0 0 160px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 96px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 15px;
+  resize: vertical;
+}
+
+.photos input[type=file] {
+  display: block;
+  width: 100%;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.err {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-top: 1px solid var(--line);
+}
+
+.dock-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 16px;
+}
+
+.dock .stat {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.submit {
+  margin-left: auto;
+  background: var(--brand);
+  color: #083B33;
+  border: 0;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-weight: 800;
+}
+
+.submit:disabled {
+  opacity: .5;
+}
+
+.sec-title {
+  margin: 18px 0 8px;
+  font-size: 14px;
+  color: #3E4B55;
+  font-weight: 800;
+}

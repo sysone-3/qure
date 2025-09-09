@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+  <!-- console format -->
+  <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level [%logger] - %msg%n"/>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <!-- === what we need for this issue === -->
+  <!-- print mapped handler methods at startup -->
+  <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="DEBUG"/>
+  <!-- (optional) bean-name url mappings -->
+  <logger name="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" level="DEBUG"/>
+
+  <!-- quiet down noisy libs -->
+  <logger name="org.apache.http" level="WARN"/>
+  <logger name="com.zaxxer.hikari" level="INFO"/>
+  <logger name="org.mybatis" level="INFO"/>
+  <logger name="jdbc" level="OFF"/>
+  <logger name="jdbc.sqlonly" level="INFO"/>
+  <logger name="jdbc.resultsettable" level="OFF"/>
+  <logger name="jdbc.sqltiming" level="OFF"/>
+
+  <!-- root logger -->
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+</configuration>
