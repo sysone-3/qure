@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
@@ -9,42 +8,46 @@
          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- DB id,pw 정보 설정파일 연결 -->
-    <context:property-placeholder
-  		location="classpath:application-db.properties,classpath:application.properties"
-  		ignore-unresolvable="true"/>
 
 
-    <!-- DataSource -->
-    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${db.driver:oracle.jdbc.OracleDriver}"/>
-        <property name="url"             value="${db.url}"/>
-        <property name="username"        value="${db.user}"/>
-        <property name="password"        value="${db.pass}"/>
-    </bean>
+  <context:property-placeholder
+  location="classpath:application-db.properties"
+  ignore-unresolvable="true"/>
 
-    <!-- MyBatis -->
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="mapperLocations" value="classpath*:mappers/**/*.xml"/>
-        <property name="typeAliasesPackage" value="app.snapshot.qure.mobile.dto"/>
-        <property name="configuration">
-            <bean class="org.apache.ibatis.session.Configuration">
-                <property name="mapUnderscoreToCamelCase" value="true"/>
-            </bean>
-        </property>
-    </bean>
+  <!-- Service/Repo 스캔. Controller는 servlet-context에서 스캔 -->
+  <context:component-scan base-package="app.snapshot.qure">
+    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+  </context:component-scan>
 
-    <!-- Mapper 인터페이스 스캔 -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="app.snapshot.qure"/>
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-    </bean>
+  <!-- DataSource -->
+  <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="${db.driver:oracle.jdbc.OracleDriver}"/>
+    <property name="url"             value="${db.url}"/>
+    <property name="username"        value="${db.user}"/>
+    <property name="password"        value="${db.pass}"/>
+  </bean>
 
-    <!-- TX -->
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+  <!-- MyBatis -->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="mapperLocations" value="classpath*:mappers/**/*.xml"/>
+    <property name="typeAliasesPackage" value="app.snapshot.qure.mobile.dto"/>
+    <property name="configuration">
+      <bean class="org.apache.ibatis.session.Configuration">
+        <property name="mapUnderscoreToCamelCase" value="true"/>
+      </bean>
+    </property>
+  </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+  <!-- Mapper 인터페이스 스캔: 팀 범위로 통일(네 패키지 포함됨) -->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="app.snapshot.qure"/>
+    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+  </bean>
+
+  <!-- TX -->
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+  <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>
