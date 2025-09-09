@@ -8,16 +8,13 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>
-      classpath:/config/mybatis/root-context.xml
-    </param-value>
+    <param-value>classpath:/config/mybatis/root-context.xml</param-value>
   </context-param>
 
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
-  <!-- Spring DispatcherServlet 등록 -->
   <servlet>
     <servlet-name>appServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -26,6 +23,11 @@
       <param-value>classpath:/config/mybatis/servlet-context.xml</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
+
+    <multipart-config>
+      <max-file-size>31457280</max-file-size>
+      <max-request-size>31457280</max-request-size>
+    </multipart-config>
   </servlet>
 
   <servlet-mapping>
@@ -33,9 +35,7 @@
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 
-  <!-- Welcome page -->
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
-
 </web-app>

@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration>
-<configuration>
+<configuration scan="true">
 
-	<property name="LOG_HOME" value="d:/logs" />
-	
-	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %yellow(%-5level) [%logger] - %cyan(%msg) %n</pattern>
-		</encoder>
-	</appender>
+  <!-- console format -->
+  <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level [%logger] - %msg%n"/>
 
-	<!-- 
-	1. log level
-	  trace < debug < info  < warn < error
-	2. 기본로거를 상속 받는다.
-	3. additivity
-	  기본값 true. false로 설정하면 해당 class만 logger가 적용됩니다.
-	-->
-    <logger name="jdbc"                level="off" />
-    <logger name="jdbc.sqlonly"        level="info" />
-    <logger name="jdbc.resultsettable" level="off" />
-    <logger name="jdbc.sqltiming"      level="off" />
-	<logger name="com.zaxxer.hikari"   level="info" /> <!-- log 상세출력 debug -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
 
-	<!-- 기본로거 -->    
-	<root value="info">
-		<appender-ref ref="CONSOLE" />
-	</root>
+  <!-- print mapped handler methods at startup -->
+  <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="DEBUG"/>
+  <!-- bean-name url mappings -->
+  <logger name="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" level="DEBUG"/>
+
+  <!-- quiet down noisy libs -->
+  <logger name="org.apache.http" level="WARN"/>
+  <logger name="com.zaxxer.hikari" level="INFO"/>
+  <logger name="org.mybatis" level="INFO"/>
+  <logger name="jdbc" level="OFF"/>
+  <logger name="jdbc.sqlonly" level="INFO"/>
+  <logger name="jdbc.resultsettable" level="OFF"/>
+  <logger name="jdbc.sqltiming" level="OFF"/>
+
+  <!-- root logger -->
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
 </configuration>

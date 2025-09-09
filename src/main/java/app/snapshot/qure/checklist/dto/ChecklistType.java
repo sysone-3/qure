@@ -30,3 +30,4 @@ public enum ChecklistType {
         throw new IllegalArgumentException("Unknown checklist type: " + value);
     }
 }
+
