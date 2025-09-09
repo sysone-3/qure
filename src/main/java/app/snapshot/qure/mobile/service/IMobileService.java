@@ -5,6 +5,7 @@ import java.util.List;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistSubmitForm;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
+import app.snapshot.qure.mobile.dto.CitizenReportDto;
 import app.snapshot.qure.mobile.dto.ImageMetaInsertDto;
 import app.snapshot.qure.mobile.dto.TagSummaryDto;
 
@@ -27,6 +28,8 @@ public interface IMobileService {
     
  // [TEST] 최근 이미지 조회
     List<ImageMetaInsertDto> listLatestImages(int limit);
+    
+    long submitComplain(int tagId, String category, String description, String email);
 
 
 }
