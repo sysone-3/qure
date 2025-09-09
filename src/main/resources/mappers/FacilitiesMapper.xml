@@ -67,7 +67,7 @@
 
     <!-- 등록: FACILITY_ID를 시퀀스로 생성 -->
     <insert id="insertFacilities" parameterType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        <!-- ① 오라클 시퀀스로 PK 채우기 -->
+        <!--  오라클 시퀀스로 PK 채우기 -->
         <selectKey keyProperty="facilityId" resultType="int" order="BEFORE">
             SELECT FACILITY_SEQ.NEXTVAL FROM DUAL
         </selectKey>

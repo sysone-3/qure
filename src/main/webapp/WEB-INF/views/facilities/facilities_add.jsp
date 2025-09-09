@@ -48,20 +48,27 @@
             </div>
 
             <div class="cell">도메인</div>
-            <select name="domain">
-                <option value="청결">청결</option>
-                <option value="순찰">순찰</option>
-                <option value="소방">소방</option>
-            </select>
+            <label>
+                <select name="domain">
+                    <option value="청결">청결</option>
+                    <option value="순찰">순찰</option>
+                    <option value="소방">소방</option>
+                </select>
+            </label>
 
-            <div class="cell">층/존</div>
+            <div class="cell">층</div>
             <div class="row">
-                <input type="text" name="floor" placeholder="층 (예: B2)">
-                <input type="text" name="zone"  placeholder="존 (예: Z-3)">
+                <input type="text" name="floor" placeholder="(예: B2)">
+            </div>
+            <div class="cell">상세 구역</div>
+            <div class="row">
+                <input type="text" name="zone"  placeholder="(예: 로비)">
             </div>
 
             <div class="cell">점검자 ID</div>
-            <input type="number" name="inspectorId" placeholder="예: 1">
+            <div class="row">
+                <input type="text" name="inspectorId" placeholder="(예: 1)">
+            </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-brand">등록</button>
@@ -84,7 +91,7 @@
         document.getElementById('addrDetail').value    = addrDetail    || '';
         document.getElementById('zipNo').value         = zipNo         || '';
 
-        // ✅ 팝업에서 합친 주소를 그대로 저장 (fallback로 직접 합치기)
+        // 팝업에서 합친 주소를 그대로 저장 (fallback로 직접 합치기)
         document.getElementById('address').value =
             (fullAddress && fullAddress.trim().length > 0)
                 ? fullAddress
