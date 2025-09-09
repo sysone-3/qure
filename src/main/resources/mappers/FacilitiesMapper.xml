@@ -91,15 +91,18 @@
             FLOOR = #{floor},
             ZONE = #{zone},
             ADDRESS = #{address, jdbcType=VARCHAR},
-            GPS_LAT = #{gpsLat},
-            GPS_LNG = #{gpsLng},
-            STATUS = #{status},
-            MEMO = #{memo},
-            UPDATED_AT = CURRENT_TIMESTAMP,
-            MANAGERS_ID = #{managersId},
             INSPECTOR_ID = #{inspectorId}
         WHERE FACILITY_ID = #{facilityId}
     </update>
+
+    <select id="findById" parameterType="int" resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
+        SELECT FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
+            GPS_LAT, GPS_LNG, STATUS, MEMO, CREATED_AT, UPDATED_AT,
+            MANAGERS_ID, INSPECTOR_ID
+        FROM FACILITIES
+        WHERE FACILITY_ID = #{id}
+    </select>
+
 
     <!-- 삭제 (email 파라미터는 사용하지 않음) -->
     <delete id="deleteFacilities">

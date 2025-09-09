@@ -55,6 +55,35 @@ public class FacilitiesController {
         }
     }
 
+    // 설비 수정
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable("id") int id, Model model, RedirectAttributes ra) {
+        FacilitiesDto facility = facilitiesService.findById(id);
+        if (facility == null) {
+            ra.addFlashAttribute("msg", "해당 설비가 없습니다. (ID: " + id + ")");
+            return "redirect:/facilities";
+        }
+        model.addAttribute("facility", facility);
+        return "facilities/facilities_edit"; // JSP 경로
+    }
+
+    // 저장
+    @PostMapping("/{id}")
+    public String edit(@PathVariable("id") int id,
+                       @ModelAttribute("facility") FacilitiesDto facility,
+                       RedirectAttributes ra) {
+        facility.setFacilityId(id); // URL 우선
+        int rows = facilitiesService.updateFacilities(facility);
+        if (rows > 0) {
+            ra.addFlashAttribute("msg", "설비가 수정되었습니다.");
+            return "redirect:/facilities/" + id;
+        } else {
+            ra.addFlashAttribute("msg", "수정에 실패했습니다. 다시 시도해주세요.");
+            return "redirect:/facilities/" + id + "/edit";
+        }
+    }
+
+
 
     // 삭제
     @PostMapping("/{id}/delete")
