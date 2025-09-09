@@ -1,0 +1,89 @@
+html { font-size: clamp(14px, 1.6vw, 18px); }
+
+body {
+  font-family: 'Pretendard Variable', sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: clamp(8px, 2.5vw, 16px);
+  color: #111;
+  background: #fff;
+}
+
+.wrap { min-height: 100svh; max-width: 720px; margin: 0 auto; }
+
+.btn-icon {
+  height: clamp(32px, 5.2vw, 44px);
+  width: clamp(80px, 18vw, 120px);
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  color: #A9DECE; border: 1px solid #A9DECE; background: #FFFFFF;
+  border-radius: clamp(10px, 2.2vw, 15px);
+}
+.back-btn { margin-bottom: clamp(4px, 1.5vw, 10px); }
+
+.topbar { display:flex; justify-content:center; align-items:center; margin-bottom: clamp(4px, 1.6vw, 10px); }
+.logo { width: min(52vw, 24vh, 180px); height: min(52vw, 24vh, 180px); object-fit: contain; }
+
+/* Sub */
+.sub-div {
+  display:flex; justify-content:center; align-items:center; flex-direction:column;
+  gap: clamp(0px, 0.6vw, 4px);
+  margin-top: clamp(2px, 1.2vw, 6px);
+  margin-bottom: clamp(10px, 2.6vw, 18px);
+}
+.sub { margin:0; font-size:1rem; }
+
+/* PIN boxes */
+.pin { margin: clamp(8px, 2.2vw, 14px) 0; display:flex; justify-content:center; align-items:center; gap: clamp(6px, 2vw, 10px); }
+.pin input{
+  width: clamp(40px, 12vw, 56px);
+  height: clamp(44px, 10vh, 64px);
+  text-align:center; font-size: clamp(1rem, 4.2vw, 1.5rem); font-weight:800;
+  border-radius: clamp(8px, 2vw, 10px);
+  border: 2px solid #A9DECE; background:#FFF; outline:0;
+}
+/* 포커스 대신 active 클래스로 강조(키보드 미노출) */
+.pin input.active { box-shadow: 0 0 0 3px rgba(169,222,206,.35); }
+
+/* Keypad & Submit */
+.pad {
+  margin-top: clamp(10px, 4vh, 24px);
+  display:grid;
+  grid-template-columns: repeat(3, minmax(56px, min(22vw, 12vh)));
+  gap: clamp(8px, 2.6vw, 16px);
+  justify-content:center; justify-items:center;
+}
+.key{
+  width:100%; height:min(14vh, 18vw, 72px);
+  background:#A9DECE; border-radius: clamp(8px, 2vw, 10px);
+  color:#FFFFFF; border:0; font-size: clamp(1rem, 6.8vw, 2.6rem); font-weight:700;
+}
+.key--ghost{ background:#EEF2F4; color:#333; }
+
+.submit{
+  width:min(90vw, 320px); height:clamp(40px, 6.2vh, 52px);
+  margin: clamp(2px, 0.1vh, 16px) auto 0; display:block;
+  background:#A9DECE; border-radius: clamp(8px, 2vw, 10px);
+  color:#FFFFFF; border:0; font-size: clamp(1rem, 3.4vw, 1.2rem); font-weight:800;
+  width:100%; grid-column: 1 / -1;
+}
+.submit:disabled{ opacity:.5; cursor:not-allowed; }
+.submit:not(:disabled){ opacity:1; cursor:pointer; }
+
+/* Error: 자리 고정 + 기본 숨김 */
+.err{
+  min-height: clamp(16px, 2.2vw, 22px);
+  margin-top: clamp(6px, 1.6vw, 10px);
+  color:#C62828; font-size:.95rem; text-align:center;
+  visibility:hidden; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.err.show{ visibility:visible; }
+
+/* 에러 강조 & 흔들림 */
+.pin input.error{ border-color:#C62828; box-shadow:0 0 0 3px #fdecec; }
+
+/* Compact screens */
+@media (max-width:380px), (max-height:700px){
+  .logo{ width:min(46vw, 20vh, 160px); height:min(46vw, 20vh, 160px); }
+  .pad{ gap:min(2.2vw, 10px); }
+  .key{ height:min(12vh, 16vw, 64px); }
+}
