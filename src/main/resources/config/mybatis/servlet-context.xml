@@ -11,8 +11,8 @@
   <!-- MVC 기본 -->
   <annotation-driven/>
 
-    <!-- get 경로 매핑 -->
-    <resources mapping="/assets/**" location="/WEB-INF/assets/"/>
+  <!-- get 경로 매핑 -->
+  <resources mapping="/assets/**" location="/WEB-INF/assets/"/>
 
   <!-- JSP 뷰 리졸버 -->
   <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

@@ -17,11 +17,11 @@ public class TemplateController {
     @Autowired
     ITemplateService templateService;
 
-    @RequestMapping(value="/template/list")
+    @RequestMapping(value="/template")
     public String getAllTemplates(Model model){
         List<Template> list = templateService.getTemplateList();
         model.addAttribute("templateList", list);
 
-        return "template/list";
+        return "template/templateList";
     }
 }

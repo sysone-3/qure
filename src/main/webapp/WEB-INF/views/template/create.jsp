@@ -15,6 +15,6 @@
     <button type="submit">저장</button>
 </form>
 
-<a href="list.jsp">← 목록으로</a>
+<a href="templateList.jsp">← 목록으로</a>
 </body>
 </html>
