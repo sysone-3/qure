@@ -75,13 +75,10 @@
         <!-- INSERT -->
         INSERT INTO FACILITIES(
         FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
-        GPS_LAT, GPS_LNG, STATUS, MEMO, CREATED_AT, UPDATED_AT,
-        MANAGERS_ID, INSPECTOR_ID
+        CREATED_AT, UPDATED_AT,INSPECTOR_ID
         ) VALUES (
         #{facilityId}, #{domain}, #{name}, #{floor}, #{zone}, #{address},
-        #{gpsLat}, #{gpsLng}, #{status}, #{memo},
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
-        #{managersId}, #{inspectorId}
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{inspectorId}
         )
     </insert>
 
@@ -93,7 +90,7 @@
             NAME = #{name},
             FLOOR = #{floor},
             ZONE = #{zone},
-            ADDRESS = #{address},
+            ADDRESS = #{address, jdbcType=VARCHAR},
             GPS_LAT = #{gpsLat},
             GPS_LNG = #{gpsLng},
             STATUS = #{status},

@@ -1,30 +1,53 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c"   uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>설비 추가</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="<c:url value='/resources/css/facilities_add.css'/>">
+    <link rel="stylesheet" href="<c:url value='/assets/css/facilities_add.css'/>">
 </head>
 <body>
 <div class="page">
     <div class="form-card">
-        <form action="<c:url value='/facilities'/>" method="post">
-            <!-- (스프링 시큐리티 쓰면 CSRF 토큰) -->
-            <c:if test="${not empty _csrf}">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            </c:if>
-
+        <form id="facilityForm" action="<c:url value='/facilities'/>" method="post">
             <div class="cell">시설명</div>
             <input type="text" name="name" placeholder="예: 본관 전기실" required>
 
             <div class="cell">설비 주소</div>
-            <input type="text" name="address" placeholder="예: 서울시 xx구 xx로 123">
+            <div id="addressBlock">
+                <table>
+                    <colgroup>
+                        <col style="width:20%"><col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <th>우편번호</th>
+                        <td>
+                            <!-- juso API용 key는 팝업에서 사용 -->
+                            <input type="text" id="zipNo" name="zipNo" readonly style="width:100px">
+                            <input type="button" value="주소검색" onclick="goPopup();">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>도로명주소</th>
+                        <td>
+                            <input type="text" id="roadAddrPart1" name="roadAddrPart1" style="width:85%">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>상세주소</th>
+                        <td>
+                            <input type="text" id="addrDetail"    name="addrDetail"    style="width:40%" value="">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <input type="hidden" id="address" name="address" value="">
+            </div>
 
             <div class="cell">도메인</div>
-            <!-- 고정 도메인이면 셀렉트로 -->
             <select name="domain">
                 <option value="청결">청결</option>
                 <option value="순찰">순찰</option>
@@ -37,32 +60,8 @@
                 <input type="text" name="zone"  placeholder="존 (예: Z-3)">
             </div>
 
-            <div class="cell">좌표</div>
-            <div class="row">
-                <input type="number" step="0.000001" name="gpsLat" placeholder="위도 (예: 37.566535)">
-                <input type="number" step="0.000001" name="gpsLng" placeholder="경도 (예: 126.977969)">
-            </div>
-
-            <div class="cell">상태</div>
-            <select name="status">
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="INACTIVE">INACTIVE</option>
-            </select>
-
-            <div class="cell">메모</div>
-            <textarea name="memo" rows="4" placeholder="특이사항 등"></textarea>
-
-            <div class="cell">담당 관리자 ID</div>
-            <input type="number" name="managersId" placeholder="예: 1">
-
             <div class="cell">점검자 ID</div>
             <input type="number" name="inspectorId" placeholder="예: 1">
-
-            <!-- 필요하면 점검표 선택(템플릿) 등은 별도 화면/팝업으로 -->
-            <!--
-            <div class="cell">점검표 선택</div>
-            <a class="btn btn-brand" href="<c:url value='/templates/select'/>">점검표 추가</a>
-            -->
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-brand">등록</button>
@@ -71,5 +70,27 @@
         </form>
     </div>
 </div>
+
+<script>
+    // 팝업 열기 (컨텍스트 패스 자동 포함)
+    function goPopup(){
+        var url = "<c:url value='/popup/juso'/>";
+        window.open(url, "pop", "width=570,height=420,scrollbars=yes,resizable=yes");
+    }
+
+    // juso 팝업에서 선택 후 호출되는 콜백
+    function jusoCallBack(fullAddress, roadAddrPart1, addrDetail, zipNo) {
+        document.getElementById('roadAddrPart1').value = roadAddrPart1 || '';
+        document.getElementById('addrDetail').value    = addrDetail    || '';
+        document.getElementById('zipNo').value         = zipNo         || '';
+
+        // ✅ 팝업에서 합친 주소를 그대로 저장 (fallback로 직접 합치기)
+        document.getElementById('address').value =
+            (fullAddress && fullAddress.trim().length > 0)
+                ? fullAddress
+                : [roadAddrPart1, addrDetail].filter(Boolean).join(' ');
+    }
+
+</script>
 </body>
 </html>
