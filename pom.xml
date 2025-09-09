@@ -13,6 +13,9 @@
         <org.springframework-version>6.0.23</org.springframework-version>
         <org.aspectj-version>1.9.19</org.aspectj-version>
         <org.mybatis-version>3.5.12</org.mybatis-version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -173,6 +176,7 @@
                 <version>3.13.0</version>
                 <configuration>
                     <release>17</release>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
