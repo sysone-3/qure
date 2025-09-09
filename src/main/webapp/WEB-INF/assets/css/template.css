@@ -1,25 +1,40 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Pretendard', sans-serif;
     background-color: #f9f9f9;
+}
+
+html, body {
+    height: 100%;
     margin: 0;
-    padding: 40px 0;
+    box-sizing: border-box;
 }
 
 .container {
     max-width: 1412px;
-    margin: 0 auto;
-    padding: 20px
+    margin: auto;
+    padding: 20px;
+    min-height: 100%;
+    display: flex;
 }
 
 .inner-container {
     display: flex;
     flex-direction: column;
     margin: 0 auto;
+    flex: 1;
+    /*height: calc(100% - 80px);*/
     padding: 35px 30px;
     background: #fff;
     border-radius: 35px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     gap: 30px;
+    overflow: hidden;
 }
 
 .header {
@@ -116,6 +131,10 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
     gap: 20px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 5px;
+    padding-right: 9px;
 }
 
 .card {
