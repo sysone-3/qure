@@ -11,7 +11,7 @@
     <annotation-driven/> <!-- 기본설정 사용 -->
 
     <!-- get 경로 매핑 -->
-    <resources mapping="/resources/**" location="classpath:/static/"/>
+    <resources mapping="/assets/**" location="/WEB-INF/assets/"/>
 
 
     <!-- View Resolver 설정-->
