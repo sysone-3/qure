@@ -7,7 +7,7 @@
         <meta charset="UTF-8">
         <title>설비 목록</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="<c:url value='/resources/css/facilities.css'/>">
+        <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
 
     </head>
     <body>
