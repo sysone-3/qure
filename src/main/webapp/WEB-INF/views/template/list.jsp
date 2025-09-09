@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +11,8 @@
 <body>
 <div style="width: 900px; margin-left:auto; margin-right: auto;">
     <h1>템플릿 목록</h1>
+    <my:button label="삭제하기" action="/delete.do" bgColor="#eeeeee"/>
+    <my:button label="수정하기" action="/edit.do" bgColor="#9de2d0"/>
     <table border="1" style="width:100%">
         <thead>
         <tr>
