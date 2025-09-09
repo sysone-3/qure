@@ -1,0 +1,25 @@
+name: Notify Discord on dev activity
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+    types: [opened, reopened, synchronize]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to Discord
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            MSG="🚀 dev 브랜치에 새로운 push 발생\n- Repo: ${{ github.repository }}\n- Commit: ${{ github.sha }}"
+          else
+            MSG="📌 dev 브랜치로 PR 발생\n- Title: ${{ github.event.pull_request.title }}\n- From: ${{ github.head_ref }} → dev"
+          fi
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\":\"${MSG}\"}" \
+            ${{ secrets.DISCORD_WEBHOOK }}
