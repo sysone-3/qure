@@ -23,15 +23,12 @@
                         </colgroup>
                         <tbody>
                         <tr>
-                            <th>우편번호</th>
+                            <th>도로명주소</th>
                             <td>
                                 <!-- juso API용 key는 팝업에서 사용 -->
                                 <input type="text" id="zipNo" name="zipNo" readonly style="width:100px">
                                 <input type="button" value="주소검색" onclick="goPopup();">
                             </td>
-                        </tr>
-                        <tr>
-                            <th>도로명주소</th>
                             <td>
                                 <input type="text" id="roadAddrPart1" name="roadAddrPart1" style="width:85%">
                             </td>
@@ -86,10 +83,9 @@
         }
 
         // juso 팝업에서 선택 후 호출되는 콜백
-        function jusoCallBack(fullAddress, roadAddrPart1, addrDetail, zipNo) {
+        function jusoCallBack(fullAddress, roadAddrPart1, addrDetail) {
             document.getElementById('roadAddrPart1').value = roadAddrPart1 || '';
             document.getElementById('addrDetail').value    = addrDetail    || '';
-            document.getElementById('zipNo').value         = zipNo         || '';
 
             // 팝업에서 합친 주소를 그대로 저장 (fallback로 직접 합치기)
             document.getElementById('address').value =

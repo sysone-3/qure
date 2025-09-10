@@ -74,8 +74,6 @@
         WHERE FACILITY_ID = #{facilityId}
           AND MANAGERS_ID = #{managerId}
     </select>
-
-    <!-- 설비 등록(관리자 한정) -->
     <insert id="insertFacilitiesByManager">
         <selectKey keyProperty="f.facilityId" resultType="int" order="BEFORE">
             SELECT FACILITIES_SEQ.NEXTVAL FROM dual
@@ -92,8 +90,8 @@
         #{f.floor,      jdbcType=VARCHAR},
         #{f.zone,       jdbcType=VARCHAR},
         #{f.address,    jdbcType=VARCHAR},
-        #{f.gpsLat,     jdbcType=NUMERIC},
-        #{f.gpsLng,     jdbcType=NUMERIC},
+        #{f.gpsLat,     jdbcType=DOUBLE},
+        #{f.gpsLng,     jdbcType=DOUBLE},
         #{f.status,     jdbcType=VARCHAR},
         #{f.memo,       jdbcType=CLOB},
         SYSTIMESTAMP,
@@ -102,7 +100,6 @@
         #{f.inspectorId,jdbcType=INTEGER}
         )
     </insert>
-
 
     <!-- 수정(관리자 한정) -->
     <update id="updateFacilitiesByManager">

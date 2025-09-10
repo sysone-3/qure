@@ -25,6 +25,7 @@ public class FacilitiesService implements IFacilitiesService {
     @Autowired
     IFacilityTagRepository facilityTagRepository;
 
+
     @Value("${app.public-domain}")
     private String publicDomain;
 
@@ -101,6 +102,11 @@ public class FacilitiesService implements IFacilitiesService {
 
         facilityTagRepository.insertFacilityTagWithGivenId(tag);
         return dto.getFacilityId();
+    }
+
+    @Override
+    public void createByManager(FacilitiesDto facility, int managerId) {
+        facilitiesRepository.insertFacilitiesByManager(facility, managerId);
     }
 }
 

@@ -38,5 +38,7 @@ public interface IFacilitiesRepository {
                                                                       @Param("startD") LocalDate startD,
                                                                       @Param("endD") LocalDate endD,
                                                                       @Param("managerId") int managerId);
+
+
 }
 

@@ -10,8 +10,8 @@ public class FacilitiesDto {
     private String floor;
     private String zone;
     private String address;
-    private double gpsLat;
-    private double gpsLng;
+    private Double gpsLat;
+    private Double gpsLng;
     private String status;
     private String memo;
     private java.sql.Timestamp createdAt;

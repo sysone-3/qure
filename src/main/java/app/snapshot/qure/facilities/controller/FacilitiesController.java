@@ -1,10 +1,9 @@
 package app.snapshot.qure.facilities.controller;
 
 
-import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
 import app.snapshot.qure.facilities.dto.FacilitiesDto;
 import app.snapshot.qure.facilities.dto.FacilityTagDto;
-import app.snapshot.qure.facilities.dto.InspectionDto;
+import app.snapshot.qure.facilities.service.GeocodingService;
 import app.snapshot.qure.facilities.service.IFacilitiesService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +12,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 @Controller
 @RequestMapping("/facilities")
 public class FacilitiesController {
 
     @Autowired private IFacilitiesService facilitiesService;
+    @Autowired
+    private GeocodingService geocodingService;
+
+    public FacilitiesController(IFacilitiesService facilitiesService,
+                                GeocodingService geocodingService) {
+        this.facilitiesService = facilitiesService;
+        this.geocodingService = geocodingService;
+    }
 
     private int mustManagerId() {
         // TODO: 로그인 붙이기 전 임시 값
@@ -51,15 +56,55 @@ public class FacilitiesController {
         return "facilities/facilities_add";
     }
 
-    // 등록 + QR 발급 (로그인한 관리자 소유로 저장)
+    // 주소에서 좌표로 변경
     @PostMapping
     public String create(@ModelAttribute FacilitiesDto dto,
                          RedirectAttributes ra,
                          HttpSession session) {
+
         int managerId = mustManagerId();
+
+        System.out.println("=== 설비 등록 시작 ===");
+        System.out.println("입력된 주소: " + dto.getAddress());
+        System.out.println("폼에서 받은 데이터:");
+        System.out.println("- name: " + dto.getName());
+        System.out.println("- domain: " + dto.getDomain());
+        System.out.println("- floor: " + dto.getFloor());
+        System.out.println("- zone: " + dto.getZone());
+        System.out.println("- address: " + dto.getAddress());
+        System.out.println("- inspectorId: " + dto.getInspectorId());
+
+        // 1) 주소 → 좌표 변환
+        GeocodingService.LatLng ll = geocodingService.geocode(dto.getAddress());
+        if (ll != null) {
+            // DTO에 좌표 설정
+            dto.setGpsLat(round(ll.lat(), 6));
+            dto.setGpsLng(round(ll.lng(), 6));
+            System.out.println("DTO에 설정된 좌표: lat=" + dto.getGpsLat() + ", lng=" + dto.getGpsLng());
+        } else {
+            dto.setGpsLat(null);
+            dto.setGpsLng(null);
+            System.out.println("좌표 변환 실패 - null로 설정");
+        }
+
+        // DTO 전체 상태 확인
+        System.out.println("=== 저장 직전 DTO 상태 ===");
+        System.out.println("DTO toString: " + dto.toString()); // toString 메서드가 있다면
+        System.out.println("gpsLat: " + dto.getGpsLat() + " (타입: " + (dto.getGpsLat() != null ? dto.getGpsLat().getClass().getSimpleName() : "null") + ")");
+        System.out.println("gpsLng: " + dto.getGpsLng() + " (타입: " + (dto.getGpsLng() != null ? dto.getGpsLng().getClass().getSimpleName() : "null") + ")");
+
+        // 2) 시설과 QR 생성 + 좌표까지 한번에 저장
         int facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
-        ra.addFlashAttribute("msg", "설비가 등록되었습니다. QR을 발급했어요.");
-        return "redirect:/facilities/" + facilityId + "/qr";
+        System.out.println("생성된 facility ID: " + facilityId);
+        System.out.println("=== 설비 등록 완료 ===");
+
+        ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
+        return "redirect:/facilities";
+    }
+    // static 제거
+    private Double round(double v, int scale) {
+        double p = Math.pow(10, scale);
+        return Math.round(v * p) / p;
     }
 
     // 등록 직후 QR 확인 페이지

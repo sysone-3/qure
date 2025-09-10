@@ -32,4 +32,7 @@ public interface IFacilitiesService {
 
     /* QR 태그: facilityId로 조회(상위에서 소유 확인 후 사용) */
     FacilityTagDto findActiveTagByFacilityId(int facilityId);
+
+    // 주소에서 좌표 변경
+    void createByManager(FacilitiesDto facility, int managerId);
 }
