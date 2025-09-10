@@ -29,7 +29,7 @@
             <div class="circle-right"></div>
         </div>
         <div class="dashboard">
-            <img src="<c:url value='/assets/images/dashd.webp'/>" alt="대시보드 미리보기" />
+            <img src="<c:url value='/assets/images/dashboard.webp'/>" alt="대시보드 미리보기" />
         </div>
     </div>
 </body>
