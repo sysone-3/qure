@@ -29,8 +29,9 @@
     <!-- QR + 점검표 버튼 -->
     <div class="checklist-section qr-box-card">
         <div class="qr-box">
-            <img src="<c:url value='/qrcode/${facility.facilityId}'/>" alt="QR 코드">
-            <a href="<c:url value='/qrcode/${facility.facilityId}/download'/>" class="btn-download">⬇️</a>
+            <img src="<c:url value='/qr/${tag.tagId}.png'/>" alt="QR 코드">
+            <a class="btn btn-circle" download="facility-${facility.facilityId}-qr.png"
+               href="<c:url value='/qr/${tag.tagId}.png'/>" aria-label="QR 다운로드">다운로드</a>
         </div>
         <div class="checklist-buttons">
             <c:forEach var="t" items="${templates}">
