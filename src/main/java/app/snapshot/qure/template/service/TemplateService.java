@@ -17,4 +17,24 @@ public class TemplateService implements ITemplateService {
     public List<Template> getTemplateList() {
         return templateRepository.getTemplateList();
     }
+
+    @Override
+    public Template getTemplateById(Long id) {
+        return templateRepository.getTemplateById(id);
+    }
+
+    @Override
+    public int insertTemplate(Template template) {
+        return templateRepository.insertTemplate(template);
+    }
+
+    @Override
+    public int updateTemplate(Template template) {
+        return templateRepository.updateTemplate(template);
+    }
+
+    @Override
+    public int deleteTemplate(Long id) {
+        return templateRepository.deleteTemplate(id);
+    }
 }

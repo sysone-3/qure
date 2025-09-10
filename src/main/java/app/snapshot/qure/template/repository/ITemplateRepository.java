@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface ITemplateRepository {
     List<Template> getTemplateList();
-//    List<TemplateDto> searchTemplates(@Param("domain") DomainType domain, @Param("keyword") String keyword);
-//    int insertTemplate(TemplateDto templateDto);
-//    int updateTemplate(TemplateDto templateDto);
-//    int deleteTemplate(Long id);
+    Template getTemplateById(Long id);
+    int insertTemplate(Template template);
+    int updateTemplate(Template template);
+    int deleteTemplate(Long id);
 }
