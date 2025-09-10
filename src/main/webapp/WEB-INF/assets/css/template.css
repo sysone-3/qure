@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
+:root{
+    --mint: #A9DECE;
+    --mint-border: #7FCBB3;
+    --mint-ring: rgba(169,222,206,.28);
+}
+
 body {
     font-family: 'Pretendard', sans-serif;
     background-color: #f9f9f9;
@@ -13,13 +19,16 @@ html, body {
     height: 100%;
     margin: 0;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .container {
     max-width: 1412px;
     margin: auto;
     padding: 20px;
-    min-height: 100%;
+    height: 100dvh;
+    height: 100vh;
+    /*min-height: 100%;*/
     display: flex;
 }
 
@@ -28,29 +37,13 @@ html, body {
     flex-direction: column;
     margin: 0 auto;
     flex: 1;
-    /*height: calc(100% - 80px);*/
+    min-height: 0;
     padding: 35px 30px;
     background: #fff;
     border-radius: 35px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     gap: 30px;
     overflow: hidden;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 5px;
-}
-
-.filter {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    cursor: pointer;
 }
 
 .dropdown {
@@ -82,25 +75,6 @@ html, body {
     display: none;
 }
 
-.search-box {
-    flex: 1; /* 가운데 넓게 차지 */
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 20px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    background: #fff;
-}
-
-.search-box input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 16px;
-    font-family: 'Pretendard', sans-serif;
-}
-
 .icon {
     width: 16px;
     height: 16px;
@@ -112,82 +86,278 @@ html, body {
     font-weight: 600;
     font-size: 27px;
 }
-
-.actions {
+/* === form 레이아웃 === */
+.form {
     display: flex;
+    flex-direction: column;
+    gap: 40px;
+    flex: 1;
+    overflow-x: hidden;         /* 가로는 숨기고 */
+    overflow-y: auto;           /* 세로만 스크롤 */
+    scrollbar-gutter: stable both-edges; /* 스크롤바 여백 예약 → 인풋 오른쪽 안 가려짐 */
+    padding-right: 25px;
+    padding-left: 3px;
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-title {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
-.add-btn {
-    background-color: #FEE39A;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
-    gap: 20px;
-    flex: 1;
-    overflow-y: auto;
-    padding: 5px;
-    padding-right: 9px;
-}
-
-.card {
+.form-box {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    background: #fff;
-    min-height: 150px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 25px;
-    transition: transform 0.2s;
+    gap: 20px;
 }
 
-.card:hover {
-    transform: translateY(-4px);
+.subtitle {
+    font-weight: 600;
+    font-size: 19px;
 }
 
-.card-header {
+.desc {
+    font-weight: 400;
+    font-size: 14px;
+    color: #929292;
+    margin-left: 1px;
+}
+
+.form-group {
     display: flex;
-    justify-content: flex-start;
-    margin-bottom: 12px;
+    flex-direction: column;
+    gap: 20px;   /* 기존 10px + 인라인 스타일 혼재 → 20px로 통일 */
 }
 
-.badge {
+/* 불필요: 개별 인풋에 이미 패딩 정의되어 있으므로 제거
+.form-group input { padding: 20px; }
+*/
+
+/* === 도메인 칩 === */
+.domain-buttons {
     display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.domain-btn {
+    position: relative; /* 라디오 숨김 위치 기준 */
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 3px;
-    background: #FFF8E7;
-    padding: 7px 13px;
-    border-radius: 15px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #000;
+    gap: 10px;
+    padding: 10px 25px;
+    border: 2px solid #e9e9e9;
+    border-radius: 999px;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s, border-color .15s, box-shadow .15s, filter .15s;
 }
 
-.card-title {
-    margin: 0;
-    font-size: 18px;
+.domain-btn input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.domain-btn img {
+    width: 22px;
+    height: 22px;
+    filter: grayscale(1) opacity(.6);   /* 비활성 느낌 */
+}
+
+.domain-btn span {
+    font-weight: 600;
+    color: #4a4a4a;
+    letter-spacing: -0.2px;
+}
+
+.domain-btn:hover {
+    background: #fafafa;
+    border-color: #e3e3e3;
+}
+
+/* 상태: :has 지원 + JS의 .active 둘 다 케어(중복 정의 → 하나로 합침) */
+.domain-btn:has(input:checked),
+.domain-btn.active {
+    border-color: #F6B545;
+    background: #FFF6E5;
+    box-shadow: 0 0 0 2px rgba(246,181,69,.18) inset;
+}
+
+.domain-btn:has(input:checked) img,
+.domain-btn.active img { filter: none; }
+
+.domain-btn:has(input:checked) span,
+.domain-btn.active span { color: #2e2e2e; }
+
+/* === 공통 인풋 === */
+.input-wrapper { position: relative; }
+
+#templateName,
+.check-input {
+    width: 100%;
+    padding: 14px 64px 14px 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+    font-family: Pretendard, sans-serif;
+}
+
+#templateName:focus,
+.check-input:focus,
+#cycleNumber:focus,
+#cycleUnit:focus {
+    border-color: var(--mint-border);
+    box-shadow: 0 0 0 3px var(--mint-ring);
+}
+
+.char-count { font-size: 13px; color: #666; }
+.input-wrapper .char-count {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #8c8c8c;
+}
+
+/* === 점검 주기 === */
+.cycle-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#cycleNumber {
+    width: 80px;
+    padding: 14px 10px 14px 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+    text-align: right;
+    font-family: Pretendard, sans-serif;
+}
+
+#cycleUnit {
+    padding: 14px 10px 14px 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #fff;
+    font-size: 16px;
+    outline: none;
+    font-family: Pretendard, sans-serif;
+}
+
+.cycle-desc {
+    align-self: flex-start;
+    font-size: 16px;
+    color: #2F2F2F;
+    font-weight: 500;
+    margin-top: 5px;
+    background-color: #FFF8E7;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+/* === 제출 버튼 / 헬퍼 === */
+.submit-btn {
+    align-self: flex-end;
+    background: #02B856;
+    color: #fff;
     font-weight: 700;
-    color: #222;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 28px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.submit-btn:hover { background: #029e4c; }
+
+.helper-text {
+    font-size: 14px;
+    color: #666;
+    margin-top: -6px;
 }
 
-.card-cycle {
-    font-size: 14px;
+/* === 항목 리스트 === */
+.check-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 8px;
+}
+
+.check-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* === 타입 옵션(아이콘 + currentColor 사용) === */
+.type-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.type-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid #e9e9e9;
+    border-radius: 12px;
+    background: #fff;
     font-weight: 600;
-    color: #262626;
-    margin-top: 6px;
+    color: #6B6B6B;                    /* 비활성 텍스트/아이콘 컬러 */
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s, border-color .15s, box-shadow .15s, color .15s;
+}
+.type-option input { display: none; }
+.type-option .opt-emoji { font-size: 16px; line-height: 1; }
+.type-option:hover { background: #fafafa; }
+
+.type-option.active {
+    color: #FDAB27;                    /* 활성 시 텍스트/아이콘 컬러 동시 변경 */
+    background: #FFF8E0;
+    border-color: #F8D96C;
+    box-shadow: 0 0 0 2px rgba(248,217,108,0.25) inset;
 }
 
-.card-date {
-    font-size: 14px;
-    color: #2a2a2a;
-    margin-top: 4px;
+/* === 추가 버튼 === */
+.add-item-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    background: #FEE39A;
+    color: #111;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-weight: 700;
+    cursor: pointer;
 }
+.add-item-btn:hover { filter: brightness(0.98); }
+.add-item-btn .add-plus { font-size: 18px; line-height: 1; }
+
+/* === 스크롤바(폼 내부만) === */
+.form::-webkit-scrollbar { width: 6px; }
+.form::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 8px; }
+.form::-webkit-scrollbar-track { background: transparent; }
+
+/* === 마스크 아이콘 (currentColor 사용) === */
+.icon { display: inline-block; width: 24px; height: 24px; background-color: currentColor; }
+.icon-check  { -webkit-mask: url("/assets/images/checklist.svg") no-repeat center/contain; mask: url("/assets/images/checklist.svg") no-repeat center/contain; }
+.icon-text   { -webkit-mask: url("/assets/images/text.svg") no-repeat center/contain;     mask: url("/assets/images/text.svg") no-repeat center/contain; }
+.icon-number { -webkit-mask: url("/assets/images/number.svg") no-repeat center/contain;   mask: url("/assets/images/number.svg") no-repeat center/contain; }
+.icon-image  { -webkit-mask: url("/assets/images/image.svg") no-repeat center/contain;    mask: url("/assets/images/image.svg") no-repeat center/contain; }

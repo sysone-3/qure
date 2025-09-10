@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <title>템플릿 목록</title>
     <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>"/>
-    <link rel="stylesheet" href="<c:url value='/assets/css/template.css'/>"/>
+    <link rel="stylesheet" href="<c:url value='/assets/css/templateList.css?after'/>"/>
 </head>
 <body>
 <div class="container">
@@ -35,7 +35,7 @@
                 </div>
                 <my:iconButton label="추가하기"
                                icon="/assets/images/plus.svg"
-                               action="/addForm.do"
+                               action="/template/insert"
                                bgColor="#FEE39A"/>
             </div>
         </div>
