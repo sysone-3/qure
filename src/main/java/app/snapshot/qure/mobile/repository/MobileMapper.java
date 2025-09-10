@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import app.snapshot.qure.checklist.dto.ChecklistType;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
+import app.snapshot.qure.mobile.dto.CitizenReportDto;
 import app.snapshot.qure.mobile.dto.ImageMetaInsertDto;
 import app.snapshot.qure.mobile.dto.InspectionInsertDto;
 import app.snapshot.qure.mobile.dto.InspectionItemResultInsertDto;
@@ -37,6 +38,10 @@ public interface MobileMapper {
     
  // [TEST] 최근 이미지 조회
     List<ImageMetaInsertDto> selectLatestImages(@Param("limit") int limit);
+    
+    int insertComplain(CitizenReportDto dto);
+    
+    Integer selectManagerIdByFacilityId(@Param("facilityId") int facilityId);
 
 
 

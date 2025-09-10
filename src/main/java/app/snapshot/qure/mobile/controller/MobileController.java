@@ -1,5 +1,6 @@
 package app.snapshot.qure.mobile.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistSubmitForm;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
+import app.snapshot.qure.mobile.dto.CitizenReportDto;
 import app.snapshot.qure.mobile.dto.TagSummaryDto;
 import app.snapshot.qure.mobile.repository.MobileMapper;
 import app.snapshot.qure.mobile.service.IMobileService;
@@ -155,5 +157,33 @@ public class MobileController {
         model.addAttribute("limit", limit);
         return "mobile/imageTest";
     }
+    
+    @GetMapping("/{tagId}/complain")
+    public String complainPage(@PathVariable("tagId") int tagId, Model model) {
+    	
+    	TagSummaryDto tagInfo = mobileService.getTagInfoByTagId(tagId);
+    	model.addAttribute("tagInfo",tagInfo);
+    	
+    	return "mobile/complain";
+    }
+    
+    @PostMapping("/{tagId}/complain")
+    public String submit(@PathVariable int tagId,
+                         @RequestParam String category,
+                         @RequestParam String description,
+                         @RequestParam(required=false) String email,
+                         RedirectAttributes ra) {
+      try {
+        long id = mobileService.submitComplain(tagId, category, description, email);
+        ra.addFlashAttribute("complainStatus", "OK");
+        ra.addFlashAttribute("complainMsg", "민원 접수 완료 (ID: " + id + ")");
+        ra.addFlashAttribute("reportId", id);
+      } catch (Exception e) {
+        ra.addFlashAttribute("complainStatus", "FAIL");
+        ra.addFlashAttribute("complainMsg", "민원 접수 실패");
+      }
+      return "redirect:/mobile/main/" + tagId;
+    }
+
 
 }
