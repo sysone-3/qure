@@ -83,6 +83,7 @@
     </insert>
 
 
+
     <!-- 수정 -->
     <update id="updateFacilities" parameterType="app.snapshot.qure.facilities.dto.FacilitiesDto">
         UPDATE FACILITIES

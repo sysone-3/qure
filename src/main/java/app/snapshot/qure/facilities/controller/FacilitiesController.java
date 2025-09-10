@@ -3,6 +3,7 @@ package app.snapshot.qure.facilities.controller;
 
 import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
 import app.snapshot.qure.facilities.dto.FacilitiesDto;
+import app.snapshot.qure.facilities.dto.FacilityTagDto;
 import app.snapshot.qure.facilities.dto.InspectionDto;
 import app.snapshot.qure.facilities.service.IFacilitiesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,18 +42,26 @@ public class FacilitiesController {
         return "facilities/facilities_add";
     }
 
+    // 등록 + QR 발급
     @PostMapping
-    public String create(@ModelAttribute("facility") FacilitiesDto facility,
-                         RedirectAttributes ra) {
-        int rows = facilitiesService.insertFacilities(facility);
-        if (rows > 0) {
-            ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
-            // insert 시 selectKey로 facilityId가 채워짐
-            return "redirect:/facilities/" + facility.getFacilityId();
-        } else {
-            ra.addFlashAttribute("msg", "등록에 실패했습니다. 다시 시도해주세요.");
-            return "redirect:/facilities/new";
+    public String create(@ModelAttribute FacilitiesDto dto, RedirectAttributes ra) {
+        int facilityId = facilitiesService.createFacilityWithQr(dto);
+        ra.addFlashAttribute("msg", "설비가 등록되었습니다. QR을 발급했어요.");
+        return "redirect:/facilities/" + facilityId + "/qr";
+    }
+
+    // 등록 직후 QR 확인 페이지
+    @GetMapping("/{id}/qr")
+    public String showQr(@PathVariable int id, Model model, RedirectAttributes ra) {
+        var facility = facilitiesService.findById(id);
+        if (facility == null) {
+            ra.addFlashAttribute("msg", "설비를 찾을 수 없습니다.");
+            return "redirect:/facilities";
         }
+        FacilityTagDto tag = facilitiesService.findActiveTagByFacilityId(id);
+        model.addAttribute("facility", facility);
+        model.addAttribute("tag", tag);
+        return "facilities/facility_qr";
     }
 
     // 설비 수정
@@ -129,7 +138,10 @@ public class FacilitiesController {
         List<InspectionDto> inspections =
                 facilitiesService.findInspectionByFacilityIdAndPeriod(id, startD, endD);
 
-        // 나머지 그대로
+        // qr 다운로드 관련
+        FacilityTagDto tag = facilitiesService.findActiveTagByFacilityId(id);
+        model.addAttribute("tag", tag);
+
         List<ChecklistTemplateDto> templates = facilitiesService.findTemplatesByFacilityId(id);
         model.addAttribute("facility", facility);
         model.addAttribute("templates", templates);

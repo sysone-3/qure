@@ -7,6 +7,7 @@ import java.util.Map;
 
 import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
 import app.snapshot.qure.facilities.dto.FacilitiesDto;
+import app.snapshot.qure.facilities.dto.FacilityTagDto;
 import app.snapshot.qure.facilities.dto.InspectionDto;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,4 +29,7 @@ public interface IFacilitiesService {
 
     List<InspectionDto> findInspectionByFacilityIdAndPeriod(int facilityId, LocalDate startD, LocalDate endD);
 
+    FacilityTagDto findActiveTagByFacilityId(int id);
+
+    int createFacilityWithQr(FacilitiesDto dto);
 }

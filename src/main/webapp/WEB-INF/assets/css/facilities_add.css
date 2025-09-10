@@ -87,6 +87,8 @@ body  { background: var(--bg); }
     padding:10px 16px;
     font-weight:600;
     cursor:pointer;
+    text-decoration: none;   /*  밑줄 제거 */
+    color:#5a4a21;
 }
 .btn:hover{ background:#faf7ef; }
 
@@ -94,6 +96,7 @@ body  { background: var(--bg); }
     background:#FFE59A;                 /* --brand */
     border-color:#f2c65b;               /* --brand-strong */
     color:#5a4a21;
+    text-decoration:none;    /* 밑줄 제거 보강 */
 }
 .btn-brand:hover{ background:#ffe085; }
 
@@ -125,3 +128,26 @@ body::before, body::after{
 }
 body::before{ left:0; }
 body::after { right:0; }
+
+
+/*  ------------- gr 발급 화면 -------------  */
+/* 카드 공통 */
+.qr-card{
+    background:#fff;
+    border-radius:20px;
+    box-shadow:0 6px 24px rgba(0,0,0,.06);
+    padding:50px 50px 50px 50px;
+    text-align: center;
+}
+
+/* QR 전용 정렬/테두리 */
+.qr-card .qr-box{
+    margin:24px auto;
+    width:max-content;
+    padding:20px;
+    border-radius:18px;
+    text-align: center;
+}
+.qr-card img{ display:block; width:280px; height:280px; }
+.qr-card .actions{ display:flex; gap:10px; justify-content:center; margin-top:16px; }
+
