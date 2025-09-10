@@ -17,9 +17,9 @@
             완벽한 시설 점검<br>
             <span class="highlight">THE CURE</span>
         </div>
-        <a href="/kakao/login" class="kakao-login">
-            <img src="<c:url value='/assets/images/kakao.svg'/>" alt="카카오 로그인 버튼" />
-        </a>
+       <a href="<c:url value='/oauth2/authorization/kakao'/>" class="kakao-login">
+           <img src="<c:url value='/assets/images/kakao.svg'/>" alt="카카오 로그인 버튼" />
+       </a>
         <div class="circle-bottom"></div>
     </div>
 
