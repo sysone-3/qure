@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.snapshot.qure.checklist.repository.IChecklistRepository">
+
+    <resultMap id="checklistMap" type="app.snapshot.qure.checklist.dto.ChecklistDto">
+        <result property="ItemId" column="ITEM_ID" />
+        <result property="orderNo" column="ORDER_NO" />
+        <result property="label" column="LABEL" />
+        <result property="type" column="TYPE" javaType="app.snapshot.qure.checklist.dto.ChecklistType"/>
+        <result property="required" column="REQUIRED" />
+        <result property="note" column="NOTE" />
+        <result property="guideline" column="GUIDELINE" />
+        <result property="templateId" column="TEMPLATE_ID" />
+    </resultMap>
+
+    <select id="getChecklistById" resultMap="templateMap">
+        select * from checklist_templates
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insertTemplate" parameterType="app.snapshot.qure.template.model.Template">
+        insert into checklist_templates
+        (template_id, domain, name, cycle, cycle_unit, version, is_active, created_at, facility_id)
+        values (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, #{version}, #{isActive}, sysdate, #{facilityId})
+    </insert>
+</mapper>
