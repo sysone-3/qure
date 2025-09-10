@@ -28,14 +28,67 @@ public class FacilitiesService implements IFacilitiesService {
     @Value("${app.public-domain}")
     private String publicDomain;
 
+
+    public FacilityTagDto findActiveTagByFacilityId(int facilityId) {
+        return facilityTagRepository.findActiveTagByFacilityId(facilityId);
+    }
+
+    public FacilityTagDto findTagById(int tagId) {
+        return facilityTagRepository.findById(tagId);
+    }
+
+    @Override
+    public List<FacilitiesDto> getFacilitiesListByManager(int managerId) {
+        return facilitiesRepository.getFacilitiesListByManager(managerId);
+    }
+
+    @Override
+    public List<FacilitiesDto> searchFacilitiesByManager(int managerId, String q) {
+        return facilitiesRepository.searchFacilitiesByManager(managerId, q);
+    }
+
+    @Override
+    public FacilitiesDto getFacilitiesInfoByManager(int facilityId, int managerId) {
+        return null;
+    }
+
+    @Override
+    public FacilitiesDto findByfacilityIdAndManager(int facilityId, int managerId) {
+        return facilitiesRepository.getFacilitiesInfoByManager(facilityId, managerId);
+    }
+
+    @Override
+    public int updateFacilitiesByManager(FacilitiesDto facilities, int managerId) {
+        return facilitiesRepository.updateFacilitiesByManager(facilities, managerId);
+    }
+
+    @Override
+    public int deleteFacilitiesByManager(int facilityId, int managerId) {
+        return facilitiesRepository.deleteFacilitiesByManager(facilityId, managerId);
+    }
+
+    @Override
+    public List<ChecklistTemplateDto> findTemplatesByFacilityIdAndManager(int facilityId, int managerId) {
+        return facilitiesRepository.findTemplatesByFacilityIdAndManager(facilityId, managerId);
+    }
+
+    @Override
+    public List<InspectionDto> findInspectionByFacilityIdAndManager(int facilityId, int managerId) {
+        return facilitiesRepository.findInspectionByFacilityIdAndManager(facilityId, managerId);
+    }
+
+    @Override
+    public List<InspectionDto> findInspectionByFacilityIdAndPeriodAndManager(int facilityId, LocalDate s, LocalDate e, int managerId) {
+        return facilitiesRepository.findInspectionByFacilityIdAndPeriodAndManager(facilityId, s, e, managerId);
+    }
+
+    /* 등록 시에도 로그인한 관리자 ID 주입 */
     /** 설비 등록 + QR 태그 발급 (원샷) */
     @Transactional
-    public int createFacilityWithQr(FacilitiesDto dto) {
-        // 1) 설비 생성 (selectKey로 facilityId 세팅)
-        facilitiesRepository.insertFacilities(dto);
-
-        // (선택) 기존 활성 태그 비활성화: 신규 등록이라면 보통 불필요
-        // facilityTagRepository.deactivateActiveTags(dto.getFacilityId());
+    public int createFacilityWithQr(FacilitiesDto dto, int managerId) {
+        // 1) 설비 생성 (managerId는 SQL에서 바인딩)
+        facilitiesRepository.insertFacilitiesByManager(dto, managerId);
+        // 이 시점에 dto.facilityId 가 selectKey로 세팅되어 있어야 함
 
         // 2) 새 TAG_ID 확보
         int nextTagId = facilityTagRepository.getNextTagId();
@@ -47,74 +100,7 @@ public class FacilitiesService implements IFacilitiesService {
         tag.setCode(publicDomain + "/mobile/main/" + nextTagId);
 
         facilityTagRepository.insertFacilityTagWithGivenId(tag);
-
         return dto.getFacilityId();
     }
-
-    public FacilityTagDto findActiveTagByFacilityId(int facilityId) {
-        return facilityTagRepository.findActiveTagByFacilityId(facilityId);
-    }
-
-    public FacilityTagDto findTagById(int tagId) {
-        return facilityTagRepository.findById(tagId);
-    }
-
-    @Override
-    public List<FacilitiesDto> getFacilitiesList() {
-        return facilitiesRepository.getFacilitiesList();
-    }
-
-    @Override
-    public List<FacilitiesDto> searchFacilities(String q) {
-        return facilitiesRepository.searchFacilities(q);
-    }
-
-    @Override
-    public FacilitiesDto getFacilitiesInfo(int facilityId) {
-        return facilitiesRepository.getFacilitiesInfo(facilityId);
-    }
-
-    @Override
-    public int insertFacilities(FacilitiesDto facilities) {
-        return facilitiesRepository.insertFacilities(facilities);
-    }
-
-    @Override
-    public int updateFacilities(FacilitiesDto facilities) {
-        return facilitiesRepository.updateFacilities(facilities);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public FacilitiesDto findById(int facilityId) {
-        return facilitiesRepository.getFacilitiesInfo(facilityId); // 없으면 null
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ChecklistTemplateDto> findTemplatesByFacilityId(int facilityId) {
-        return facilitiesRepository.findTemplatesByFacilityId(facilityId);
-    }
-
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<InspectionDto> findInspectionByFacilityId(int facilityId) {
-        return facilitiesRepository.findInspectionByFacilityId(facilityId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<InspectionDto> findInspectionByFacilityIdAndPeriod(int facilityId, LocalDate startD, LocalDate endD) {
-        return facilitiesRepository.findInspectionByFacilityIdAndPeriod(facilityId, startD, endD);
-    }
-
-    @Override
-    @Transactional
-    public int deleteFacilities(int facilityId, String email) {
-        return facilitiesRepository.deleteFacilities(facilityId, email);
-    }
-
 }
 

@@ -42,97 +42,122 @@
         <result property="inspectorId" column="INSPECTOR_ID"/>
     </resultMap>
 
-    <!-- 목록 -->
-    <select id="getFacilitiesList" resultMap="facilityMap">
+    <!-- 목록(관리자 한정) -->
+    <select id="getFacilitiesListByManager"
+            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
         SELECT *
         FROM FACILITIES
+        WHERE MANAGERS_ID = #{managerId}
         ORDER BY FACILITY_ID DESC
     </select>
 
-    <!-- 검색 (Oracle 문자열 연결 주의) -->
-    <select id="searchFacilities" parameterType="string" resultMap="facilityMap">
+    <!-- 검색(관리자 한정) -->
+    <select id="searchFacilitiesByManager"
+            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
         SELECT *
         FROM FACILITIES
-        WHERE LOWER(NAME)   LIKE '%' || LOWER(#{q}) || '%'
-           OR LOWER(DOMAIN) LIKE '%' || LOWER(#{q}) || '%'
+        WHERE MANAGERS_ID = #{managerId}
+          AND (
+            LOWER(NAME)   LIKE '%' || LOWER(#{q}) || '%'
+                OR LOWER(DOMAIN) LIKE '%' || LOWER(#{q}) || '%'
+                OR LOWER(ZONE)   LIKE '%' || LOWER(#{q}) || '%'
+                OR CAST(FACILITY_ID AS VARCHAR(20)) LIKE '%' || #{q} || '%'
+            )
         ORDER BY FACILITY_ID DESC
     </select>
 
-    <!-- 단건 조회 -->
-    <select id="getFacilitiesInfo" parameterType="int" resultMap="facilityMap">
+    <!-- 단건(관리자 한정) -->
+    <select id="getFacilitiesInfoByManager"
+            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
         SELECT *
         FROM FACILITIES
         WHERE FACILITY_ID = #{facilityId}
+          AND MANAGERS_ID = #{managerId}
     </select>
 
-    <!-- 등록: FACILITY_ID를 시퀀스로 생성 -->
-    <insert id="insertFacilities" parameterType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        <!--  오라클 시퀀스로 PK 채우기 -->
-        <selectKey keyProperty="facilityId" resultType="int" order="BEFORE">
-            SELECT FACILITY_SEQ.NEXTVAL FROM DUAL
+    <!-- 설비 등록(관리자 한정) -->
+    <insert id="insertFacilitiesByManager">
+        <selectKey keyProperty="f.facilityId" resultType="int" order="BEFORE">
+            SELECT FACILITIES_SEQ.NEXTVAL FROM dual
         </selectKey>
 
-        <!-- INSERT -->
-        INSERT INTO FACILITIES(
+        INSERT INTO FACILITIES (
         FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
-        CREATED_AT, UPDATED_AT,INSPECTOR_ID
+        GPS_LAT, GPS_LNG, STATUS, MEMO,
+        CREATED_AT, UPDATED_AT, MANAGERS_ID, INSPECTOR_ID
         ) VALUES (
-        #{facilityId}, #{domain}, #{name}, #{floor}, #{zone}, #{address},
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{inspectorId}
+        #{f.facilityId, jdbcType=INTEGER},
+        #{f.domain,     jdbcType=VARCHAR},
+        #{f.name,       jdbcType=VARCHAR},
+        #{f.floor,      jdbcType=VARCHAR},
+        #{f.zone,       jdbcType=VARCHAR},
+        #{f.address,    jdbcType=VARCHAR},
+        #{f.gpsLat,     jdbcType=NUMERIC},
+        #{f.gpsLng,     jdbcType=NUMERIC},
+        #{f.status,     jdbcType=VARCHAR},
+        #{f.memo,       jdbcType=CLOB},
+        SYSTIMESTAMP,
+        NULL,
+        #{managerId,    jdbcType=INTEGER},
+        #{f.inspectorId,jdbcType=INTEGER}
         )
     </insert>
 
 
-
-    <!-- 수정 -->
-    <update id="updateFacilities" parameterType="app.snapshot.qure.facilities.dto.FacilitiesDto">
+    <!-- 수정(관리자 한정) -->
+    <update id="updateFacilitiesByManager">
         UPDATE FACILITIES
-        SET DOMAIN = #{domain},
-            NAME = #{name},
-            FLOOR = #{floor},
-            ZONE = #{zone},
-            ADDRESS = #{address, jdbcType=VARCHAR},
-            INSPECTOR_ID = #{inspectorId}
-        WHERE FACILITY_ID = #{facilityId}
+        SET NAME       = #{facility.name,     jdbcType=VARCHAR},
+            DOMAIN     = #{facility.domain,   jdbcType=VARCHAR},
+            FLOOR      = #{facility.floor,    jdbcType=VARCHAR},
+            ZONE       = #{facility.zone,     jdbcType=VARCHAR},
+            ADDRESS    = #{facility.address,  jdbcType=VARCHAR},
+            INSPECTOR_ID = #{facility.inspectorId, jdbcType=INTEGER}
+        WHERE FACILITY_ID = #{facility.facilityId, jdbcType=INTEGER}
+          AND MANAGERS_ID = #{managerId, jdbcType=INTEGER}
     </update>
 
-    <select id="findById" parameterType="int" resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        SELECT FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
-            GPS_LAT, GPS_LNG, STATUS, MEMO, CREATED_AT, UPDATED_AT,
-            MANAGERS_ID, INSPECTOR_ID
-        FROM FACILITIES
-        WHERE FACILITY_ID = #{id}
-    </select>
 
-
-    <!-- 삭제 (email 파라미터는 사용하지 않음) -->
-    <delete id="deleteFacilities">
-        DELETE FROM FACILITIES WHERE FACILITY_ID = #{facilityId}
+    <!-- 삭제(관리자 한정) -->
+    <delete id="deleteFacilitiesByManager">
+        DELETE FROM FACILITIES
+        WHERE FACILITY_ID = #{facilityId}
+          AND MANAGERS_ID = #{managerId}
     </delete>
 
-    <!-- 설비별 템플릿 -->
-    <select id="findTemplatesByFacilityId" parameterType="int" resultMap="templateMap">
-        SELECT *
-        FROM CHECKLIST_TEMPLATES
-        WHERE FACILITY_ID = #{facilityId}
-        ORDER BY CREATED_AT DESC
+    <!-- 템플릿(관리자 한정) -->
+    <select id="findTemplatesByFacilityIdAndManager"
+            resultType="app.snapshot.qure.facilities.dto.ChecklistTemplateDto">
+        SELECT t.*
+        FROM CHECKLIST_TEMPLATES t
+                 JOIN FACILITIES f ON f.FACILITY_ID = t.FACILITY_ID
+        WHERE t.FACILITY_ID = #{facilityId}
+          AND f.MANAGERS_ID = #{managerId}
     </select>
 
-    <!-- 점검 목록 (설비별) -->
-    <select id="findInspectionByFacilityId" parameterType="int" resultMap="inspectionMap">
-        SELECT INSPECTION_ID, SUBMITTED_AT, RESULT, FACILITY_ID, INSPECTOR_ID
-        FROM INSPECTIONS
-        WHERE FACILITY_ID = #{facilityId}
-        ORDER BY SUBMITTED_AT DESC, INSPECTION_ID DESC
+    <!-- 점검 목록(관리자 한정) -->
+    <select id="findInspectionByFacilityIdAndManager"
+            resultType="app.snapshot.qure.facilities.dto.InspectionDto">
+        SELECT i.*
+        FROM INSPECTIONS i
+                 JOIN FACILITIES f ON f.FACILITY_ID = i.FACILITY_ID
+        WHERE i.FACILITY_ID = #{facilityId}
+          AND f.MANAGERS_ID = #{managerId}
+        ORDER BY i.INSPECTION_ID DESC
     </select>
 
-    <!-- 점검 목록 (설비별 + 기간) -->
-    <select id="findInspectionByFacilityIdAndPeriod" resultMap="inspectionMap">
-        SELECT INSPECTION_ID, SUBMITTED_AT, RESULT, FACILITY_ID, INSPECTOR_ID
-        FROM INSPECTIONS
-        WHERE FACILITY_ID = #{facilityId}
-          AND TRUNC(SUBMITTED_AT) BETWEEN #{startD} AND #{endD}
-        ORDER BY SUBMITTED_AT DESC, INSPECTION_ID DESC
+    <!-- 점검 목록 + 기간(관리자 한정) -->
+    <select id="findInspectionByFacilityIdAndPeriodAndManager"
+            resultType="app.snapshot.qure.facilities.dto.InspectionDto">
+        SELECT i.*
+        FROM INSPECTIONS i
+                 JOIN FACILITIES f ON f.FACILITY_ID = i.FACILITY_ID
+        WHERE i.FACILITY_ID = #{facilityId}
+          AND f.MANAGERS_ID = #{managerId}
+          AND <![CDATA[ i.SUBMITTED_AT >= ]]> #{startD}
+          AND <![CDATA[ i.SUBMITTED_AT <  ]]> (#{endD} + INTERVAL '1' DAY)
+        ORDER BY i.INSPECTION_ID DESC
     </select>
+
 
 </mapper>
