@@ -3,16 +3,13 @@ package app.snapshot.qure.facilities.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
-import app.snapshot.qure.facilities.dto.FacilityTagDto;
-import app.snapshot.qure.facilities.dto.InspectionDto;
+import app.snapshot.qure.facilities.dto.*;
 import app.snapshot.qure.facilities.repository.IFacilityTagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import app.snapshot.qure.facilities.dto.FacilitiesDto;
 import app.snapshot.qure.facilities.repository.IFacilitiesRepository;
 
 @Service
@@ -23,6 +20,9 @@ public class FacilitiesService implements IFacilitiesService {
 
     @Autowired
     IFacilityTagRepository facilityTagRepository;
+
+    @Autowired
+    GeocodingService geocodingService; // ← 주소→좌표 변환용 주입
 
 
     @Value("${app.public-domain}")
@@ -107,5 +107,37 @@ public class FacilitiesService implements IFacilitiesService {
     public void createByManager(FacilitiesDto facility, int managerId) {
         facilitiesRepository.insertFacilitiesByManager(facility, managerId);
     }
+
+    // 지도 마커 찍기
+    public List<FacilityMarkerDto> findMarkersForManager(int managerId) {
+        return facilitiesRepository.findMarkersByManagerId(managerId);
+    }
+
+    @Transactional
+    public int backfillMissingCoordsForManager(int managerId) {
+        List<FacilitiesDto> targets =
+                facilitiesRepository.findByManagerWithNullCoords(managerId);
+
+        int updated = 0;
+        for (FacilitiesDto f : targets) {
+            var ll = geocodingService.geocode(f.getAddress());
+            if (ll != null) {
+                double lat = round(ll.lat(), 6);
+                double lng = round(ll.lng(), 6);
+                facilitiesRepository.updateCoords(f.getFacilityId(), lat, lng);
+                updated++;
+                // (선택) 과도한 호출 방지: Thread.sleep(50);
+            }
+        }
+        return updated;
+
+    }
+
+    private static double round(double v, int scale) {
+        double p = Math.pow(10, scale);
+        return Math.round(v * p) / p;
+    }
+
+
 }
 

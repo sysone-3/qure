@@ -2,6 +2,7 @@ package app.snapshot.qure.facilities.repository;
 
 import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
 import app.snapshot.qure.facilities.dto.FacilitiesDto;
+import app.snapshot.qure.facilities.dto.FacilityMarkerDto;
 import app.snapshot.qure.facilities.dto.InspectionDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,7 +39,12 @@ public interface IFacilitiesRepository {
                                                                       @Param("startD") LocalDate startD,
                                                                       @Param("endD") LocalDate endD,
                                                                       @Param("managerId") int managerId);
+    List<FacilityMarkerDto> findMarkersByManagerId(@Param("managerId") int managerId);
 
+    List<FacilitiesDto> findByManagerWithNullCoords(@Param("managerId") int managerId);
 
+    int updateCoords(@Param("facilityId") int facilityId,
+                     @Param("gpsLat") Double gpsLat,
+                     @Param("gpsLng") Double gpsLng);
 }
 
