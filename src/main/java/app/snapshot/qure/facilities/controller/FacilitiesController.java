@@ -1,11 +1,11 @@
 package app.snapshot.qure.facilities.controller;
 
 
-import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
 import app.snapshot.qure.facilities.dto.FacilitiesDto;
 import app.snapshot.qure.facilities.dto.FacilityTagDto;
-import app.snapshot.qure.facilities.dto.InspectionDto;
+import app.snapshot.qure.facilities.service.GeocodingService;
 import app.snapshot.qure.facilities.service.IFacilitiesService;
+import app.snapshot.qure.login.util.SessionUtil;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,30 +13,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 @Controller
 @RequestMapping("/facilities")
 public class FacilitiesController {
 
     @Autowired private IFacilitiesService facilitiesService;
+    @Autowired
+    private GeocodingService geocodingService;
 
-    private int mustManagerId() {
-        // TODO: 로그인 붙이기 전 임시 값
-        return 1;
+    public FacilitiesController(IFacilitiesService facilitiesService,
+                                GeocodingService geocodingService) {
+        this.facilitiesService = facilitiesService;
+        this.geocodingService = geocodingService;
     }
 
-//    private Integer mustManagerId(HttpSession session) {
-//        return (Integer) session.getAttribute("LOGIN_MANAGER_ID");
-//    }
 
     // 목록 + 검색
     @GetMapping
     public String list(@RequestParam(value = "q", required = false) String q,
                        Model model, HttpSession session) {
-        int managerId = mustManagerId();
+        Long managerId = SessionUtil.mustManagerId(session);
         List<FacilitiesDto> facilities = (q == null || q.isBlank())
                 ? facilitiesService.getFacilitiesListByManager(managerId)
                 : facilitiesService.searchFacilitiesByManager(managerId, q.trim());
@@ -51,21 +49,41 @@ public class FacilitiesController {
         return "facilities/facilities_add";
     }
 
-    // 등록 + QR 발급 (로그인한 관리자 소유로 저장)
+    // 주소에서 좌표로 변경
     @PostMapping
     public String create(@ModelAttribute FacilitiesDto dto,
                          RedirectAttributes ra,
                          HttpSession session) {
-        int managerId = mustManagerId();
-        int facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
-        ra.addFlashAttribute("msg", "설비가 등록되었습니다. QR을 발급했어요.");
-        return "redirect:/facilities/" + facilityId + "/qr";
+        Long managerId = SessionUtil.mustManagerId(session);
+
+        // 1) 주소 → 좌표 변환
+        GeocodingService.LatLng ll = geocodingService.geocode(dto.getAddress());
+        if (ll != null) {
+            // DTO에 좌표 설정
+            dto.setGpsLat(round(ll.lat(), 6));
+            dto.setGpsLng(round(ll.lng(), 6));
+        } else {
+            dto.setGpsLat(null);
+            dto.setGpsLng(null);
+            System.out.println("좌표 변환 실패 - null로 설정");
+        }
+
+        // 2) 시설과 QR 생성 + 좌표까지 한번에 저장
+        Long facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
+
+        ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
+        return "redirect:/facilities";
+    }
+    // static 제거
+    private Double round(double v, int scale) {
+        double p = Math.pow(10, scale);
+        return Math.round(v * p) / p;
     }
 
     // 등록 직후 QR 확인 페이지
     @GetMapping("/{facilityId}/qr")
-    public String showQr(@PathVariable int facilityId, Model model, RedirectAttributes ra) {
-        int managerId = mustManagerId();
+    public String showQr(@PathVariable Long facilityId, Model model, RedirectAttributes ra, HttpSession session) {
+        Long managerId = SessionUtil.mustManagerId(session);
 
         var facility = facilitiesService.findByfacilityIdAndManager(facilityId, managerId);
         if (facility == null) {
@@ -80,8 +98,8 @@ public class FacilitiesController {
 
     // 설비 수정
     @GetMapping("/{facilityId}/edit")
-    public String editForm(@PathVariable("facilityId") int facilityId, Model model, RedirectAttributes ra) {
-        int managerId = mustManagerId();
+    public String editForm(@PathVariable("facilityId") Long facilityId, Model model, RedirectAttributes ra, HttpSession session) {
+        Long managerId = SessionUtil.mustManagerId(session);
 
         FacilitiesDto facility = facilitiesService.findByfacilityIdAndManager(facilityId, managerId);
         if (facility == null) {
@@ -95,19 +113,19 @@ public class FacilitiesController {
 
     // 상세 (본인 소유만 접근)
     @GetMapping("/{facilityId}")
-    public String detail(@PathVariable int facilityId,
+    public String detail(@PathVariable Long facilityId,
                          @RequestParam(required = false) String start,
                          @RequestParam(required = false) String end,
                          Model model, RedirectAttributes ra, HttpSession session) {
 
-        int managerId = mustManagerId();
+        Long managerId = SessionUtil.mustManagerId(session);
         FacilitiesDto facility = facilitiesService.findByfacilityIdAndManager(facilityId, managerId);
         if (facility == null) {
             ra.addFlashAttribute("msg", "접근 권한이 없거나 존재하지 않는 설비입니다.");
             return "redirect:/facilities";
         }
 
-        // 날짜 보정 동일 …
+        // 날짜 보정
         LocalDate startD = (start != null && !start.isBlank()) ? LocalDate.parse(start) : null;
         LocalDate endD   = (end   != null && !end.isBlank())   ? LocalDate.parse(end)   : null;
         if (startD == null && endD == null) { endD = LocalDate.now(); startD = endD.minusDays(30); }
@@ -132,10 +150,10 @@ public class FacilitiesController {
 
     // 수정/삭제도 동일하게 managerId로 가드
     @PostMapping("/{id}")
-    public String edit(@PathVariable("id") int facilityId,
+    public String edit(@PathVariable("id") Long facilityId,
                        @ModelAttribute("facility") FacilitiesDto facility,
                        RedirectAttributes ra, HttpSession session) {
-        int managerId = mustManagerId();
+        Long managerId = SessionUtil.mustManagerId(session);
         facility.setFacilityId(facilityId);
         int rows = facilitiesService.updateFacilitiesByManager(facility, managerId);
         ra.addFlashAttribute("msg", rows > 0 ? "설비가 수정되었습니다." : "수정 권한이 없거나 실패했습니다.");
@@ -143,8 +161,8 @@ public class FacilitiesController {
     }
 
     @PostMapping("/{facilityId}/delete")
-    public String delete(@PathVariable int facilityId, RedirectAttributes ra, HttpSession session) {
-        int managerId = mustManagerId();
+    public String delete(@PathVariable Long facilityId, RedirectAttributes ra, HttpSession session) {
+        Long managerId = SessionUtil.mustManagerId(session);
         int cnt = facilitiesService.deleteFacilitiesByManager(facilityId, managerId);
         ra.addFlashAttribute("msg", cnt > 0 ? "삭제되었습니다." : "삭제 권한이 없거나 데이터가 없습니다.");
         return "redirect:/facilities";
