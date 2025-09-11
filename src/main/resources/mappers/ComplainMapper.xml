@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.snapshot.qure.admin.complain.repository.ComplainMapper">
+
+  <!-- 공통 WHERE -->
+  <sql id="baseWhere">
+    f.MANAGERS_ID = #{managerId}
+    <if test="status != null and status != ''">
+      AND cr.STATUS = #{status}
+    </if>
+    <if test="fromDt != null">
+      AND cr.CREATED_AT <![CDATA[>=]]> #{fromDt}
+    </if>
+    <!-- 끝 범위: toEx만 사용 -->
+    <if test="toEx != null">
+      AND cr.CREATED_AT <![CDATA[<]]> #{toEx}
+    </if>
+
+    <if test="q != null and q != ''">
+      AND (
+           UPPER(f.NAME)      LIKE UPPER('%' || #{q} || '%')
+        OR UPPER(cr.CATEGORY) LIKE UPPER('%' || #{q} || '%')
+        OR UPPER(cr.EMAIL)    LIKE UPPER('%' || #{q} || '%')
+        OR (cr.DESCRIPTION IS NOT NULL AND DBMS_LOB.INSTR(LOWER(cr.DESCRIPTION), LOWER(#{q})) > 0)
+      )
+    </if>
+  </sql>
+
+  <!-- 목록: 필터 + (옵션) 페이징 -->
+  <select id="selectAllComplainList" parameterType="map"
+          resultType="app.snapshot.qure.admin.complain.dto.ComplainDto">
+    SELECT
+      cr.CITIZEN_REPORT_ID AS citizenReportId,
+      cr.CATEGORY          AS category,
+      cr.DESCRIPTION       AS description,
+      cr.EMAIL             AS email,
+      cr.STATUS            AS status,
+      cr.CREATED_AT        AS createdAt,
+      cr.RESOLVED_BY       AS resolvedBy,
+      cr.RESOLVED_AT       AS resolvedAt,
+      cr.FACILITY_ID       AS facilityId,
+      f.NAME               AS name,
+      f.FLOOR              AS floor,
+      f.ZONE               AS zone,
+      f.ADDRESS            AS address
+    FROM CITIZEN_REPORTS cr
+    JOIN FACILITIES f ON f.FACILITY_ID = cr.FACILITY_ID
+    <where><include refid="baseWhere"/></where>
+    ORDER BY cr.CREATED_AT DESC
+    <if test="offset != null and size != null">
+      OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+    </if>
+  </select>
+
+  <!-- 총 개수 -->
+  <select id="countComplainList" resultType="int" parameterType="map">
+    SELECT COUNT(*)
+    FROM CITIZEN_REPORTS cr
+    JOIN FACILITIES f ON f.FACILITY_ID = cr.FACILITY_ID
+    <where><include refid="baseWhere"/></where>
+  </select>
+
+  <!-- 상세 -->
+  <select id="selectOneForManager" resultType="app.snapshot.qure.admin.complain.dto.ComplainDto">
+    SELECT
+      cr.CITIZEN_REPORT_ID AS citizenReportId,
+      cr.CATEGORY          AS category,
+      cr.DESCRIPTION       AS description,
+      cr.EMAIL             AS email,
+      cr.STATUS            AS status,
+      cr.CREATED_AT        AS createdAt,
+      cr.RESOLVED_BY       AS resolvedBy,
+      cr.RESOLVED_AT       AS resolvedAt,
+      cr.FACILITY_ID       AS facilityId,
+      f.NAME               AS name,
+      f.FLOOR              AS floor,
+      f.ADDRESS            AS address,
+      f.ZONE               AS zone
+    FROM CITIZEN_REPORTS cr
+    JOIN FACILITIES f ON f.FACILITY_ID = cr.FACILITY_ID
+    WHERE cr.CITIZEN_REPORT_ID = #{reportId}
+      AND f.MANAGERS_ID = #{managerId}
+  </select>
+
+  <!-- 삭제 -->
+  <delete id="deleteByIdForManager">
+    DELETE FROM CITIZEN_REPORTS cr
+    WHERE cr.CITIZEN_REPORT_ID = #{id}
+      AND EXISTS (
+        SELECT 1 FROM FACILITIES f
+         WHERE f.FACILITY_ID = cr.FACILITY_ID
+           AND f.MANAGERS_ID = #{managerId}
+      )
+  </delete>
+
+  <!-- 상태 변경 -->
+  <update id="updateStatusForManager">
+    UPDATE CITIZEN_REPORTS cr
+       SET cr.STATUS = #{status},
+           cr.RESOLVED_BY = CASE
+               WHEN #{status} IN ('IN_PROGRESS','RESOLVED') THEN #{managerId}
+               ELSE cr.RESOLVED_BY
+             END,
+           cr.RESOLVED_AT = CASE
+               WHEN #{status} = 'RESOLVED' THEN SYSTIMESTAMP
+               ELSE cr.RESOLVED_AT
+             END
+     WHERE cr.CITIZEN_REPORT_ID = #{id}
+       AND EXISTS (
+         SELECT 1 FROM FACILITIES f
+          WHERE f.FACILITY_ID = cr.FACILITY_ID
+            AND f.MANAGERS_ID = #{managerId}
+       )
+  </update>
+</mapper>

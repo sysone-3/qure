@@ -208,7 +208,7 @@
       #{category, jdbcType=VARCHAR},
       #{description, jdbcType=VARCHAR},   <!-- CLOB이면 CLOB로 -->
       #{email, jdbcType=VARCHAR},         <!-- null 가능 -->
-      '미처리',
+      'PENDING',
       SYSTIMESTAMP,
       #{resolvedBy, jdbcType=NUMERIC},    <!-- null 가능 -->
       NULL
