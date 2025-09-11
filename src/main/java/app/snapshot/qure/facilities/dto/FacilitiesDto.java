@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class FacilitiesDto {
-	private int facilityId;
+	private Long facilityId;
     private String domain;
     private String name;
     private String floor;
@@ -16,8 +16,8 @@ public class FacilitiesDto {
     private String memo;
     private java.sql.Timestamp createdAt;
     private java.sql.Timestamp updatedAt;
-    private int managersId;
-    private int inspectorId;
+    private Long managersId;
+    private Long inspectorId;
 
 
 }

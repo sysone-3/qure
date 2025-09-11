@@ -6,7 +6,7 @@
 <mapper namespace="app.snapshot.qure.facilities.repository.IFacilitySummaryRepository">
 
     <select id="findSummaryByFacilityId"
-            parameterType="int"
+            parameterType="Long"
             resultType="app.snapshot.qure.facilities.dto.FacilitySummaryDto">
         SELECT
             f.FACILITY_ID     AS facilityId,

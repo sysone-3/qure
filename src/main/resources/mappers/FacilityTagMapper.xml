@@ -6,7 +6,7 @@
 <mapper namespace="app.snapshot.qure.facilities.repository.IFacilityTagRepository">
 
     <!-- 다음 TAG_ID 뽑기 -->
-    <select id="getNextTagId" resultType="int">
+    <select id="getNextTagId" resultType="Long">
         SELECT SEQ_TAG_ID.NEXTVAL FROM dual
     </select>
 
@@ -17,7 +17,7 @@
         VALUES (#{tagId}, #{code}, 'Y', SYSTIMESTAMP, #{facilityId})
     </insert>
 
-    <select id="findActiveTagByFacilityId" parameterType="int"
+    <select id="findActiveTagByFacilityId" parameterType="Long"
             resultType="app.snapshot.qure.facilities.dto.FacilityTagDto">
         SELECT TAG_ID, CODE, ACTIVE, ISSUED_AT, REVOKED_AT, FACILITY_ID
         FROM FACILITY_TAGS
@@ -27,7 +27,7 @@
         FETCH FIRST 1 ROWS ONLY
     </select>
 
-    <select id="findById" parameterType="int"
+    <select id="findById" parameterType="Long"
             resultType="app.snapshot.qure.facilities.dto.FacilityTagDto">
         SELECT TAG_ID, CODE, ACTIVE, ISSUED_AT, REVOKED_AT, FACILITY_ID
         FROM FACILITY_TAGS
@@ -35,7 +35,7 @@
     </select>
 
     <!-- (옵션) 기존 활성 태그를 비활성화할 때 사용 -->
-    <update id="deactivateActiveTags" parameterType="int">
+    <update id="deactivateActiveTags" parameterType="Long">
         UPDATE FACILITY_TAGS
         SET ACTIVE='N', REVOKED_AT=SYSTIMESTAMP
         WHERE FACILITY_ID=#{facilityId}

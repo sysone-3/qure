@@ -15,7 +15,7 @@ public class FacilitySummaryApiController {
     private FacilitySummaryService facilitySummaryService;
 
     @GetMapping("/{id}/summary")
-    public FacilitySummaryDto getSummary(@PathVariable("id") int id) {
+    public FacilitySummaryDto getSummary(@PathVariable("id") Long id) {
         return facilitySummaryService.getSummary(id);
     }
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class FacilityMarkerDto {
-    private int facilityId;
+    private Long facilityId;
     private String name;
     private String address;
     private Double gpsLat;

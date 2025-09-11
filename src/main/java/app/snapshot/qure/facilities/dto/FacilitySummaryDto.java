@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class FacilitySummaryDto {
-    private Integer facilityId;
+    private Long facilityId;
     private String name;
     private String address;
     private String domain;
@@ -16,5 +16,5 @@ public class FacilitySummaryDto {
     // 점검자
     private String inspectorName;
     private String inspectorPhone;
-    private Integer inspectorId; // 점검일
+    private Long inspectorId; // 점검일
 }

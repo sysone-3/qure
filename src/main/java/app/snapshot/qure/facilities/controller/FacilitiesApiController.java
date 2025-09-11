@@ -17,12 +17,12 @@ public class FacilitiesApiController {
 
     @GetMapping("/markers")
     public List<FacilityMarkerDto> markers() {
-        int managerId = mustManagerId(); // 기존에 쓰시던 방식 그대로 사용
+        Long managerId = mustManagerId(); // 기존에 쓰시던 방식 그대로 사용
         return facilitiesService.findMarkersForManager(managerId);
     }
 
-    private int mustManagerId() {
+    private Long mustManagerId() {
         // TODO: 로그인 붙이기 전 임시 값
-        return 1;
+        return 1L;
     }
 }

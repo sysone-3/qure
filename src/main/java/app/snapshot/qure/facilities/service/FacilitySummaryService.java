@@ -10,7 +10,7 @@ public class FacilitySummaryService {
     @Autowired
     private IFacilitySummaryRepository repo;
 
-    public FacilitySummaryDto getSummary(int facilityId) {
+    public FacilitySummaryDto getSummary(Long facilityId) {
         return repo.findSummaryByFacilityId(facilityId);
     }
 }

@@ -75,7 +75,7 @@
           AND MANAGERS_ID = #{managerId}
     </select>
     <insert id="insertFacilitiesByManager">
-        <selectKey keyProperty="f.facilityId" resultType="int" order="BEFORE">
+        <selectKey keyProperty="f.facilityId" resultType="Long" order="BEFORE">
             SELECT FACILITIES_SEQ.NEXTVAL FROM dual
         </selectKey>
 
