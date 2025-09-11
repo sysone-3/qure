@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded",function () {
     const prevBtn = document.querySelector(".circle-btn.prev");
     const nextBtn = document.querySelector(".circle-btn.next");
-    const pageNumber = document.querySelector("pageNumber");
+    const pageNumber = document.getElementById("pageNumber");
 
     let currentPage = 1;
 
@@ -14,6 +14,6 @@ document.addEventListener("DOMContentLoaded",function () {
 
     nextBtn.addEventListener("click", () => {
         currentPage++;
-        pageNumber.textContent= currentPage
+        pageNumber.textContent = currentPage;
     })
 })

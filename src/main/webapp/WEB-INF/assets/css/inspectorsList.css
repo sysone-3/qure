@@ -58,13 +58,102 @@ body {
      justify-content: space-between;
      align-items: center;
 }
+button {
+    display : flex;
+    font-family: inherit;
+    align-items: center;
+    padding: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    gap: 6px;
+}
+button:hover {
+    opacity: 0.9;
+}
 .register {
     background: #FFD28A;
     border-radius: 10px;
     color: #fff;
+    border: none;
 }
 .delete {
     background: #FFE59A;
     border-radius: 10px;
     color: #fff;
+    border: none;
+}
+.inspectorTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: 'Pretendard'
+    font-size: 15px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* 헤더 */
+.inspectorTable thead th {
+    background-color: #FFD28A;
+    color: #474D56;
+    padding: 12px;
+    font-weight: 600;
+    border: 1px solid #eee;
+}
+
+/* 바디 */
+.inspectorTable tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+/* 홀수/짝수 줄 구분 */
+.inspectorTable tbody tr:nth-child(odd) {
+    background-color: #FFF9F0;
+}
+
+.inspectorTable tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+}
+
+/* 마우스 hover 효과 */
+.inspectorTable tbody tr:hover {
+    background-color: #FFF2CC;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:20px;
+    margin-top:40px;
+}
+
+.circle-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: transparent;
+    color: #828282;
+    font-size: 20px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid #FFD28A;
+}
+.circle-btn:hover {
+    background: #FFF2CC;
+}
+
+.circle-btn.active {
+    align-items: center;
+    justify-content: center;
+    background: #FFE699;
+    color: #828282;
+    border: none;
+    font-size: 14px;
+    font-weight: 400;
 }
