@@ -16,7 +16,7 @@ public class GeocodingService {
     private final RestTemplate restTemplate;
     private final String kakaoApiKey;
 
-    public GeocodingService(@Value("${kakao.api.key}") String kakaoApiKey) {
+    public GeocodingService(@Value("08b0196947fdb82dfb768275cd3b3570") String kakaoApiKey) {
         this.kakaoApiKey = kakaoApiKey;
         this.restTemplate = new RestTemplate();
         System.out.println("카카오 API 키 로드됨: " + kakaoApiKey.substring(0, Math.min(5, kakaoApiKey.length())) + "...");
