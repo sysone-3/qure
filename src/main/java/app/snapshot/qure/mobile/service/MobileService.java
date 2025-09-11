@@ -1,6 +1,7 @@
 // src/main/java/app/snapshot/qure/mobile/service/MobileService.java
 package app.snapshot.qure.mobile.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import app.snapshot.qure.checklist.model.ChecklistType;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistSubmitForm;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
+import app.snapshot.qure.mobile.dto.CitizenReportDto;
 import app.snapshot.qure.mobile.dto.ImageMetaInsertDto;
 import app.snapshot.qure.mobile.dto.InspectionInsertDto;
 import app.snapshot.qure.mobile.dto.InspectionItemResultInsertDto;
@@ -166,6 +168,42 @@ public class MobileService implements IMobileService {
     @Override
     public List<ImageMetaInsertDto> listLatestImages(int limit) {
         return mobileMapper.selectLatestImages(limit);
+    }
+    
+    @Override
+    public long submitComplain(int tagId, String category, String description, String email) {
+      String cat  = category == null ? "" : category.trim();
+      String desc = description == null ? "" : description.trim();
+      if (cat.isEmpty() || desc.isEmpty()) {
+        throw new IllegalArgumentException("category/description required");
+      }
+
+      var tag = mobileMapper.selectTagSummaryById(tagId);
+      if (tag == null) throw new IllegalStateException("invalid tagId");
+      int facilityId = tag.getFacilityId();
+      if (facilityId <= 0) throw new IllegalStateException("invalid facilityId");
+
+      String mail = (email == null || email.isBlank()) ? null : email.trim().toLowerCase();
+      if (mail != null && mail.length() > 254) {
+        throw new IllegalArgumentException("email too long");
+      }
+      // 필요 시 정규식 검증 추가
+      
+      // 해당 시설을 관리하는 ManagersId 조회하는 메서드
+      Integer managerId = mobileMapper.selectManagerIdByFacilityId(facilityId);
+
+      CitizenReportDto dto = new CitizenReportDto();
+      dto.setFacilityId(facilityId);
+      dto.setCategory(cat);
+      dto.setDescription(desc);
+      dto.setEmail(mail);
+      dto.setResolvedBy(managerId);
+
+      int rows = mobileMapper.insertComplain(dto); // selectKey로 PK 주입
+      if (rows != 1 || dto.getCitizenReportId() == null) {
+        throw new IllegalStateException("insert failed");
+      }
+      return dto.getCitizenReportId();
     }
 
 }

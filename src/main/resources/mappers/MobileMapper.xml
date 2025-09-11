@@ -2,6 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="app.snapshot.qure.mobile.repository.MobileMapper">
 
   <!-- 태그 요약 -->
@@ -119,7 +120,9 @@
   <select id="selectItemTypeById"
           parameterType="long"
           resultType="app.snapshot.qure.checklist.model.ChecklistType">
-    SELECT type FROM checklist_items WHERE item_id = #{itemId}
+    SELECT type
+    FROM checklist_items
+    WHERE item_id = #{itemId}
   </select>
 
   <insert id="insertInspectionItemResult"
@@ -155,14 +158,19 @@
     )
   </insert>
 
-  <select id="selectImageMeta" parameterType="long"
+  <select id="selectImageMeta"
+          parameterType="long"
           resultType="app.snapshot.qure.mobile.dto.ImageMetaInsertDto">
-    SELECT image_id AS imageId, file_path AS filePath, mime_type AS mimeType, result_id AS resultId
+    SELECT
+      image_id  AS imageId,
+      file_path AS filePath,
+      mime_type AS mimeType,
+      result_id AS resultId
     FROM images
     WHERE image_id = #{imageId}
   </select>
-  
-    <!-- [TEST] 최근 이미지 조회: 최신 image_id 기준 -->
+
+  <!-- [TEST] 최근 이미지 조회: 최신 image_id 기준 -->
   <select id="selectLatestImages"
           parameterType="int"
           resultType="app.snapshot.qure.mobile.dto.ImageMetaInsertDto">
@@ -175,7 +183,36 @@
     ORDER BY image_id DESC
     FETCH FIRST ${limit} ROWS ONLY
   </select>
-  
-  
+
+  <select id="selectManagerIdByFacilityId"
+          parameterType="int"
+          resultType="java.lang.Integer">
+    SELECT managers_id
+    FROM facilities
+    WHERE facility_id = #{facilityId}
+    FETCH FIRST 1 ROWS ONLY
+  </select>
+
+  <!-- facilityId 조회는 기존 selectTagSummaryById 사용 -->
+  <insert id="insertComplain"
+          parameterType="app.snapshot.qure.mobile.dto.CitizenReportDto">
+    <selectKey keyProperty="citizenReportId" resultType="long" order="BEFORE">
+      SELECT CITIZEN_REPORTS_SEQ.NEXTVAL FROM dual
+    </selectKey>
+    INSERT INTO citizen_reports (
+      citizen_report_id, facility_id, category, description, email,
+      status, created_at, resolved_by, resolved_at
+    ) VALUES (
+      #{citizenReportId, jdbcType=NUMERIC},
+      #{facilityId, jdbcType=NUMERIC},
+      #{category, jdbcType=VARCHAR},
+      #{description, jdbcType=VARCHAR},   <!-- CLOB이면 CLOB로 -->
+      #{email, jdbcType=VARCHAR},         <!-- null 가능 -->
+      'PENDING',
+      SYSTIMESTAMP,
+      #{resolvedBy, jdbcType=NUMERIC},    <!-- null 가능 -->
+      NULL
+    )
+  </insert>
 
 </mapper>
