@@ -18,13 +18,10 @@
             <my:button label="수정하기" bgColor="#9de2d0" cssClass="js-submit"/>
         </div>
 
-        <!-- 버저닝 저장 엔드포인트: copy-on-write로 새 버전 생성 -->
         <form action="<c:url value='/template/update'/>" method="post" class="form">
-            <!-- 템플릿 식별/버전 (낙관적 락 용) -->
             <input type="hidden" name="templateId" value="${template.templateId}"/>
             <input type="hidden" name="version" value="${template.version}"/>
 
-            <!-- (선택) Spring Security CSRF -->
             <c:if test="${not empty _csrf}">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </c:if>
@@ -92,16 +89,13 @@
                     <span class="desc">작업자가 점검해야 하는 항목을 입력해주세요</span>
                 </div>
 
-                <!-- 리스트 컨테이너 (서버 데이터로 초기 렌더링) -->
                 <div id="checkItemList" class="check-item-list">
                     <c:forEach var="item" items="${items}" varStatus="st">
                         <c:set var="idx" value="${st.index}"/>
-                        <!-- DB ENUM → 폼 값 매핑: BOOL→BOOLEAN, NUM→NUMBER, IMAGE→PHOTO, TEXT→TEXT -->
                         <c:set var="typeForm"
                                value="${item.type == 'BOOL' ? 'BOOLEAN' : (item.type == 'NUM' ? 'NUMBER' : (item.type == 'IMAGE' ? 'PHOTO' : 'TEXT'))}"/>
 
                         <div class="check-item" data-index="${idx}">
-                            <!-- 상단 옵션(타입) -->
                             <div class="option-row">
                                 <div class="type-options" role="radiogroup" aria-label="항목 타입 선택">
                                     <label class="type-option ${typeForm == 'BOOLEAN' ? 'active' : ''}">
@@ -126,7 +120,6 @@
                                 </div>
                             </div>
 
-                            <!-- 하단 인풋(항목 문구) -->
                             <div class="input-wrapper">
                                 <input type="text" class="check-input"
                                        name="items[${idx}].label"
@@ -140,7 +133,6 @@
                     </c:forEach>
                 </div>
 
-                <!-- 항목 템플릿(신규 추가용) -->
                 <template id="checkItemTemplate">
                     <div class="check-item" data-index="{INDEX}">
                         <div class="option-row">
@@ -178,7 +170,6 @@
                     </div>
                 </template>
 
-                <!-- 항목 추가 버튼 -->
                 <my:iconButton label="항목 추가"
                                id="addItemBtn"
                                icon="/assets/images/plus.svg"
@@ -190,9 +181,5 @@
 </div>
 
 <script src="<c:url value='/assets/js/template.js?ver=20250910'/>"></script>
-<script>
-    // 최초 카운터/주기 텍스트 초기화에 필요한 값이 이미 채워져 있으므로,
-    // 기존 template.js의 init들이 DOMContentLoaded 후 정상 동작합니다.
-</script>
 </body>
 </html>

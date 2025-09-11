@@ -127,7 +127,6 @@
         // 생성 화면: 초기 없으면 1개 추가
         if (index === 0) addItem();
 
-        // + 버튼
         addBtn.addEventListener('click', addItem);
 
         function addItem() {
@@ -141,7 +140,6 @@
             itemEl.dataset.index = index;
             index++;
 
-            // 포커스 주면 UX 좋아짐
             var input = itemEl.querySelector('.check-input');
             if (input) input.focus();
         }

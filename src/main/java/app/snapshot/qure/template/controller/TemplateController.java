@@ -74,19 +74,6 @@ public class TemplateController {
         return "redirect:/template"; // or "redirect:/template/" + newId
     }
 
-    // 수정 처리 (POST)
-//    @RequestMapping(value = "/update", method = RequestMethod.POST)
-//    public String updateTemplate(Template template, RedirectAttributes redirectAttributes) {
-//        try {
-//            templateService.updateTemplate(template);
-//            redirectAttributes.addFlashAttribute("message",
-//                    template.getTemplateId() + " 번 점검표가 수정되었습니다.");
-//        } catch (RuntimeException ex) {
-//            redirectAttributes.addFlashAttribute("message", ex.getMessage());
-//        }
-//        return "redirect:/template/list";
-//    }
-
     // 삭제 처리 (POST)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String deleteTemplate(Long id, RedirectAttributes redirectAttributes) {
