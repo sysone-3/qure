@@ -52,11 +52,10 @@
                 <c:choose>
                     <c:when test="${not empty facilities}">
                         <c:forEach var="f" items="${facilities}">
-                            <div class="row">
+                            <a href="<c:url value='/facilities/${f.facilityId}'/>">
+                                <div class="row">
                                 <!-- 설비 id -->
-                                <div class="cell col-id">
-                                    <a href="<c:url value='/facilities/${f.facilityId}'/>">${f.facilityId}</a>
-                                </div>
+                                <div class="cell col-id">${f.facilityId}</div>
 
                                 <!-- 시설명 -->
                                 <div class="cell col-facility">${f.name}</div>
@@ -102,7 +101,8 @@
                                         </button>
                                     </form>
                                 </div>
-                            </div>
+                                </div>
+                            </a>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>

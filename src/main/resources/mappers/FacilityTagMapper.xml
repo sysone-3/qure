@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.snapshot.qure.facilities.repository.IFacilityTagRepository">
+
+    <!-- 다음 TAG_ID 뽑기 -->
+    <select id="getNextTagId" resultType="int">
+        SELECT SEQ_TAG_ID.NEXTVAL FROM dual
+    </select>
+
+    <!-- tagId/URL을 만들어서 한 번에 INSERT -->
+    <insert id="insertFacilityTagWithGivenId"
+            parameterType="app.snapshot.qure.facilities.dto.FacilityTagDto">
+        INSERT INTO FACILITY_TAGS (TAG_ID, CODE, ACTIVE, ISSUED_AT, FACILITY_ID)
+        VALUES (#{tagId}, #{code}, 'Y', SYSTIMESTAMP, #{facilityId})
+    </insert>
+
+    <select id="findActiveTagByFacilityId" parameterType="int"
+            resultType="app.snapshot.qure.facilities.dto.FacilityTagDto">
+        SELECT TAG_ID, CODE, ACTIVE, ISSUED_AT, REVOKED_AT, FACILITY_ID
+        FROM FACILITY_TAGS
+        WHERE FACILITY_ID = #{facilityId}
+        AND ACTIVE = 'Y'
+        ORDER BY ISSUED_AT DESC
+        FETCH FIRST 1 ROWS ONLY
+    </select>
+
+    <select id="findById" parameterType="int"
+            resultType="app.snapshot.qure.facilities.dto.FacilityTagDto">
+        SELECT TAG_ID, CODE, ACTIVE, ISSUED_AT, REVOKED_AT, FACILITY_ID
+        FROM FACILITY_TAGS
+        WHERE TAG_ID = #{tagId}
+    </select>
+
+    <!-- (옵션) 기존 활성 태그를 비활성화할 때 사용 -->
+    <update id="deactivateActiveTags" parameterType="int">
+        UPDATE FACILITY_TAGS
+        SET ACTIVE='N', REVOKED_AT=SYSTIMESTAMP
+        WHERE FACILITY_ID=#{facilityId}
+        AND ACTIVE='Y'
+    </update>
+
+</mapper>

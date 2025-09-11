@@ -9,27 +9,34 @@ import org.apache.ibatis.annotations.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-@Mapper  // MyBatis Mapper 인터페이스
+@Mapper
 public interface IFacilitiesRepository {
+    List<FacilitiesDto> getFacilitiesListByManager(@Param("managerId") int managerId);
 
-    List<FacilitiesDto> getFacilitiesList();
+    List<FacilitiesDto> searchFacilitiesByManager(@Param("managerId") int managerId,
+                                                  @Param("q") String q);
 
-    List<FacilitiesDto> searchFacilities(@Param("q") String q);
+    FacilitiesDto getFacilitiesInfoByManager(@Param("facilityId") int facilityId,
+                                             @Param("managerId") int managerId);
 
-    FacilitiesDto getFacilitiesInfo(@Param("facilityId") int facilityId);
+    int insertFacilitiesByManager(@Param("f") FacilitiesDto f,
+                                  @Param("managerId") int managerId);
 
-    int insertFacilities(FacilitiesDto facilities);
+    int updateFacilitiesByManager(@Param("facility") FacilitiesDto facilities,
+                                  @Param("managerId") int managerId);
 
-    int updateFacilities(FacilitiesDto facilities);
+    int deleteFacilitiesByManager(@Param("facilityId") int facilityId,
+                                  @Param("managerId") int managerId);
 
-    int deleteFacilities(@Param("facilityId") int facilityId, @Param("email") String email);
+    List<ChecklistTemplateDto> findTemplatesByFacilityIdAndManager(@Param("facilityId") int facilityId,
+                                                                   @Param("managerId") int managerId);
 
-    List<ChecklistTemplateDto> findTemplatesByFacilityId(@Param("facilityId") int facilityId);
+    List<InspectionDto> findInspectionByFacilityIdAndManager(@Param("facilityId") int facilityId,
+                                                             @Param("managerId") int managerId);
 
-    List<InspectionDto> findInspectionByFacilityId(@Param("facilityId") int facilityId);
-
-    List<InspectionDto> findInspectionByFacilityIdAndPeriod(@Param("facilityId") int facilityId,
-                                                            @Param("startD") LocalDate startD,
-                                                            @Param("endD") LocalDate endD);
-
+    List<InspectionDto> findInspectionByFacilityIdAndPeriodAndManager(@Param("facilityId") int facilityId,
+                                                                      @Param("startD") LocalDate startD,
+                                                                      @Param("endD") LocalDate endD,
+                                                                      @Param("managerId") int managerId);
 }
+
