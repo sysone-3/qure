@@ -41,32 +41,36 @@
         </div>
         <div class="card-grid">
             <c:forEach var="temp" items="${templateList}">
-                <div class="card">
-                    <div>
-                        <div class="card-header">
-                            <span class="badge">
-                                <img src="<c:url value='/assets/images/${fn:toLowerCase(temp.domain)}.svg'/>"
-                                     alt="${temp.domain}" class="badge-icon"/>
-                                <c:choose>
-                                    <c:when test="${temp.domain eq 'CLEANING'}">미화</c:when>
-                                    <c:when test="${temp.domain eq 'PATROL'}">순찰</c:when>
-                                    <c:when test="${temp.domain eq 'FIRE'}">소방</c:when>
-                                </c:choose>
-                            </span>
+                <a class="card-link"
+                   href="<c:url value='/template/${temp.templateId}'/>"
+                   aria-label="${fn:escapeXml(temp.name)} 수정 페이지로 이동">
+                    <div class="card">
+                        <div>
+                            <div class="card-header">
+                                <span class="badge">
+                                    <img src="<c:url value='/assets/images/${fn:toLowerCase(temp.domain)}.svg'/>"
+                                         alt="${temp.domain}" class="badge-icon"/>
+                                    <c:choose>
+                                        <c:when test="${temp.domain eq 'CLEANING'}">미화</c:when>
+                                        <c:when test="${temp.domain eq 'PATROL'}">순찰</c:when>
+                                        <c:when test="${temp.domain eq 'FIRE'}">소방</c:when>
+                                    </c:choose>
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">${temp.name}</h3>
+                                <p class="card-cycle">
+                                        ${temp.cycle}${temp.cycleUnit eq 'YEAR' ? '년' :
+                                            temp.cycleUnit eq 'MONTH' ? '개월' :
+                                                    temp.cycleUnit eq 'WEEK' ? '주' : '일'}에 한 번
+                                </p>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <h3 class="card-title">${temp.name}</h3>
-                            <p class="card-cycle">
-                                ${temp.cycle}${temp.cycleUnit eq 'YEAR' ? '년' :
-                                temp.cycleUnit eq 'MONTH' ? '개월' :
-                                temp.cycleUnit eq 'WEEK' ? '주' : '일'}에 한 번
-                            </p>
-                        </div>
+                        <p class="card-date">
+                            생성일: ${fn:substringBefore(temp.createdAt, 'T')}
+                        </p>
                     </div>
-                    <p class="card-date">
-                        생성일: ${fn:substringBefore(temp.createdAt, 'T')}
-                    </p>
-                </div>
+                </a>
             </c:forEach>
         </div>
     </div>
