@@ -13,7 +13,7 @@ public class LoginController {
 
     @GetMapping("/")
     public String root() {
-        return "login/login"; // /WEB-INF/views/login/login.jsp 로 이동
+        return "login/login";
     }
 
     @GetMapping("/manager/home")
