@@ -95,7 +95,7 @@
         #{f.status,     jdbcType=VARCHAR},
         #{f.memo,       jdbcType=CLOB},
         SYSTIMESTAMP,
-        NULL,
+        #{f.updatedAt, jdbcType=TIMESTAMP},
         #{managerId,    jdbcType=INTEGER},
         #{f.inspectorId,jdbcType=INTEGER}
         )
