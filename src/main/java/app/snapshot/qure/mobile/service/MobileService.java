@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import app.snapshot.qure.checklist.dto.ChecklistType;            // [CHANGED] import 추가
+import app.snapshot.qure.checklist.model.ChecklistType;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistSubmitForm;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
