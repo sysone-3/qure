@@ -35,14 +35,19 @@
       <c:out value="${selected.description}" default=""/>
     </div>
 
-    <form class="detail-foot" action="<c:url value='/admin/complain/status'/>" method="post">
-	  <input type="hidden" name="id" value="${selected.citizenReportId}">
-	  <select class="status-select" name="status">
-	    <option value="IN_PROGRESS" <c:if test="${selected.status=='IN_PROGRESS'}">selected</c:if>>처리중</option>
-	    <option value="RESOLVED"    <c:if test="${selected.status=='RESOLVED'}">selected</c:if>>완료</option>
+    <form class="detail-foot" method="post" action="<c:url value='/admin/complain/status'/>">
+	  <input type="hidden" name="id" value="${selected.citizenReportId}"/>
+	
+	  <select name="status" class="status-select">
+	    <option value="PENDING"     ${selected.status == 'PENDING' ? 'selected' : ''}>미처리</option>
+	    <option value="IN_PROGRESS" ${selected.status == 'IN_PROGRESS' ? 'selected' : ''}>처리중</option>
+	    <option value="RESOLVED"    ${selected.status == 'RESOLVED' ? 'selected' : ''}>완료</option>
 	  </select>
-	  <button class="btn ok" type="submit">확인</button>
+	
+	  <button type="submit" class="btn ok">상태 변경</button>
 	</form>
+
+
 
   </c:otherwise>
 </c:choose>

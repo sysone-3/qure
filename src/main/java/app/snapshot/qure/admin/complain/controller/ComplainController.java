@@ -73,14 +73,15 @@ public class ComplainController {
 
     @PostMapping("/complain/status")
     @ResponseBody
-    public Map<String, Object> updateStatus(@RequestParam int id,
-                                            @RequestParam String status,
-                                            HttpSession session) {
+    public Map<String,Object> updateStatus(@RequestParam int id,
+                                           @RequestParam String status) {
         int managerId = 20;
+        status = status == null ? null : status.trim().toUpperCase();  // ← 추가
         if (!"IN_PROGRESS".equals(status) && !"RESOLVED".equals(status)) {
             return java.util.Collections.singletonMap("ok", false);
         }
         int n = complainService.updateStatusForManager(id, managerId, status);
         return java.util.Collections.singletonMap("ok", n > 0);
     }
+
 }

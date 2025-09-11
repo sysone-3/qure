@@ -3,6 +3,14 @@
 // <section id="detailPanel" data-detail-url="${pageContext.request.contextPath}/admin/complain/detail"></section>
 
 document.addEventListener('DOMContentLoaded', function () {
+  // CSRF 헤더 주입 헬퍼
+  function withCsrf(headers) {
+    var t = document.querySelector('meta[name="_csrf"]');
+    var h = document.querySelector('meta[name="_csrf_header"]');
+    if (t && h) headers[h.content] = t.content;
+    return headers;
+  }
+
   var detailPanel = document.getElementById('detailPanel');
   if (!detailPanel) return;
 
@@ -24,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 삭제 버튼 제출
   // 삭제 버튼 제출 (AJAX)
   var dels = document.querySelectorAll('.btn-del');
   for (var j = 0; j < dels.length; j++) {
@@ -40,11 +47,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
       fetch(form.action, {
         method: 'POST',
-        headers: {
+        headers: withCsrf({
           'Content-Type': 'application/x-www-form-urlencoded',
           'X-Requested-With': 'XMLHttpRequest'
-          // CSRF 사용 시: 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
-        },
+        }),
         body: 'id=' + encodeURIComponent(id)
       })
       .then(function (r) { return r.json(); })
@@ -99,30 +105,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fetch(f.action, {
       method: 'POST',
-      headers: {'Content-Type':'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'},
+      headers: withCsrf({
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-Requested-With': 'XMLHttpRequest'
+      }),
       body: 'id=' + encodeURIComponent(id) + '&status=' + encodeURIComponent(status)
     })
     .then(function (r) { return r.json(); })
     .then(function (j) {
       if (!j || !j.ok) return;
 
-      // 목록의 상태 텍스트 갱신
-	  // 목록의 상태 텍스트 갱신 부분 교체
-	  // 상태 셀 갱신
-	  var tr = document.querySelector('tr.row[data-id="' + id + '"]');
-	  if (tr) {
-	    var tds = tr.querySelectorAll('td');
-	    if (tds.length >= 5) {
-	      var html =
-	        status === 'PENDING'     ? '<span class="st pending">미처리</span>' :
-	        status === 'IN_PROGRESS' ? '<span class="st progress">처리중</span>' :
-	        status === 'RESOLVED'    ? '<span class="st resolved">완료</span>' :
-	                                    '<span class="st">' + status + '</span>';
-	      tds[4].innerHTML = html; // ← 중요
-	    }
-	  }
-
-
+      // 상태 셀 갱신
+      var tr = document.querySelector('tr.row[data-id="' + id + '"]');
+      if (tr) {
+        var tds = tr.querySelectorAll('td');
+        if (tds.length >= 5) {
+          var html =
+            status === 'PENDING'     ? '<span class="st pending">미처리</span>' :
+            status === 'IN_PROGRESS' ? '<span class="st progress">처리중</span>' :
+            status === 'RESOLVED'    ? '<span class="st resolved">완료</span>' :
+                                        '<span class="st">' + status + '</span>';
+          tds[4].innerHTML = html; // 상태 열 인덱스
+        }
+      }
 
       // 우측 패널 프래그먼트 재로딩
       var panel = document.getElementById('detailPanel');
@@ -132,8 +137,8 @@ document.addEventListener('DOMContentLoaded', function () {
           .then(function (r) { return r.text(); })
           .then(function (html) { panel.innerHTML = html; });
       }
-    });
+    })
+    .catch(function (err) { console.error('status update failed', err); });
   });
-
 
 });
