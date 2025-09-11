@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class TemplateController {
 
     // 삭제 처리 (POST)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public String deleteTemplate(Long id, RedirectAttributes redirectAttributes) {
+    public String deleteTemplate(@RequestParam("templateId") Long id, RedirectAttributes redirectAttributes) {
         try {
             templateService.deleteTemplate(id);
             redirectAttributes.addFlashAttribute("message",
@@ -84,6 +85,6 @@ public class TemplateController {
         } catch (RuntimeException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
         }
-        return "redirect:/template/list";
+        return "redirect:/template";
     }
 }

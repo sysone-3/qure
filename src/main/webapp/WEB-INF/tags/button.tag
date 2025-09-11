@@ -9,7 +9,7 @@
     <c:when test="${not empty action}">
         <input type="button"
                value="${label}"
-               onclick="location.href='${action}'"
+               data-action="${action}"
                class="btn ${cssClass}"
                style="
                        width: 120px;

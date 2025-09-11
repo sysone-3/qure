@@ -58,8 +58,11 @@
         where template_id = #{templateId}
     </update>
 
-    <!-- 삭제 -->
-    <delete id="deleteTemplate" parameterType="long">
-        delete from checklist_templates where template_id = #{id}
-    </delete>
+    <!-- 삭제: 비활성화 처리 -->
+    <update id="deleteTemplate" parameterType="long">
+        UPDATE checklist_templates
+        SET is_active = 'N'
+        WHERE template_id = #{id}
+          AND is_active = 'Y'
+    </update>
 </mapper>

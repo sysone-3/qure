@@ -7,6 +7,7 @@
         initCycle();
         initChecklist();
         initFormValidation();
+        initActionButtons();
     });
 
     function initDomainChips() {
@@ -225,5 +226,32 @@
 
     function clearInputError(input) {
         input.classList.remove('error');
+    }
+
+    function initActionButtons() {
+        var form = document.querySelector('.form');
+        if (!form) return;
+
+        var buttons = document.querySelectorAll('.btn[data-action]');
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var action = btn.dataset.action;
+                if (!action) return;
+
+                if (action.includes('/delete')) {
+                    if (confirm("정말 삭제하시겠습니까?")) {
+                        form.action = action;
+                        form.method = 'post';
+                        form.submit();
+                    }
+                } else if (action.includes('/update')) {
+                    if (validateForm()) {
+                        form.action = action;
+                        form.method = 'post';
+                        form.submit();
+                    }
+                }
+            });
+        });
     }
 })();

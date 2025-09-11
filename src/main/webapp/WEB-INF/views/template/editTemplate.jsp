@@ -15,7 +15,10 @@
     <div class="inner-container">
         <div class="title-row">
             <h2 class="title">점검표 수정</h2>
-            <my:button label="수정하기" bgColor="#9de2d0" cssClass="js-submit"/>
+            <div>
+                <my:button label="삭제하기" action="/template/delete" cssClass="js-delete" bgColor="#EAEAEA"/>
+                <my:button label="수정하기" action="/template/update" cssClass="js-update" bgColor="#9de2d0"/>
+            </div>
         </div>
 
         <form action="<c:url value='/template/update'/>" method="post" class="form">
