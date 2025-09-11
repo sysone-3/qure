@@ -39,7 +39,6 @@
                     <div class="cell col-domain">도메인</div>
                     <div class="cell col-equip">설비명</div>
                     <div class="cell col-updated">최근 점검일자</div>
-                    <div class="cell col-status">상태</div>
                     <div class="cell col-actions"><!-- 삭제 칸 맞춤용 빈칸 --></div>
                 </div>
             </div>
@@ -74,19 +73,6 @@
                                         </c:when>
                                         <c:otherwise>—</c:otherwise>
                                     </c:choose>
-                                </div>
-
-                                <!-- 상태 -->
-                                <div class="cell col-status">
-                                    <c:set var="statusText" value="${empty f.status ? '미표기' : f.status}"/>
-                                    <c:set var="statusClass"
-                                           value="${statusText eq '정상' ? 'ok' :
-                                           statusText eq '미흡' ? 'warn' :
-                                           statusText eq '긴급' ? 'danger' : 'warn'}"/>
-                                    <span class="status-pill">
-                                      <span class="dot ${statusClass}"></span>
-                                      <span>${statusText}</span>
-                                    </span>
                                 </div>
 
                                 <!-- 삭제 -->
