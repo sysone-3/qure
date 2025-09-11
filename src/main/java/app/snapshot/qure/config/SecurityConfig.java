@@ -4,6 +4,7 @@ import app.snapshot.qure.login.service.KakaoOAuth2UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@PropertySource("classpath:application-login.properties")
 public class SecurityConfig {
 
     private final KakaoOAuth2UserService kakaoOAuth2UserService;
@@ -37,11 +39,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )
+                .csrf(csrf -> csrf.disable())
+
                 .oauth2Login(oauth -> oauth
                         .loginPage("/")   // 카카오 진입 전에 JSP 경로 잡아주기
                         .defaultSuccessUrl("/manager/home")
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
                 );
+
 
         return http.build();
     }
