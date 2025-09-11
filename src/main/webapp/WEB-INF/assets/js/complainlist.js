@@ -107,13 +107,22 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!j || !j.ok) return;
 
       // 목록의 상태 텍스트 갱신
-      var tr = document.querySelector('tr.row[data-id="' + id + '"]');
-      if (tr) {
-        var tds = tr.querySelectorAll('td');
-        if (tds.length >= 5) {
-          tds[4].textContent = (status === 'IN_PROGRESS') ? '처리중' : '완료';
-        }
-      }
+	  // 목록의 상태 텍스트 갱신 부분 교체
+	  // 상태 셀 갱신
+	  var tr = document.querySelector('tr.row[data-id="' + id + '"]');
+	  if (tr) {
+	    var tds = tr.querySelectorAll('td');
+	    if (tds.length >= 5) {
+	      var html =
+	        status === 'PENDING'     ? '<span class="st pending">미처리</span>' :
+	        status === 'IN_PROGRESS' ? '<span class="st progress">처리중</span>' :
+	        status === 'RESOLVED'    ? '<span class="st resolved">완료</span>' :
+	                                    '<span class="st">' + status + '</span>';
+	      tds[4].innerHTML = html; // ← 중요
+	    }
+	  }
+
+
 
       // 우측 패널 프래그먼트 재로딩
       var panel = document.getElementById('detailPanel');

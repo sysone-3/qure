@@ -41,4 +41,10 @@
   .detail-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
   .status-select{height:36px;border:1px solid var(--line);border-radius:8px;padding:0 10px;background:#fff}
   .btn.ok{background:var(--accent);color:var(--accent-text);font-weight:700;height:36px;padding:0 16px}
+  .st {font-weight:700}
+  .table-wrap td .st.pending  { color:#ED6F62 !important; }
+  .table-wrap td .st.progress { color:#FFE59A !important; }
+  .table-wrap td .st.resolved { color:#A9DECE !important; }
+
+  
   @media (max-width:980px){.content{grid-template-columns:1fr}}
