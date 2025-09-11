@@ -40,13 +40,11 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
-
                 .oauth2Login(oauth -> oauth
                         .loginPage("/")   // 카카오 진입 전에 JSP 경로 잡아주기
                         .defaultSuccessUrl("/manager/home")
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
                 );
-
 
         return http.build();
     }
