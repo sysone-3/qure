@@ -1,6 +1,9 @@
 package app.snapshot.qure.template.controller;
 
 import app.snapshot.qure.checklist.dto.TemplateCreateForm;
+import app.snapshot.qure.checklist.model.Checklist;
+import app.snapshot.qure.checklist.service.IChecklistService;
+import app.snapshot.qure.template.dto.TemplateUpdateForm;
 import app.snapshot.qure.template.model.Template;
 import app.snapshot.qure.template.service.ITemplateService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,9 @@ public class TemplateController {
 
     @Autowired
     ITemplateService templateService;
+
+    @Autowired
+    IChecklistService checklistService;
 
     @RequestMapping(value="")
     public String getAllTemplates(Model model){
@@ -54,22 +60,32 @@ public class TemplateController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String getTemplateAndEdit(@PathVariable Long id, Model model) {
         Template template = templateService.getTemplateById(id);
+        List<Checklist> items = checklistService.getByTemplateId(id);
+
         model.addAttribute("template", template);
-        return "template/viewForm";  // 조회 + 수정 통합 화면
+        model.addAttribute("items", items);
+        return "template/editTemplate";
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String updateAsNewVersion(TemplateUpdateForm form, RedirectAttributes ra) {
+        long newId = templateService.saveAsNewVersion(form);
+        ra.addFlashAttribute("message", "새 버전(" + newId + ")으로 저장되었습니다.");
+        return "redirect:/template"; // or "redirect:/template/" + newId
     }
 
     // 수정 처리 (POST)
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateTemplate(Template template, RedirectAttributes redirectAttributes) {
-        try {
-            templateService.updateTemplate(template);
-            redirectAttributes.addFlashAttribute("message",
-                    template.getTemplateId() + " 번 점검표가 수정되었습니다.");
-        } catch (RuntimeException ex) {
-            redirectAttributes.addFlashAttribute("message", ex.getMessage());
-        }
-        return "redirect:/template/list";
-    }
+//    @RequestMapping(value = "/update", method = RequestMethod.POST)
+//    public String updateTemplate(Template template, RedirectAttributes redirectAttributes) {
+//        try {
+//            templateService.updateTemplate(template);
+//            redirectAttributes.addFlashAttribute("message",
+//                    template.getTemplateId() + " 번 점검표가 수정되었습니다.");
+//        } catch (RuntimeException ex) {
+//            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+//        }
+//        return "redirect:/template/list";
+//    }
 
     // 삭제 처리 (POST)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

@@ -74,78 +74,99 @@
         if (!listEl || !addBtn || !tpl) return;
 
         var index = 0;
+        index = listEl.querySelectorAll('.check-item').length;
 
-        function makeItem(idx) {
-            var html = tpl.innerHTML.replaceAll('{INDEX}', String(idx));
-            var wrap = document.createElement('div');
-            wrap.innerHTML = html.trim();
-            var itemEl = wrap.firstElementChild;
-
+        function wireUpItem(itemEl) {
+            // 타입 토글
             var typeWrap = itemEl.querySelector('.type-options');
             if (typeWrap) {
                 typeWrap.addEventListener('click', function (e) {
                     var label = e.target.closest('.type-option');
                     if (!label) return;
-                    typeWrap.querySelectorAll('.type-option').forEach(function (el) { el.classList.remove('active'); });
+                    typeWrap.querySelectorAll('.type-option').forEach(function (t) {
+                        t.classList.remove('active');
+                    });
                     label.classList.add('active');
                     var radio = label.querySelector('input[type="radio"]');
                     if (radio) radio.checked = true;
                 });
             }
 
+            // 글자수 카운터 + 에러 클리어
             var input = itemEl.querySelector('.check-input');
             var counter = itemEl.querySelector('.char-count');
-            if (input && counter) {
-                var updateCount = function () { counter.textContent = (input.value.length || 0) + '/33'; };
-                input.addEventListener('input', updateCount);
-                updateCount();
-
-                input.addEventListener('input', function() {
+            if (input) {
+                var updateCount = function () {
+                    if (counter) counter.textContent = (input.value.length || 0) + '/33';
                     clearInputError(input);
-                });
+                };
+                input.addEventListener('input', updateCount);
+                updateCount(); // 초기 표시
+            }
+            attachDelete(itemEl);
+        }
+
+        // 기존 항목(수정 화면) 초기화
+        listEl.querySelectorAll('.check-item').forEach(function (el, i) {
+            el.dataset.index = i;
+
+            // 라디오 name 정규화
+            el.querySelectorAll('input[type="radio"][name^="items["]').forEach(function (r) {
+                r.name = r.name.replace(/items\[\d+\]\.type/, 'items[' + i + '].type');
+            });
+
+            // 라벨 name 정규화
+            var labelInput = el.querySelector('.check-input[name^="items["]');
+            if (labelInput) {
+                labelInput.name = 'items[' + i + '].label';
             }
 
-            attachDelete(itemEl);
+            wireUpItem(el);
+        });
 
-            return itemEl;
+        // 생성 화면: 초기 없으면 1개 추가
+        if (index === 0) addItem();
+
+        // + 버튼
+        addBtn.addEventListener('click', addItem);
+
+        function addItem() {
+            var html = tpl.innerHTML.replaceAll('{INDEX}', String(index));
+            var wrap = document.createElement('div');
+            wrap.innerHTML = html.trim();
+            var itemEl = wrap.firstElementChild;
+
+            listEl.appendChild(itemEl);
+            wireUpItem(itemEl);
+            itemEl.dataset.index = index;
+            index++;
+
+            // 포커스 주면 UX 좋아짐
+            var input = itemEl.querySelector('.check-input');
+            if (input) input.focus();
         }
 
         function attachDelete(itemEl) {
             var del = itemEl.querySelector('.delete-wrapper');
             if (!del) return;
-
             del.addEventListener('click', function () {
                 itemEl.remove();
-                reindexItems();
-            });
-        }
-
-        function reindexItems() {
-            var items = listEl.querySelectorAll('.check-item');
-            items.forEach(function (el, i) {
-                el.dataset.index = i;
-
-                el.querySelectorAll('input[type="radio"][name^="items["]').forEach(function (r) {
-                    r.name = r.name.replace(/items\[\d+\]\.type/, 'items[' + i + '].type');
+                // 재인덱스 & name 정규화
+                var items = listEl.querySelectorAll('.check-item');
+                items.forEach(function (el, i) {
+                    el.dataset.index = i;
+                    el.querySelectorAll('input[type="radio"][name^="items["]').forEach(function (r) {
+                        r.name = r.name.replace(/items\[\d+\]\.type/, 'items[' + i + '].type');
+                    });
+                    var inp = el.querySelector('.check-input[name^="items["]');
+                    if (inp) inp.name = 'items[' + i + '].label';
                 });
-
-                var labelInput = el.querySelector('.check-input[name^="items["]');
-                if (labelInput) {
-                    labelInput.name = 'items[' + i + '].label';
-                }
+                index = items.length;
             });
-
-            index = items.length;
         }
-
-        function addItem() {
-            var el = makeItem(index++);
-            listEl.appendChild(el);
-        }
-
-        addItem();
-        addBtn.addEventListener('click', addItem);
     }
+
+
 
     function initFormValidation() {
         var form = document.querySelector('.form');

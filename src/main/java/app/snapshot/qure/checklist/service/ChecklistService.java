@@ -25,6 +25,11 @@ public class ChecklistService implements IChecklistService {
     @Qualifier("batchChecklistRepository")
     IChecklistRepository batchChecklistRepository; // 배치 전용
 
+    @Override
+    public List<Checklist> getByTemplateId(long templateId) {
+        return checklistRepository.getChecklistById(templateId);
+    }
+
     @Transactional
     @Override
     public void insertItemsBatch(long templateId, List<CheckItemForm> items) {

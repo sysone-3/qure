@@ -16,7 +16,7 @@
     </resultMap>
 
     <select id="getTemplateList" resultMap="templateMap">
-        SELECT * FROM CHECKLIST_TEMPLATES
+        SELECT * FROM CHECKLIST_TEMPLATES WHERE IS_ACTIVE = 'Y'
         ORDER BY TEMPLATE_ID DESC
     </select>
 
@@ -33,8 +33,17 @@
         INSERT INTO CHECKLIST_TEMPLATES
         (TEMPLATE_ID, DOMAIN, NAME, CYCLE, CYCLE_UNIT, VERSION, IS_ACTIVE, CREATED_AT, FACILITY_ID)
         VALUES
-        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, 1, 'Y', SYSDATE, NULL)
+        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, #{version}, #{isActive}, SYSDATE, #{facilityId,jdbcType=INTEGER})
     </insert>
+
+    <!-- 이전 템플릿 비활성화 (낙관적) -->
+    <update id="deactivateIfActive">
+        UPDATE CHECKLIST_TEMPLATES
+        SET IS_ACTIVE = 'N'
+        WHERE TEMPLATE_ID = #{templateId}
+          AND VERSION     = #{version}
+          AND IS_ACTIVE   = 'Y'
+    </update>
 
     <!-- 수정 -->
     <update id="updateTemplate" parameterType="app.snapshot.qure.template.model.Template">
