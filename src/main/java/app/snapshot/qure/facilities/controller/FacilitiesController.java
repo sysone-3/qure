@@ -72,7 +72,7 @@ public class FacilitiesController {
         Long facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
 
         ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
-        return "redirect:/facilities";
+        return "redirect:/facilities/" + facilityId + "/qr";
     }
     // static 제거
     private Double round(double v, int scale) {

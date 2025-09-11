@@ -23,12 +23,14 @@
                         </colgroup>
                         <tbody>
                         <tr>
-                            <th>도로명주소</th>
+                            <th>우편번호</th>
                             <td>
-                                <!-- juso API용 key는 팝업에서 사용 -->
                                 <input type="text" id="zipNo" name="zipNo" readonly style="width:100px">
                                 <input type="button" value="주소검색" onclick="goPopup();">
                             </td>
+                        </tr>
+                        <tr>
+                            <th>도로명주소</th>
                             <td>
                                 <input type="text" id="roadAddrPart1" name="roadAddrPart1" style="width:85%">
                             </td>
@@ -36,7 +38,7 @@
                         <tr>
                             <th>상세주소</th>
                             <td>
-                                <input type="text" id="addrDetail"    name="addrDetail"    style="width:40%" value="">
+                                <input type="text" id="addrDetail" name="addrDetail" style="width:40%">
                             </td>
                         </tr>
                         </tbody>
