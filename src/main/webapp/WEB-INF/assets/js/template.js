@@ -1,4 +1,3 @@
-// insert form 전용: 이름 카운트, 주기 문구, 항목 추가, 타입/도메인 토글 + 폼 검증
 (function () {
     'use strict';
 
@@ -7,10 +6,9 @@
         initNameCounter();
         initCycle();
         initChecklist();
-        initFormValidation(); // 폼 검증 초기화
+        initFormValidation();
     });
 
-    // 도메인 라디오 -> 칩 .active 반영
     function initDomainChips() {
         var group = document.querySelector('.domain-buttons');
         if (!group) return;
@@ -25,10 +23,9 @@
         };
 
         group.addEventListener('change', apply);
-        apply(); // 초기 반영
+        apply();
     }
 
-    // 이름 글자수
     function initNameCounter() {
         var nameInput = document.getElementById('templateName');
         var nameCount = document.getElementById('nameCount');
@@ -41,7 +38,6 @@
         update();
     }
 
-    // 주기 설명
     function initCycle() {
         var cycleNumber = document.getElementById('cycleNumber');
         var cycleUnit = document.getElementById('cycleUnit');
@@ -71,7 +67,6 @@
         setTimeout(update, 0);
     }
 
-    // 항목 추가/타입 토글/글자수 카운트
     function initChecklist() {
         var listEl = document.getElementById('checkItemList');
         var addBtn = document.getElementById('addItemBtn');
@@ -86,7 +81,6 @@
             wrap.innerHTML = html.trim();
             var itemEl = wrap.firstElementChild;
 
-            // 타입 옵션 active + 라디오 연동
             var typeWrap = itemEl.querySelector('.type-options');
             if (typeWrap) {
                 typeWrap.addEventListener('click', function (e) {
@@ -99,7 +93,6 @@
                 });
             }
 
-            // 글자수 카운트
             var input = itemEl.querySelector('.check-input');
             var counter = itemEl.querySelector('.char-count');
             if (input && counter) {
@@ -107,13 +100,11 @@
                 input.addEventListener('input', updateCount);
                 updateCount();
 
-                // 🔴 입력 시 에러 상태 제거
                 input.addEventListener('input', function() {
                     clearInputError(input);
                 });
             }
 
-            // 🔴 삭제 버튼 처리
             attachDelete(itemEl);
 
             return itemEl;
@@ -124,33 +115,26 @@
             if (!del) return;
 
             del.addEventListener('click', function () {
-                // (선택) 최소 1개 보장하려면 아래 가드 주석 해제
-                // if (listEl.children.length <= 1) { alert('최소 1개 항목은 필요합니다.'); return; }
-
                 itemEl.remove();
                 reindexItems();
             });
         }
 
-        // 🔁 남은 항목들의 name/index 재정렬 (Spring MVC 바인딩용)
         function reindexItems() {
             var items = listEl.querySelectorAll('.check-item');
             items.forEach(function (el, i) {
                 el.dataset.index = i;
 
-                // 각 항목 내 라디오 그룹 name 업데이트: items[old].type -> items[i].type
                 el.querySelectorAll('input[type="radio"][name^="items["]').forEach(function (r) {
                     r.name = r.name.replace(/items\[\d+\]\.type/, 'items[' + i + '].type');
                 });
 
-                // 텍스트 인풋 name 업데이트: items[old].label -> items[i].label
                 var labelInput = el.querySelector('.check-input[name^="items["]');
                 if (labelInput) {
                     labelInput.name = 'items[' + i + '].label';
                 }
             });
 
-            // 다음 추가될 index 갱신 (연속 번호 유지)
             index = items.length;
         }
 
@@ -159,31 +143,24 @@
             listEl.appendChild(el);
         }
 
-        // 최초 1개 기본 추가
         addItem();
-
-        // [항목 추가] 버튼
         addBtn.addEventListener('click', addItem);
     }
 
-    // 🆕 폼 검증 기능
     function initFormValidation() {
         var form = document.querySelector('.form');
         var submitBtn = document.querySelector('.js-submit');
 
         if (!form || !submitBtn) return;
 
-        // 등록하기 버튼 클릭 시 검증
         submitBtn.addEventListener('click', function(e) {
             e.preventDefault(); // 기본 폼 제출 방지
 
             if (validateForm()) {
-                // 검증 통과 시 폼 제출
                 form.submit();
             }
         });
 
-        // 점검표 이름 입력 시 에러 상태 제거
         var nameInput = document.getElementById('templateName');
         if (nameInput) {
             nameInput.addEventListener('input', function() {
@@ -192,12 +169,10 @@
         }
     }
 
-    // 폼 검증 함수
     function validateForm() {
         var isValid = true;
         var firstErrorInput = null;
 
-        // 1. 점검표 이름 검증
         var nameInput = document.getElementById('templateName');
         if (nameInput && nameInput.value.trim() === '') {
             showInputError(nameInput);
@@ -205,7 +180,6 @@
             if (!firstErrorInput) firstErrorInput = nameInput;
         }
 
-        // 2. 점검 항목들 검증
         var checkItems = document.querySelectorAll('.check-input');
         checkItems.forEach(function(input) {
             if (input.value.trim() === '') {
@@ -215,7 +189,6 @@
             }
         });
 
-        // 검증 실패 시 첫 번째 에러 필드로 스크롤
         if (!isValid && firstErrorInput) {
             firstErrorInput.focus();
             firstErrorInput.scrollIntoView({
@@ -227,12 +200,10 @@
         return isValid;
     }
 
-    // 인풋 에러 상태 표시
     function showInputError(input) {
         input.classList.add('error');
     }
 
-    // 인풋 에러 상태 제거
     function clearInputError(input) {
         input.classList.remove('error');
     }
