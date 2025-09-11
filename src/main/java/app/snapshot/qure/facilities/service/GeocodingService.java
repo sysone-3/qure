@@ -87,8 +87,8 @@ public class GeocodingService {
         return null;
     }
 
-    /* ---- helpers ---- */
 
+    // 문자열 길이 줄이기
     private static String normalizeAddress(String s) {
         if (s == null) return "";
         // 앞뒤 공백 제거 → 중복 공백 하나로 → 괄호/특수문자 일부 제거
@@ -101,13 +101,9 @@ public class GeocodingService {
 
     // "서울특별시 종로구 창경궁로 254" → "종로구 창경궁로 254" 처럼 짧게
     private static String toKeywordQuery(String address) {
-        // 행정동/구 중심으로 뒤쪽 도로명+번지 남기기
-        // 너무 공격적이면 필요 최소한만 자르세요.
         String a = address;
-        // 시/도 제거(매칭폭을 줄여 쿼리 길이 단축)
+        // 시/도 제거
         a = a.replaceFirst("^(서울특별시|서울시|경기도|부산광역시|대구광역시|인천광역시|광주광역시|대전광역시|울산광역시|세종특별자치시)\\s*", "");
-        // 끝의 동/로/길 + 번지 패턴이 있으면 앞부분 더 줄이기
-        // 예: "종로구 창경궁로 254" 형태만 유지
         return a;
     }
 
@@ -132,14 +128,11 @@ public class GeocodingService {
     public static class Document {
         public String x; // 경도
         public String y; // 위도
-        public String address_name;
-        public String road_address_name;
     }
     public static class KakaoKeywordResponse {
         public List<KeywordDocument> documents;
     }
     public static class KeywordDocument {
         public String x; public String y;
-        public String place_name; public String address_name; public String road_address_name;
     }
 }

@@ -61,18 +61,7 @@ public class FacilitiesController {
     public String create(@ModelAttribute FacilitiesDto dto,
                          RedirectAttributes ra,
                          HttpSession session) {
-
         int managerId = mustManagerId();
-
-        System.out.println("=== 설비 등록 시작 ===");
-        System.out.println("입력된 주소: " + dto.getAddress());
-        System.out.println("폼에서 받은 데이터:");
-        System.out.println("- name: " + dto.getName());
-        System.out.println("- domain: " + dto.getDomain());
-        System.out.println("- floor: " + dto.getFloor());
-        System.out.println("- zone: " + dto.getZone());
-        System.out.println("- address: " + dto.getAddress());
-        System.out.println("- inspectorId: " + dto.getInspectorId());
 
         // 1) 주소 → 좌표 변환
         GeocodingService.LatLng ll = geocodingService.geocode(dto.getAddress());
@@ -80,23 +69,14 @@ public class FacilitiesController {
             // DTO에 좌표 설정
             dto.setGpsLat(round(ll.lat(), 6));
             dto.setGpsLng(round(ll.lng(), 6));
-            System.out.println("DTO에 설정된 좌표: lat=" + dto.getGpsLat() + ", lng=" + dto.getGpsLng());
         } else {
             dto.setGpsLat(null);
             dto.setGpsLng(null);
             System.out.println("좌표 변환 실패 - null로 설정");
         }
 
-        // DTO 전체 상태 확인
-        System.out.println("=== 저장 직전 DTO 상태 ===");
-        System.out.println("DTO toString: " + dto.toString()); // toString 메서드가 있다면
-        System.out.println("gpsLat: " + dto.getGpsLat() + " (타입: " + (dto.getGpsLat() != null ? dto.getGpsLat().getClass().getSimpleName() : "null") + ")");
-        System.out.println("gpsLng: " + dto.getGpsLng() + " (타입: " + (dto.getGpsLng() != null ? dto.getGpsLng().getClass().getSimpleName() : "null") + ")");
-
         // 2) 시설과 QR 생성 + 좌표까지 한번에 저장
         int facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
-        System.out.println("생성된 facility ID: " + facilityId);
-        System.out.println("=== 설비 등록 완료 ===");
 
         ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
         return "redirect:/facilities";
@@ -152,7 +132,7 @@ public class FacilitiesController {
             return "redirect:/facilities";
         }
 
-        // 날짜 보정 동일 …
+        // 날짜 보정
         LocalDate startD = (start != null && !start.isBlank()) ? LocalDate.parse(start) : null;
         LocalDate endD   = (end   != null && !end.isBlank())   ? LocalDate.parse(end)   : null;
         if (startD == null && endD == null) { endD = LocalDate.now(); startD = endD.minusDays(30); }
