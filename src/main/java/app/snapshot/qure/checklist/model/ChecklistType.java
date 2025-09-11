@@ -1,4 +1,4 @@
-package app.snapshot.qure.checklist.dto;
+package app.snapshot.qure.checklist.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -28,6 +28,15 @@ public enum ChecklistType {
             }
         }
         throw new IllegalArgumentException("Unknown checklist type: " + value);
+    }
+
+    public static ChecklistType fromFormType(String formType) {
+        return switch (formType) {
+            case "BOOLEAN" -> BOOL;
+            case "NUMBER"  -> NUM;
+            case "PHOTO"   -> IMAGE;
+            default        -> TEXT;
+        };
     }
 }
 
