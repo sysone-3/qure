@@ -1,43 +1,23 @@
-<beans:beans
-        xmlns="http://www.springframework.org/schema/mvc"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:beans="http://www.springframework.org/schema/beans"
-        xmlns:context="http://www.springframework.org/schema/context"
-        xsi:schemaLocation="
-    http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
-    http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-  <!-- MVC 기본 -->
-  <annotation-driven/>
+    <mvc:annotation-driven/>
 
-    <!-- get 경로 매핑 -->
-    <resources mapping="/assets/**" location="/WEB-INF/assets/"/>
+    <context:component-scan base-package="app.snapshot.qure"/>
 
-  <!-- JSP 뷰 리졸버 -->
-  <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <beans:property name="prefix" value="/WEB-INF/views/"/>
-    <beans:property name="suffix" value=".jsp"/>
-  </beans:bean>
+    <mvc:resources mapping="/assets/**" location="/WEB-INF/assets/"/>
 
-  <!-- JSON 컨버터(팀원안 유지; 필요 없으면 삭제해도 됨. annotation-driven이 기본 제공) -->
-  <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-    <beans:property name="messageConverters">
-      <beans:list>
-        <beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-          <beans:property name="supportedMediaTypes">
-            <beans:list>
-                <beans:value>application/json;charset=UTF-8</beans:value>
-            </beans:list>
-          </beans:property>
-        </beans:bean>
-      </beans:list>
-    </beans:property>
-  </beans:bean>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="1"/>
+    </bean>
 
-  <!-- Controller 스캔 -->
-  <context:component-scan base-package="app.snapshot.qure"/>
-
-  <!-- 파일 업로드(네 요구 추가) -->
-  <beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
-</beans:beans>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+</beans>

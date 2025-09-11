@@ -12,6 +12,7 @@
             location="classpath:application-db.properties"
             ignore-unresolvable="true"/>
 
+
     <!-- Service/Repo 스캔. Controller는 servlet-context에서 스캔 -->
     <context:component-scan base-package="app.snapshot.qure">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>

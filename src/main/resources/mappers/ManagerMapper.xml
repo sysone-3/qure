@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.snapshot.qure.login.repository.ManagerMapper">
+
+    <resultMap id="ManagerResultMap" type="app.snapshot.qure.login.dto.ManagerDTO">
+        <id property="managersId" column="MANAGERS_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="email" column="EMAIL"/>
+        <result property="passwordHash" column="PASSWORD_HASH"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="lastLoginAt" column="LAST_LOGIN_AT"/>
+    </resultMap>
+
+    <select id="findByEmail" parameterType="java.lang.String" resultMap="ManagerResultMap">
+        SELECT * FROM managers WHERE email = #{email}
+    </select>
+
+    <insert id="insert" parameterType="app.snapshot.qure.login.dto.ManagerDTO">
+        INSERT INTO managers (managers_id, name, email, password_hash, created_at, last_login_at)
+        VALUES (
+        SEQ_MANAGERS_ID.NEXTVAL,
+        #{name},
+        #{email},
+        #{passwordHash, jdbcType=VARCHAR},
+        SYSTIMESTAMP,
+        SYSTIMESTAMP
+        )
+    </insert>
+
+    <update id="updateLoginTime" parameterType="long">
+        UPDATE managers
+        SET last_login_at = SYSTIMESTAMP
+        WHERE managers_id = #{managersId}
+    </update>
+</mapper>
