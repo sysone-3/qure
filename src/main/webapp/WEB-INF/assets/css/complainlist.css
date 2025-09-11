@@ -45,6 +45,34 @@
   .table-wrap td .st.pending  { color:#ED6F62 !important; }
   .table-wrap td .st.progress { color:#FFE59A !important; }
   .table-wrap td .st.resolved { color:#A9DECE !important; }
+  .left .table-wrap{ align-self: start; } /* 1fr 늘어남 방지 */
+  
+  
+  /* sidebar 버튼 상태 */
+.sidebar .nav-btn{
+  width:36px; 
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:#fff;
+  cursor:pointer;
+  transition: background-color .15s, box-shadow .15s, transform .05s, border-color .15s;
+}
+.sidebar .nav-btn + .nav-btn{ margin-top:22px; }
+.sidebar .nav-img{ width:22px; height:22px; display:block; }
+
+/* 호버/선택 = 노란 하이라이트 */
+.sidebar .nav-btn:hover,
+.sidebar .nav-btn.active{
+  background:#FEE39A;           /* 요구 색상 */
+  border-color:transparent;
+  box-shadow:0 2px 10px rgba(254,227,154,.45); /* 살짝만 강조 */
+}
+.sidebar .nav-btn:active{ transform:translateY(.5px); }
+
+  
 
   
   @media (max-width:980px){.content{grid-template-columns:1fr}}

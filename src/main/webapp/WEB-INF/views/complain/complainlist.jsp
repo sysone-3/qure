@@ -55,13 +55,39 @@
 </head>
 <body>
 <div class="layout">
+	
+  <c:set var="uri" value="${pageContext.request.requestURI}"/>
   <aside class="sidebar">
-    <div class="logo"><div></div><div></div><div></div><div></div></div>
-    <div class="nav-ico"></div><div class="nav-ico"></div><div class="nav-ico"></div>
-    <div class="nav-ico"></div><div class="nav-ico"></div>
-    <div class="spacer"></div>
-    <div class="nav-ico"></div>
+  <!-- 로고 -->
+  <a href="#" class="nav-btn" aria-label="??">
+    <img src="<c:url value='/assets/images/LOGO.svg'/>" alt="" class="nav-img">
+  </a>
+  <a href="#" class="nav-btn" aria-label="??">
+    <img src="<c:url value='/assets/images/ICON_1.svg'/>" alt="" class="nav-img">
+  </a>
+  <a href="#" class="nav-btn" aria-label="??">
+    <img src="<c:url value='/assets/images/ICON_2.svg'/>" alt="" class="nav-img">
+  </a>
+  <a href="#" class="nav-btn" aria-label="??">
+    <img src="<c:url value='/assets/images/ICON_3.svg'/>" alt="" class="nav-img">
+  </a>
+  <a href="#" 
+	   class="nav-btn ${fn:contains(uri,'/admin/complain') ? 'active' : ''}"
+	   aria-label="민원관리"
+	   aria-current="${fn:contains(uri,'/admin/complain') ? 'page' : ''}">
+	  <img src="<c:url value='/assets/images/ICON_4.svg'/>" alt="민원관리" class="nav-img">
+  </a>
+  <a href="#" class="nav-btn" aria-label="지도">
+    <img src="<c:url value='/assets/images/ICON_5.svg'/>" alt="" class="nav-img">
+  </a>
+  
+
+  <div class="spacer"></div>
+  <a href="#" class="nav-btn" aria-label="로그아웃">
+    <img src="<c:url value='/assets/images/ICON_6.svg'/>" alt="" class="nav-img">
+    </a>
   </aside>
+
 
   <main class="content">
     <section class="left">

@@ -5,11 +5,14 @@
 document.addEventListener('DOMContentLoaded', function () {
   // CSRF 헤더 주입 헬퍼
   function withCsrf(headers) {
-    var t = document.querySelector('meta[name="_csrf"]');
-    var h = document.querySelector('meta[name="_csrf_header"]');
-    if (t && h) headers[h.content] = t.content;
+    var tEl = document.querySelector('meta[name="_csrf"]');
+    var hEl = document.querySelector('meta[name="_csrf_header"]');
+    var token = tEl && tEl.content ? tEl.content.trim() : '';
+    var name  = hEl && hEl.content ? hEl.content.trim() : '';
+    if (token && name) headers[name] = token; // 둘 다 있을 때만
     return headers;
   }
+
 
   var detailPanel = document.getElementById('detailPanel');
   if (!detailPanel) return;
