@@ -1,5 +1,6 @@
 package app.snapshot.qure.template.controller;
 
+import app.snapshot.qure.checklist.dto.TemplateCreateForm;
 import app.snapshot.qure.template.model.Template;
 import app.snapshot.qure.template.service.ITemplateService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,15 +39,15 @@ public class TemplateController {
 
     // 등록 처리 (POST)
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public String insertTemplate(Template template, RedirectAttributes redirectAttributes) {
+    public String insertTemplate(TemplateCreateForm form, RedirectAttributes redirectAttributes) {
         try {
-            templateService.insertTemplate(template);
+            long templateId = templateService.insertTemplate(form);
             redirectAttributes.addFlashAttribute("message",
-                    template.getTemplateId() + " 번 점검표가 등록되었습니다.");
+                    templateId + " 번 점검표가 등록되었습니다.");
         } catch (RuntimeException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
         }
-        return "redirect:/template/list";
+        return "redirect:/template";
     }
 
     // 단건 조회 + 수정 폼 (같은 화면)

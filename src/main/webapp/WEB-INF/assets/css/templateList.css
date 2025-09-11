@@ -93,12 +93,14 @@ html, body {
 .actions {
     display: flex;
     align-items: center;
+    justify-content: end;
     gap: 10px;
-    flex: 1;
+    flex: 0.5;
+    min-width: 330px;
 }
 
 .search-box {
-    flex: 1;
+    flex:1;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -131,11 +133,12 @@ html, body {
     flex-direction: column;
     justify-content: space-between;
     background: #fff;
-    min-height: 150px;
+    min-height: 170px;
     border-radius: 12px;
     box-shadow: var(--card-shadow);
     padding: 25px;
     transition: transform .2s ease;
+    /*gap: 50px;*/
 }
 .card:hover { transform: translateY(-4px); }
 

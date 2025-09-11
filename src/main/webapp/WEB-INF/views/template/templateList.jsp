@@ -58,7 +58,7 @@
                             <h3 class="card-title">${temp.name}</h3>
                             <p class="card-cycle">
                                 ${temp.cycle}${temp.cycleUnit eq 'YEAR' ? '년' :
-                                temp.cycleUnit eq 'MONTH' ? '월' :
+                                temp.cycleUnit eq 'MONTH' ? '개월' :
                                 temp.cycleUnit eq 'WEEK' ? '주' : '일'}에 한 번
                             </p>
                         </div>

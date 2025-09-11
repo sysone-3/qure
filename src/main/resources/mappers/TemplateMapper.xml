@@ -16,19 +16,24 @@
     </resultMap>
 
     <select id="getTemplateList" resultMap="templateMap">
-        select * from checklist_templates
+        SELECT * FROM CHECKLIST_TEMPLATES
+        ORDER BY TEMPLATE_ID DESC
     </select>
 
     <!-- 단건 조회 -->
     <select id="getTemplateById" parameterType="long" resultMap="templateMap">
-        select * from checklist_templates where template_id = #{id}
+        SELECT * FROM CHECKLIST_TEMPLATES WHERE TEMPLATE_ID = #{id}
     </select>
 
     <!-- 등록 -->
     <insert id="insertTemplate" parameterType="app.snapshot.qure.template.model.Template">
-        insert into checklist_templates
-        (template_id, domain, name, cycle, cycle_unit, version, is_active, created_at, facility_id)
-        values (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, #{version}, #{isActive}, sysdate, #{facilityId})
+        <selectKey keyProperty="templateId" resultType="long" order="BEFORE">
+            SELECT CHECKLIST_TEMPLATES_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO CHECKLIST_TEMPLATES
+        (TEMPLATE_ID, DOMAIN, NAME, CYCLE, CYCLE_UNIT, VERSION, IS_ACTIVE, CREATED_AT, FACILITY_ID)
+        VALUES
+        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, 1, 'Y', SYSDATE, NULL)
     </insert>
 
     <!-- 수정 -->
