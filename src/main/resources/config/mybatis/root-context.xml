@@ -37,7 +37,17 @@
         </property>
     </bean>
 
-    <!-- Mapper 인터페이스 스캔: 팀 범위로 통일(네 패키지 포함됨) -->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <!-- 배치 전용 SqlSessionTemplate -->
+    <bean id="batchSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+        <constructor-arg index="1" value="BATCH"/>
+    </bean>
+
+    <!-- Mapper 인터페이스 스캔 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="app.snapshot.qure"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
