@@ -47,6 +47,11 @@
         <constructor-arg index="1" value="BATCH"/>
     </bean>
 
+    <bean id="batchChecklistRepository" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="app.snapshot.qure.checklist.repository.IChecklistRepository"/>
+        <property name="sqlSessionTemplate" ref="batchSqlSessionTemplate"/>
+    </bean>
+
     <!-- Mapper 인터페이스 스캔 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="app.snapshot.qure"/>
