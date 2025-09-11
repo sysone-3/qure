@@ -2,6 +2,7 @@ package app.snapshot.qure.facilities.repository;
 
 import app.snapshot.qure.facilities.dto.ChecklistTemplateDto;
 import app.snapshot.qure.facilities.dto.FacilitiesDto;
+import app.snapshot.qure.facilities.dto.FacilityMarkerDto;
 import app.snapshot.qure.facilities.dto.InspectionDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,32 +12,39 @@ import java.util.List;
 
 @Mapper
 public interface IFacilitiesRepository {
-    List<FacilitiesDto> getFacilitiesListByManager(@Param("managerId") int managerId);
+    List<FacilitiesDto> getFacilitiesListByManager(@Param("managerId") Long managerId);
 
-    List<FacilitiesDto> searchFacilitiesByManager(@Param("managerId") int managerId,
+    List<FacilitiesDto> searchFacilitiesByManager(@Param("managerId") Long managerId,
                                                   @Param("q") String q);
 
-    FacilitiesDto getFacilitiesInfoByManager(@Param("facilityId") int facilityId,
-                                             @Param("managerId") int managerId);
+    FacilitiesDto getFacilitiesInfoByManager(@Param("facilityId") Long facilityId,
+                                             @Param("managerId") Long managerId);
 
-    int insertFacilitiesByManager(@Param("f") FacilitiesDto f,
-                                  @Param("managerId") int managerId);
+    Long insertFacilitiesByManager(@Param("f") FacilitiesDto f,
+                                  @Param("managerId") Long managerId);
 
     int updateFacilitiesByManager(@Param("facility") FacilitiesDto facilities,
-                                  @Param("managerId") int managerId);
+                                  @Param("managerId") Long managerId);
 
-    int deleteFacilitiesByManager(@Param("facilityId") int facilityId,
-                                  @Param("managerId") int managerId);
+    int deleteFacilitiesByManager(@Param("facilityId") Long facilityId,
+                                  @Param("managerId") Long managerId);
 
-    List<ChecklistTemplateDto> findTemplatesByFacilityIdAndManager(@Param("facilityId") int facilityId,
-                                                                   @Param("managerId") int managerId);
+    List<ChecklistTemplateDto> findTemplatesByFacilityIdAndManager(@Param("facilityId") Long facilityId,
+                                                                   @Param("managerId") Long managerId);
 
-    List<InspectionDto> findInspectionByFacilityIdAndManager(@Param("facilityId") int facilityId,
-                                                             @Param("managerId") int managerId);
+    List<InspectionDto> findInspectionByFacilityIdAndManager(@Param("facilityId") Long facilityId,
+                                                             @Param("managerId") Long managerId);
 
-    List<InspectionDto> findInspectionByFacilityIdAndPeriodAndManager(@Param("facilityId") int facilityId,
+    List<InspectionDto> findInspectionByFacilityIdAndPeriodAndManager(@Param("facilityId") Long facilityId,
                                                                       @Param("startD") LocalDate startD,
                                                                       @Param("endD") LocalDate endD,
-                                                                      @Param("managerId") int managerId);
+                                                                      @Param("managerId") Long managerId);
+    List<FacilityMarkerDto> findMarkersByManagerId(@Param("managerId") Long managerId);
+
+    List<FacilitiesDto> findByManagerWithNullCoords(@Param("managerId") Long managerId);
+
+    int updateCoords(@Param("facilityId") Long facilityId,
+                     @Param("gpsLat") Double gpsLat,
+                     @Param("gpsLng") Double gpsLng);
 }
 

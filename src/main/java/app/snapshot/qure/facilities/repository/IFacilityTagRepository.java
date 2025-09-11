@@ -2,9 +2,9 @@ package app.snapshot.qure.facilities.repository;
 import app.snapshot.qure.facilities.dto.FacilityTagDto;
 
 public interface IFacilityTagRepository {
-    int  getNextTagId();
+    Long  getNextTagId();
     int  insertFacilityTagWithGivenId(FacilityTagDto tag);
-    FacilityTagDto findActiveTagByFacilityId(int facilityId);
-    FacilityTagDto findById(int tagId);
-    int  deactivateActiveTags(int facilityId); // 필요 시 사용
+    FacilityTagDto findActiveTagByFacilityId(Long facilityId);
+    FacilityTagDto findById(Long tagId);
+    int  deactivateActiveTags(Long facilityId); // 필요 시 사용
 }

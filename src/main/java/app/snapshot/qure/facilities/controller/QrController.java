@@ -19,7 +19,7 @@ public class QrController {
     private final FacilitiesService facilitiesService;
 
     @GetMapping("/qr/{tagId}.png")
-    public void qr(@PathVariable int tagId, HttpServletResponse resp) throws Exception {
+    public void qr(@PathVariable Long tagId, HttpServletResponse resp) throws Exception {
         FacilityTagDto tag = facilitiesService.findTagById(tagId);
         if (tag == null || !"Y".equalsIgnoreCase(tag.getActive())) {
             resp.sendError(404);

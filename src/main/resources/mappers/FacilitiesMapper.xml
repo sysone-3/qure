@@ -74,10 +74,8 @@
         WHERE FACILITY_ID = #{facilityId}
           AND MANAGERS_ID = #{managerId}
     </select>
-
-    <!-- 설비 등록(관리자 한정) -->
     <insert id="insertFacilitiesByManager">
-        <selectKey keyProperty="f.facilityId" resultType="int" order="BEFORE">
+        <selectKey keyProperty="f.facilityId" resultType="Long" order="BEFORE">
             SELECT FACILITIES_SEQ.NEXTVAL FROM dual
         </selectKey>
 
@@ -92,8 +90,8 @@
         #{f.floor,      jdbcType=VARCHAR},
         #{f.zone,       jdbcType=VARCHAR},
         #{f.address,    jdbcType=VARCHAR},
-        #{f.gpsLat,     jdbcType=NUMERIC},
-        #{f.gpsLng,     jdbcType=NUMERIC},
+        #{f.gpsLat,     jdbcType=DOUBLE},
+        #{f.gpsLng,     jdbcType=DOUBLE},
         #{f.status,     jdbcType=VARCHAR},
         #{f.memo,       jdbcType=CLOB},
         SYSTIMESTAMP,
@@ -102,7 +100,6 @@
         #{f.inspectorId,jdbcType=INTEGER}
         )
     </insert>
-
 
     <!-- 수정(관리자 한정) -->
     <update id="updateFacilitiesByManager">
@@ -159,5 +156,43 @@
         ORDER BY i.INSPECTION_ID DESC
     </select>
 
+    <!-- 좌표 NULL 대상 조회 -->
+    <select id="findByManagerWithNullCoords" resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
+        SELECT
+            f.FACILITY_ID     AS facilityId,
+            f.NAME            AS name,
+            f.ADDRESS         AS address,
+            f.GPS_LAT         AS gpsLat,
+            f.GPS_LNG         AS gpsLng,
+            f.MANAGERS_ID     AS managersId
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+          AND (f.GPS_LAT IS NULL OR f.GPS_LNG IS NULL)
+        ORDER BY f.FACILITY_ID DESC
+    </select>
+
+    <!-- 좌표만 업데이트 -->
+    <update id="updateCoords">
+        UPDATE FACILITIES
+        SET GPS_LAT = #{gpsLat},
+            GPS_LNG = #{gpsLng},
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE FACILITY_ID = #{facilityId}
+    </update>
+
+    <!-- 지도 좌표별 마커 -->
+    <select id="findMarkersByManagerId" resultType="app.snapshot.qure.facilities.dto.FacilityMarkerDto">
+        SELECT
+            f.FACILITY_ID AS facilityId,
+            f.NAME        AS name,
+            f.ADDRESS     AS address,
+            f.GPS_LAT     AS gpsLat,
+            f.GPS_LNG     AS gpsLng
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+          AND f.GPS_LAT IS NOT NULL
+          AND f.GPS_LNG IS NOT NULL
+        ORDER BY f.FACILITY_ID DESC
+    </select>
 
 </mapper>
