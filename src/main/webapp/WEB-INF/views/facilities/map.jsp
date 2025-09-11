@@ -45,7 +45,7 @@
     </style>
 
     <!-- autoload=false 로드 -->
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoAppKey}&autoload=false"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=510d348c118386386188e7cf50c6db91&autoload=false"></script>
 </head>
 <body>
 <div class="container">
@@ -68,6 +68,63 @@
         if (!m) return;
         try { const c = m.getCenter(); m.relayout(); m.setCenter(c); } catch(e) { console.warn(e); }
     }
+    function renderSidebar(mode, payload) {
+        var box = document.getElementById('facility-list');
+
+        if (mode === 'list') {
+            renderFacilityList(facilityData);
+            return;
+        }
+
+        // mode === 'detail'
+        var d = payload || {};
+        var title = d.name || '시설';
+        var addr  = d.address || '';
+        var domain = d.domain || '—';
+        var zone   = d.zone || '—';
+        var status = d.status || '—';
+        var updated = d.updatedAt ? d.updatedAt : '—'; // 서버에서 ISO 문자열/타입 그대로 표기
+        var inspectorId   = (typeof d.inspectorId !== 'undefined' && d.inspectorId !== null) ? d.inspectorId : '—';
+        var inspectorName = d.inspectorName || '—';
+        var inspectorPhone= d.inspectorPhone || '—';
+        var detailLink    = '<c:url value="/facilities/"/>' + d.facilityId;
+
+        var html = ''
+            + '<div style="padding:16px; border-bottom:1px solid #eee; background:#f8f9fa; display:flex; align-items:center; gap:8px">'
+            + '  <button id="backToListBtn" style="border:1px solid #ddd; background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer">← 목록</button>'
+            + '  <h2 style="margin:0; font-size:18px; color:#333">상세 정보</h2>'
+            + '</div>'
+
+            + '<div style="padding:18px;">'
+            + '  <div style="font-weight:700; font-size:18px; margin-bottom:4px;">' + title + '</div>'
+            + '  <div style="color:#666; font-size:13px; margin-bottom:16px;">' + addr + '</div>'
+
+            + '  <table style="width:100%; border-collapse:collapse; font-size:14px;"><tbody>'
+            + '    <tr><td style="padding:8px 0; color:#888; width:32%">시설 ID</td><td style="padding:8px 0;">' + d.facilityId + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">도메인</td><td style="padding:8px 0;">' + domain + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">존/위치</td><td style="padding:8px 0;">' + zone + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">상태</td><td style="padding:8px 0;">' + status + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">수정일(Updated)</td><td style="padding:8px 0;">' + updated + '</td></tr>'
+            + '  </tbody></table>'
+
+            + '  <div style="margin:18px 0 8px; font-weight:700;">점검자 정보</div>'
+            + '  <table style="width:100%; border-collapse:collapse; font-size:14px;"><tbody>'
+            + '    <tr><td style="padding:8px 0; color:#888; width:32%">ID</td><td style="padding:8px 0;">' + inspectorId + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">이름</td><td style="padding:8px 0;">' + inspectorName + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">전화번호</td><td style="padding:8px 0;">' + inspectorPhone + '</td></tr>'
+            + '  </tbody></table>'
+
+            + '  <div style="margin-top:16px;">'
+            + '    <a href="' + detailLink + '" class="btn-detail" style="display:inline-block; padding:10px 14px; background:#ffeab3; border-radius:10px; text-decoration:none; color:#333; font-weight:600;">상세보기</a>'
+            + '  </div>'
+            + '</div>';
+
+        box.innerHTML = html;
+        document.getElementById('backToListBtn').addEventListener('click', function() {
+            renderSidebar('list');
+        });
+    }
+
 
     function renderFacilityList(facilities) {
         const list = document.getElementById('facility-list');
@@ -102,24 +159,42 @@
         list.innerHTML = html;
     }
 
-    function selectFacility(index) {
+    async function selectFacility(index) {
         var f = facilityData[index];
         if (!f) return;
+
         var lat = Number(String(f.gpsLat).trim());
         var lng = Number(String(f.gpsLng).trim());
-        if (isNaN(lat) || isNaN(lng)) return;
+        if (!isNaN(lat) && !isNaN(lng)) {
+            var pos = new kakao.maps.LatLng(lat, lng);
+            map.setCenter(pos);
+            map.setLevel(3);
+        }
 
         document.querySelectorAll('.facility-item').forEach(function(el){ el.classList.remove('active'); });
         var el = document.querySelector('.facility-item[data-index="' + index + '"]');
         if (el) el.classList.add('active');
 
-        var pos = new kakao.maps.LatLng(lat, lng);
-        map.setCenter(pos);
-        map.setLevel(3);
+        try {
+            // DTO: facilities + inspector_profile 요약 엔드포인트
+            var res = await fetch('<c:url value="/api/facilities/"/>' + f.facilityId + '/summary', {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!res.ok) throw new Error('요약 API 실패: ' + res.status);
+            var summary = await res.json();
 
-        if (infoWindows[index]) {
-            infoWindows.forEach(function(iw){ iw && iw.close(); });
-            infoWindows[index].open(map, markers[index]);
+            // 사이드바 상세 전환
+            renderSidebar('detail', summary);
+
+            // 해당 마커 말풍선도 열어줌(있을 때)
+            if (infoWindows[index]) {
+                infoWindows.forEach(function(iw){ iw && iw.close(); });
+                infoWindows[index].open(map, markers[index]);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('상세 정보를 불러오지 못했습니다.');
         }
     }
 
