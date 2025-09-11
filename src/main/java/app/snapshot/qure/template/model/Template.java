@@ -14,5 +14,5 @@ public class Template {
     private int version;
     private ActiveStatus isActive;
     private LocalDateTime createdAt;
-    private int facilityId;
+    private Integer facilityId;
 }

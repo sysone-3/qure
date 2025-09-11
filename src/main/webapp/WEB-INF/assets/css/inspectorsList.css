@@ -1,0 +1,70 @@
+body {
+    background: #FFFAE6;
+    flex-direction: column;
+    font-family: 'Pretendard';
+    display: flex;
+    overflow-y: hidden;
+}
+.innerContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 47px 24px;
+    height: 100%;
+}
+.topContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    font-style: normal;
+    color: #FFBF58;
+}
+.subTitle {
+    color: #474D56;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+}
+.buttonContainer {
+    display: flex;
+    gap: 12px
+}
+.boardContainer {
+    flex: 1;
+    align-self: stretch;
+    background: #fff;
+    margin-top:32px;
+    border-radius: 30px;
+    padding:30px 20px;
+}
+.totalTitle {
+    color: #474D56;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+}
+.highlight {
+    color: #FFBF58;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+}
+.statusContainer {
+     display: flex;
+     flex-direction: row;
+     justify-content: space-between;
+     align-items: center;
+}
+.register {
+    background: #FFD28A;
+    border-radius: 10px;
+    color: #fff;
+}
+.delete {
+    background: #FFE59A;
+    border-radius: 10px;
+    color: #fff;
+}
