@@ -1,0 +1,7 @@
+<select id="findAll" resultType="app.snapshot.qure.inspectors.dto.InspectorDTO">
+    SELECT inspector_id AS inspectorId,
+    phone,
+    name
+    FROM inspector_profile
+    ORDER BY inspector_id
+</select>
