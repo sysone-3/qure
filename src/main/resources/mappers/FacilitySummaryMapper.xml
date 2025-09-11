@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.snapshot.qure.facilities.repository.IFacilitySummaryRepository">
+
+    <select id="findSummaryByFacilityId"
+            parameterType="int"
+            resultType="app.snapshot.qure.facilities.dto.FacilitySummaryDto">
+        SELECT
+            f.FACILITY_ID     AS facilityId,
+            f.NAME            AS name,
+            f.ADDRESS         AS address,
+            f.DOMAIN          AS domain,
+            f.ZONE            AS zone,
+            f.UPDATED_AT      AS updatedAt,
+            f.STATUS          AS status,
+
+            ip.INSPECTOR_ID   AS inspectorId,
+            ip.NAME           AS inspectorName,
+            ip.PHONE          AS inspectorPhone
+
+        FROM FACILITIES f
+            LEFT JOIN INSPECTOR_PROFILE ip
+        ON ip.INSPECTOR_ID = f.INSPECTOR_ID
+        WHERE f.FACILITY_ID = #{facilityId}
+    </select>
+
+</mapper>
