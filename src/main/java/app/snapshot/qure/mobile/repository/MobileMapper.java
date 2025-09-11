@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import app.snapshot.qure.checklist.dto.ChecklistType;
+import app.snapshot.qure.checklist.model.ChecklistType;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
 import app.snapshot.qure.mobile.dto.CitizenReportDto;

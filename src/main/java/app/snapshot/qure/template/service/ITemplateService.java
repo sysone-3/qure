@@ -1,10 +1,15 @@
 package app.snapshot.qure.template.service;
 
+import app.snapshot.qure.checklist.dto.TemplateCreateForm;
 import app.snapshot.qure.template.model.Template;
 
 import java.util.List;
 
 public interface ITemplateService {
     List<Template> getTemplateList();
+    Template getTemplateById(Long id);
+    long insertTemplate(TemplateCreateForm template);
+    int updateTemplate(Template template);
+    int deleteTemplate(Long id);
 }
 

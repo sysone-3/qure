@@ -5,30 +5,52 @@
 
     <resultMap id="templateMap" type="app.snapshot.qure.template.model.Template">
         <result property="templateId" column="TEMPLATE_ID" />
-        <result property="domain" column="DOMAIN" />
+        <result property="domain" column="DOMAIN" javaType="app.snapshot.qure.template.model.DomainType"/>
         <result property="name" column="NAME" />
         <result property="cycle" column="CYCLE" />
-        <result property="cycleUnit" column="CYCLE_UNIT" />
+        <result property="cycleUnit" column="CYCLE_UNIT" javaType="app.snapshot.qure.template.model.CycleUnit"/>
         <result property="version" column="VERSION" />
-        <result property="isActive" column="IS_ACTIVE" />
+        <result property="isActive" column="IS_ACTIVE" javaType="app.snapshot.qure.template.model.ActiveStatus"/>
         <result property="createdAt" column="CREATED_AT" />
         <result property="facilityId" column="FACILITY_ID" />
     </resultMap>
 
     <select id="getTemplateList" resultMap="templateMap">
-        select * from checklist_templates
+        SELECT * FROM CHECKLIST_TEMPLATES
+        ORDER BY TEMPLATE_ID DESC
     </select>
 
-<!--    <select id="searchTemplates" resultMap="templateMap">-->
-<!--        select *-->
-<!--        from checklist_templates-->
-<!--        <where>-->
-<!--            <if test="domain != null">-->
-<!--                domain = #{domain}-->
-<!--            </if>-->
-<!--            <if test="keyword != null and keyword != ''">-->
-<!--                and lower(name) like concat('%', lower(#{keyword}), '%')-->
-<!--            </if>-->
-<!--        </where>-->
-<!--    </select>-->
+    <!-- 단건 조회 -->
+    <select id="getTemplateById" parameterType="long" resultMap="templateMap">
+        SELECT * FROM CHECKLIST_TEMPLATES WHERE TEMPLATE_ID = #{id}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insertTemplate" parameterType="app.snapshot.qure.template.model.Template">
+        <selectKey keyProperty="templateId" resultType="long" order="BEFORE">
+            SELECT CHECKLIST_TEMPLATES_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO CHECKLIST_TEMPLATES
+        (TEMPLATE_ID, DOMAIN, NAME, CYCLE, CYCLE_UNIT, VERSION, IS_ACTIVE, CREATED_AT, FACILITY_ID)
+        VALUES
+        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, 1, 'Y', SYSDATE, NULL)
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateTemplate" parameterType="app.snapshot.qure.template.model.Template">
+        update checklist_templates
+        set domain = #{domain},
+            name = #{name},
+            cycle = #{cycle},
+            cycle_unit = #{cycleUnit},
+            version = #{version},
+            is_active = #{isActive},
+            facility_id = #{facilityId}
+        where template_id = #{templateId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteTemplate" parameterType="long">
+        delete from checklist_templates where template_id = #{id}
+    </delete>
 </mapper>

@@ -1,14 +1,20 @@
 package app.snapshot.qure.checklist.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChecklistDto {
-    private Long ItemId;
-    private int orderNo;
+    private Long itemId;
+    private Integer orderNo;
     private String label;
-    private ChecklistType type;
-    private Boolean required;
+    private String type;
+    private String required;
     private String note;
     private String guideline;
     private Long templateId;
