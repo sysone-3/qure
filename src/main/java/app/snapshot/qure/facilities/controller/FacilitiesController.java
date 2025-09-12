@@ -44,8 +44,23 @@ public class FacilitiesController {
 
     // 설비 등록 폼
     @GetMapping("/new")
-    public String addForm(Model model) {
+    public String newForm(Model model,
+                          @RequestParam(value = "popup", required = false, defaultValue = "false") boolean popup,
+                          @RequestParam(value = "returnUrl", required = false) String returnUrl) {
+
+        // 기본 속성들
+        model.addAttribute("popup", popup);
+        model.addAttribute("returnUrl", returnUrl != null ? returnUrl : "");
+
+        // 빈 DTO 객체 추가 (JSP에서 사용할 수 있음)
         model.addAttribute("facility", new FacilitiesDto());
+
+        // 도메인 옵션들 추가
+        model.addAttribute("domains", List.of("청결", "순찰", "소방"));
+
+        // 디버깅을 위한 로그
+        System.out.println("newForm 메서드 호출됨 - popup: " + popup + ", returnUrl: " + returnUrl);
+
         return "facilities/facilities_add";
     }
 
@@ -56,23 +71,39 @@ public class FacilitiesController {
                          HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
 
-        // 1) 주소 → 좌표 변환
+        // 1) 주소 → 좌표
         GeocodingService.LatLng ll = geocodingService.geocode(dto.getAddress());
         if (ll != null) {
-            // DTO에 좌표 설정
             dto.setGpsLat(round(ll.lat(), 6));
             dto.setGpsLng(round(ll.lng(), 6));
         } else {
             dto.setGpsLat(null);
             dto.setGpsLng(null);
-            System.out.println("좌표 변환 실패 - null로 설정");
         }
 
-        // 2) 시설과 QR 생성 + 좌표까지 한번에 저장
+        // 2) 시설 + QR 생성
         Long facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
 
+        // 3) 템플릿 연결 (선택된 경우에만)
+        if (dto.getTemplateIds() != null && !dto.getTemplateIds().isBlank()) {
+            facilitiesService.attachTemplatesToFacility(
+                    facilityId,
+                    parseIds(dto.getTemplateIds()),
+                    managerId
+            );
+        }
+
         ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
-        return "redirect:/facilities/" + facilityId + "/qr";
+        return "redirect:/facilities";
+    }
+
+    // 쉼표 구분 문자열 → Long 리스트
+    private List<Long> parseIds(String csv) {
+        return java.util.Arrays.stream(csv.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::valueOf)
+                .toList();
     }
     // static 제거
     private Double round(double v, int scale) {
@@ -109,7 +140,6 @@ public class FacilitiesController {
         model.addAttribute("facility", facility);
         return "facilities/facilities_edit"; // JSP 경로
     }
-
 
     // 상세 (본인 소유만 접근)
     @GetMapping("/{facilityId}")

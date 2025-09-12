@@ -35,7 +35,7 @@
         </div>
         <div class="checklist-buttons">
             <c:forEach var="t" items="${templates}">
-                <a href="<c:url value='/checklist/${t.templateId}'/>" class="btn-template">${t.name}</a>
+                <a href="<c:url value='/template/${t.templateId}'/>" class="btn-template">${t.name}</a>
             </c:forEach>
         </div>
     </div>

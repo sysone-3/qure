@@ -19,5 +19,7 @@ public class FacilitiesDto {
     private Long managersId;
     private Long inspectorId;
 
-
+    private String templateIds; // "12,15,19" 같은 CSV
+    public String getTemplateIds() { return templateIds; }
+    public void setTemplateIds(String templateIds) { this.templateIds = templateIds; }
 }

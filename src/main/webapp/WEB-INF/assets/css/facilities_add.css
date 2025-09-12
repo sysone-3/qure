@@ -151,3 +151,104 @@ body::after { right:0; }
 .qr-card img{ display:block; width:280px; height:280px; }
 .qr-card .actions{ display:flex; gap:10px; justify-content:center; margin-top:16px; }
 
+
+
+/* 템플릿 추가 관련 */
+.template-section {
+    margin: 20px 0;
+}
+
+.template-list {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-height: 120px;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.template-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.template-item:last-child {
+    margin-bottom: 0;
+}
+
+.template-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.template-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.template-domain {
+    font-size: 12px;
+    color: #666;
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.template-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-add-template {
+    background: #FEE39A;
+    border: 1px solid #F5D564;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.btn-add-template:hover {
+    background: #F5D564;
+}
+
+.btn-remove {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-remove:hover {
+    background: #e55a5a;
+}
+
+.empty-template {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 30px;
+}
+
+.plus-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background: #666;
+    mask: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor'%3e%3cline x1='12' y1='5' x2='12' y2='19'%3e%3c/line%3e%3cline x1='5' y1='12' x2='19' y2='12'%3e%3c/line%3e%3c/svg%3e") center/contain no-repeat;
+}

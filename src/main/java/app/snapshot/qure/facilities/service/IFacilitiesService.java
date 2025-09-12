@@ -35,4 +35,7 @@ public interface IFacilitiesService {
 
     // 주소에서 좌표 변경
     void createByManager(FacilitiesDto facility, Long managerId);
+
+    void attachTemplatesToFacility(Long facilityId, List<Long> templateIds, Long managerId);
+
 }

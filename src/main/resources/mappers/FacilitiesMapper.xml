@@ -195,4 +195,20 @@
         ORDER BY f.FACILITY_ID DESC
     </select>
 
+    <update id="attachTemplatesToFacility">
+        UPDATE CHECKLIST_TEMPLATES t
+        SET t.FACILITY_ID = #{facilityId}
+        WHERE t.TEMPLATE_ID IN
+        <foreach collection="templateIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND EXISTS (
+        SELECT 1
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+        AND f.MANAGERS_ID = #{managerId}
+        )
+    </update>
+
+
 </mapper>
