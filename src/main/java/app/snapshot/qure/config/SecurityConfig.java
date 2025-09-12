@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -37,16 +38,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .anyRequest().permitAll()  // 일단 모든 요청 허용
                 )
                 .csrf(csrf -> csrf.disable())
 
+                // 세션 관리 설정
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/")   // 카카오 진입 전에 JSP 경로 잡아주기
-                        .defaultSuccessUrl("/manager/home")
+                        .loginPage("/")
+                        .defaultSuccessUrl("/manager/home", true)
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
                 );
-
 
         return http.build();
     }
@@ -67,7 +72,7 @@ public class SecurityConfig {
                 .clientSecret(kakaoClientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("{baseUrl}/login/oauth2/code/kakao") // 이게 실제로는 /qure/login/oauth2/code/kakao가 됨
+                .redirectUri("{baseUrl}/login/oauth2/code/kakao")
                 .scope("profile_nickname", "account_email")
                 .authorizationUri("https://kauth.kakao.com/oauth/authorize")
                 .tokenUri("https://kauth.kakao.com/oauth/token")
@@ -77,4 +82,3 @@ public class SecurityConfig {
                 .build();
     }
 }
-

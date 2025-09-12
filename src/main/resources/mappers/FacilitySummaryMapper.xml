@@ -16,7 +16,6 @@
             f.ZONE            AS zone,
             f.UPDATED_AT      AS updatedAt,
             f.STATUS          AS status,
-
             ip.INSPECTOR_ID   AS inspectorId,
             ip.NAME           AS inspectorName,
             ip.PHONE          AS inspectorPhone

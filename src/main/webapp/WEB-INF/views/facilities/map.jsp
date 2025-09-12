@@ -82,8 +82,7 @@
         var addr  = d.address || '';
         var domain = d.domain || '—';
         var zone   = d.zone || '—';
-        var status = d.status || '—';
-        var updated = d.updatedAt ? d.updatedAt : '—'; // 서버에서 ISO 문자열/타입 그대로 표기
+        var updated = d.updatedAt || '—'; // 서버에서 ISO 문자열/타입 그대로 표기
         var inspectorId   = (typeof d.inspectorId !== 'undefined' && d.inspectorId !== null) ? d.inspectorId : '—';
         var inspectorName = d.inspectorName || '—';
         var inspectorPhone= d.inspectorPhone || '—';
@@ -103,8 +102,7 @@
             + '    <tr><td style="padding:8px 0; color:#888; width:32%">시설 ID</td><td style="padding:8px 0;">' + d.facilityId + '</td></tr>'
             + '    <tr><td style="padding:8px 0; color:#888;">도메인</td><td style="padding:8px 0;">' + domain + '</td></tr>'
             + '    <tr><td style="padding:8px 0; color:#888;">존/위치</td><td style="padding:8px 0;">' + zone + '</td></tr>'
-            + '    <tr><td style="padding:8px 0; color:#888;">상태</td><td style="padding:8px 0;">' + status + '</td></tr>'
-            + '    <tr><td style="padding:8px 0; color:#888;">수정일(Updated)</td><td style="padding:8px 0;">' + updated + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">최근 점검일</td><td style="padding:8px 0;">' + updated + '</td></tr>'
             + '  </tbody></table>'
 
             + '  <div style="margin:18px 0 8px; font-weight:700;">점검자 정보</div>'
