@@ -18,6 +18,6 @@ public class ChecklistSubmitForm {
     public static class ResultRow {
         private Long itemId;
         private String value;
-        private List<MultipartFile> photos;
+        private MultipartFile[] photos;
     }
 }

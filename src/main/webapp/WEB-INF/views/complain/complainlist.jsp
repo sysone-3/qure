@@ -56,37 +56,51 @@
 <body>
 <div class="layout">
 	
-  <c:set var="uri" value="${pageContext.request.requestURI}"/>
   <aside class="sidebar">
-  <!-- 로고 -->
-  <a href="#" class="nav-btn" aria-label="??">
-    <img src="<c:url value='/assets/images/LOGO.svg'/>" alt="" class="nav-img">
+  <a href="<c:url value='/home' context='/'/>"
+     class="nav-btn ${nav=='home'?'active':''}" aria-label="대시보드"
+     <c:if test="${nav=='home'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/LOGO.svg'/>" alt="대시보드" class="nav-img">
   </a>
-  <a href="#" class="nav-btn" aria-label="??">
-    <img src="<c:url value='/assets/images/ICON_1.svg'/>" alt="" class="nav-img">
+
+  <a href="<c:url value='/facilities' context='/'/>"
+     class="nav-btn ${nav=='facilities'?'active':''}" aria-label="설비"
+     <c:if test="${nav=='facilities'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_1.svg'/>" alt="설비" class="nav-img">
   </a>
-  <a href="#" class="nav-btn" aria-label="??">
-    <img src="<c:url value='/assets/images/ICON_2.svg'/>" alt="" class="nav-img">
+
+  <a href="<c:url value='/inspections' context='/'/>"
+     class="nav-btn ${nav=='inspections'?'active':''}" aria-label="점검표"
+     <c:if test="${nav=='inspections'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_2.svg'/>" alt="점검표" class="nav-img">
   </a>
-  <a href="#" class="nav-btn" aria-label="??">
-    <img src="<c:url value='/assets/images/ICON_3.svg'/>" alt="" class="nav-img">
+
+  <a href="<c:url value='/inspectors' context='/'/>"
+     class="nav-btn ${nav=='inspectors'?'active':''}" aria-label="작업자"
+     <c:if test="${nav=='inspectors'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_3.svg'/>" alt="작업자" class="nav-img">
   </a>
-  <a href="#" 
-	   class="nav-btn ${fn:contains(uri,'/admin/complain') ? 'active' : ''}"
-	   aria-label="민원관리"
-	   aria-current="${fn:contains(uri,'/admin/complain') ? 'page' : ''}">
-	  <img src="<c:url value='/assets/images/ICON_4.svg'/>" alt="민원관리" class="nav-img">
+
+  <a href="<c:url value='/admin/complain' context='/'/>"
+     class="nav-btn ${nav=='complain'?'active':''}" aria-label="민원"
+     <c:if test="${nav=='complain'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_4.svg'/>" alt="민원" class="nav-img">
   </a>
-  <a href="#" class="nav-btn" aria-label="지도">
-    <img src="<c:url value='/assets/images/ICON_5.svg'/>" alt="" class="nav-img">
+
+  <a href="<c:url value='/map' context='/'/>"
+     class="nav-btn ${nav=='map'?'active':''}" aria-label="지도"
+     <c:if test="${nav=='map'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_5.svg'/>" alt="지도" class="nav-img">
   </a>
-  
 
   <div class="spacer"></div>
-  <a href="#" class="nav-btn" aria-label="로그아웃">
-    <img src="<c:url value='/assets/images/ICON_6.svg'/>" alt="" class="nav-img">
-    </a>
-  </aside>
+
+  <a href="<c:url value='/logout' context='/'/>" class="nav-btn" aria-label="로그아웃">
+    <img src="<c:url value='/assets/images/ICON_6.svg'/>" alt="로그아웃" class="nav-img">
+  </a>
+</aside>
+
+
 
 
   <main class="content">
@@ -262,5 +276,19 @@
     </section>
   </main>
 </div>
+
+<!-- 삭제 확인 모달 -->
+<div id="confirmModal" class="qm-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="qm-title">
+  <div class="qm-dialog" role="document">
+    <h2 id="qm-title" class="qm-title">확인</h2>
+    <p id="qm-message" class="qm-message">삭제 하시겠습니까?</p>
+    <div class="qm-actions">
+      <button type="button" class="qm-btn qm-cancel" data-role="cancel">취소</button>
+      <button type="button" class="qm-btn qm-ok" data-role="ok">확인</button>
+    </div>
+  </div>
+  <button type="button" class="qm-backdrop" aria-label="닫기" data-role="cancel"></button>
+</div>
+
 </body>
 </html>

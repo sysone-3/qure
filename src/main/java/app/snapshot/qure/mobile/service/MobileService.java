@@ -89,7 +89,7 @@ public class MobileService implements IMobileService {
         String finalResult = hasFail ? "FAIL" : "PASS";
 
         InspectionInsertDto dto = new InspectionInsertDto();
-        dto.setSubmittedAt(java.time.LocalDateTime.now());
+        dto.setSubmittedAt(LocalDateTime.now());
         dto.setResult(finalResult);
         dto.setFacilityId(facilityId);
         dto.setInspectorId(inspectorId);
@@ -101,16 +101,16 @@ public class MobileService implements IMobileService {
             for (ChecklistSubmitForm.ResultRow r : form.getResults()) {
                 if (r == null || r.getItemId() == null) continue;
 
-                ChecklistType type = mobileMapper.selectItemTypeById(r.getItemId()); // [CHANGED] Enum 사용
-                String raw  = r.getValue() == null ? "" : r.getValue().trim();
+                ChecklistType type = mobileMapper.selectItemTypeById(r.getItemId());
+                String raw = r.getValue() == null ? "" : r.getValue().trim();
 
                 InspectionItemResultInsertDto rd = new InspectionItemResultInsertDto();
                 rd.setInspectionId(inspectionId);
                 rd.setItemId(r.getItemId());
-                rd.setCreatedAt(java.time.LocalDateTime.now());
+                rd.setCreatedAt(LocalDateTime.now());
                 rd.setImageId(null);
 
-                switch (type) {                                              // [CHANGED] switch로 분기
+                switch (type) {
                     case BOOL:
                         if ("Y".equalsIgnoreCase(raw) || "N".equalsIgnoreCase(raw)) {
                             rd.setValueBool(raw.toUpperCase());
@@ -123,16 +123,16 @@ public class MobileService implements IMobileService {
                         rd.setValueText(raw.isEmpty() ? null : raw);
                         break;
                     case IMAGE:
-                        // 값 셋업 없음. 아래 사진 업로드 처리
+                        // 값 없음. 아래에서 파일 처리
                         break;
                 }
 
                 mobileMapper.insertInspectionItemResult(rd);
                 Long resultId = rd.getResultId();
 
-                if (type == ChecklistType.IMAGE) {                           // [CHANGED] Enum 비교
-                    var files = r.getPhotos();
-                    if (files != null && !files.isEmpty()) {
+                if (type == ChecklistType.IMAGE) {
+                    MultipartFile[] files = r.getPhotos();     // ← 배열로 변경된 DTO 사용
+                    if (files != null && files.length > 0) {
                         for (MultipartFile f : files) {
                             if (f == null || f.isEmpty()) continue;
 
@@ -150,7 +150,7 @@ public class MobileService implements IMobileService {
                                 throw new RuntimeException(e);
                             }
 
-                            var im = new ImageMetaInsertDto();
+                            ImageMetaInsertDto im = new ImageMetaInsertDto();
                             im.setFilePath(key);
                             im.setMimeType(ct);
                             im.setResultId(resultId);
@@ -162,6 +162,7 @@ public class MobileService implements IMobileService {
         }
         return inspectionId;
     }
+
     
  // [TEST] 최근 이미지 조회 구현
     @Transactional(readOnly = true)

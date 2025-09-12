@@ -36,6 +36,8 @@ public class ComplainController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate to) {
+    	
+    	model.addAttribute("nav","complain");
 
         int managerId = 20;
         LocalDateTime fromDt = (from == null) ? null : from.atStartOfDay(); // 해당날짜의 00시로 변경
