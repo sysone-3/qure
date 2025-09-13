@@ -28,10 +28,8 @@
 
                     <form method="get" action="<c:url value='/inspection/list'/>" class="filter-form">
                         <div class="filter-row">
-                            <!-- 키워드 검색 -->
                             <input type="text" name="keyword" value="${param.keyword}" placeholder="설비명·점검자명 검색하기" class="input-search"/>
 
-                            <!-- 날짜 범위 -->
                             <div class="input-wrapper">
                                 <img src="<c:url value='/assets/images/calendar.svg'/>" alt="" class="input-icon"/>
                                 <input type="text" name="dateRange"
@@ -39,11 +37,9 @@
                                        class="input-date"/>
                             </div>
 
-                            <!-- hidden 으로 실제 검색 값 전달 -->
                             <input type="hidden" name="startDate" id="startDate" value="${param.startDate}"/>
                             <input type="hidden" name="endDate" id="endDate" value="${param.endDate}"/>
 
-                            <!-- 상태 필터 -->
                             <div class="filter" id="status-filter">
                                 <span id="selected-status">
                                     <c:choose>
@@ -54,25 +50,21 @@
                                 </span>
                                 <img src="<c:url value='/assets/images/arrow-down.svg'/>" alt="arrow" class="icon"/>
 
-                                <!-- 드롭다운 메뉴 -->
                                 <ul class="dropdown hidden" id="status-dropdown">
                                     <li data-value="">전체 상태</li>
                                     <li data-value="PASS">완료</li>
                                     <li data-value="FAIL">이상 발견</li>
                                 </ul>
 
-                                <!-- 실제 제출 값 -->
                                 <input type="hidden" name="status" id="status" value="${param.status}"/>
                             </div>
 
-                            <!-- 검색 버튼 -->
                             <button type="submit" class="btn-search">검색</button>
                         </div>
                     </form>
                 </div>
                 <hr class="divider"/>
-                <div style="display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
-                    <!-- 테이블 -->
+                <div class="table-wrapper">
                     <table class="table">
                         <thead>
                         <tr>
@@ -112,7 +104,6 @@
                         </tbody>
                     </table>
 
-                    <!-- 페이지네이션 -->
                     <div class="pagination">
                         <c:if test="${page > 1}">
                             <a href="?page=1" class="page-btn first">
@@ -145,7 +136,7 @@
         <script>
             $(document).ready(function () {
                 $('input[name="dateRange"]').daterangepicker({
-                    autoUpdateInput: false, // 직접 선택했을 때만 값 채우기
+                    autoUpdateInput: false,
                     locale: {
                         format: 'YYYY-MM-DD',
                         separator: ' ~ ',
