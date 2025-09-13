@@ -68,6 +68,32 @@
         if (!m) return;
         try { const c = m.getCenter(); m.relayout(); m.setCenter(c); } catch(e) { console.warn(e); }
     }
+
+    function formatDate(timestamp) {
+        console.log('formatDate 호출됨:', timestamp);
+
+        if (!timestamp || timestamp === '—') return '—';
+
+        const date = new Date(Number(timestamp)); // Number()로 명시적 변환
+        console.log('Date 객체:', date);
+
+        if (isNaN(date.getTime())) return '—';
+
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+
+        console.log('year:', year, 'month:', month, 'day:', day); // 각 값 확인
+
+        const monthStr = month < 10 ? '0' + month : month.toString();
+        const dayStr = day < 10 ? '0' + day : day.toString();
+
+        const result = year + '.' + monthStr + '.' + dayStr;
+        console.log('포맷 결과:', result);
+
+        return result;
+    }
+
     function renderSidebar(mode, payload) {
         var box = document.getElementById('facility-list');
 
@@ -78,11 +104,20 @@
 
         // mode === 'detail'
         var d = payload || {};
+        console.log('payload 데이터:', d); // 디버깅용
+
         var title = d.name || '시설';
         var addr  = d.address || '';
         var domain = d.domain || '—';
         var zone   = d.zone || '—';
-        var updated = d.updatedAt || '—'; // 서버에서 ISO 문자열/타입 그대로 표기
+
+        // 안전한 접근 방식
+        var updatedAt = '—';
+        if (d.updatedAt) {
+            console.log('원본 timestamp:', d.updatedAt);
+            updatedAt = formatDate(d.updatedAt);
+            console.log('포맷된 결과:', updatedAt);
+        }
         var inspectorId   = (typeof d.inspectorId !== 'undefined' && d.inspectorId !== null) ? d.inspectorId : '—';
         var inspectorName = d.inspectorName || '—';
         var inspectorPhone= d.inspectorPhone || '—';
@@ -102,7 +137,7 @@
             + '    <tr><td style="padding:8px 0; color:#888; width:32%">시설 ID</td><td style="padding:8px 0;">' + d.facilityId + '</td></tr>'
             + '    <tr><td style="padding:8px 0; color:#888;">도메인</td><td style="padding:8px 0;">' + domain + '</td></tr>'
             + '    <tr><td style="padding:8px 0; color:#888;">존/위치</td><td style="padding:8px 0;">' + zone + '</td></tr>'
-            + '    <tr><td style="padding:8px 0; color:#888;">최근 점검일</td><td style="padding:8px 0;">' + updated + '</td></tr>'
+            + '    <tr><td style="padding:8px 0; color:#888;">최근 점검일</td><td style="padding:8px 0;">' + updatedAt + '</td></tr>'
             + '  </tbody></table>'
 
             + '  <div style="margin:18px 0 8px; font-weight:700;">점검자 정보</div>'
@@ -149,13 +184,13 @@
                 + '  <div class="facility-address">' + addr + '</div>'
                 + '  <div class="facility-links">'
                 + '    <a href="' + detailLink + '" onclick="event.stopPropagation()">상세보기</a>'
-                + '    <a href="' + mapLink + '" target="_blank" onclick="event.stopPropagation()">큰지도</a>'
-                + '    <a href="' + dirLink + '" target="_blank" onclick="event.stopPropagation()">길찾기</a>'
                 + '  </div>'
                 + '</div>';
         }
         list.innerHTML = html;
     }
+
+
 
     async function selectFacility(index) {
         var f = facilityData[index];
@@ -277,7 +312,7 @@
                         html += '<div><b>' + name + '</b></div>'
                             +  '<div style="color:#666">' + (f.address ? f.address : '') + '</div>'
                             +  '<div style="margin-top:6px">'
-                            +  '  <a href="' + detailLink + '">상세보기</a> · '
+                            +  '  <a href="' + detailLink + '">상세보기</a> '
                             +  '</div>';
                     } else {
                         html += '<div style="font-weight:bold; margin-bottom:6px">📍 이 위치의 시설들 (' + facilities.length + '개)</div>';

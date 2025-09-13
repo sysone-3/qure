@@ -46,5 +46,10 @@ public interface IFacilitiesRepository {
     int updateCoords(@Param("facilityId") Long facilityId,
                      @Param("gpsLat") Double gpsLat,
                      @Param("gpsLng") Double gpsLng);
+
+
+    void attachTemplatesToFacility(@Param("facilityId") Long facilityId,
+                                   @Param("templateIds") List<Long> templateIds, @Param("managerId") Long managerId );
+
 }
 

@@ -39,7 +39,7 @@
                     <div class="cell col-domain">도메인</div>
                     <div class="cell col-equip">설비명</div>
                     <div class="cell col-updated">최근 점검일자</div>
-                    <div class="cell col-actions"><!-- 삭제 칸 맞춤용 빈칸 --></div>
+                    <div class="cell col-actions">다음 점검</div>
                 </div>
             </div>
 
@@ -75,17 +75,31 @@
                                     </c:choose>
                                 </div>
 
-                                <!-- 삭제 -->
+                                <!-- 다음 점검 -->
                                 <div class="cell col-actions">
-                                    <form method="post" action="<c:url value='/facilities/${f.facilityId}/delete'/>"
-                                          onsubmit="return confirm('삭제하시겠습니까? 한 번 삭제 후 복구 불가능합니다. (ID: ${f.facilityId})');">
-                                        <button type="submit" class="icon-btn" title="삭제">
-                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                <path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"
-                                                      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    <div class="facility-header">
+                                        <c:choose>
+                                            <c:when test="${f.scheduleStatus == 'OVERDUE'}">
+                                                <span class="badge badge-danger">점검 지연</span>
+                                                <span class="note">
+                                                <fmt:formatDate value="${f.nextScheduledAt}" pattern="yyyy.MM.dd"/>
+                                                이후 <strong>${f.daysDelta}</strong>일 경과
+                                              </span>
+                                             </c:when>
+
+                                            <c:when test="${f.scheduleStatus == 'UPCOMING'}">
+                                                <span class="badge badge-info">다음 점검</span>
+                                                <span class="note">
+                                                <fmt:formatDate value="${f.nextScheduledAt}" pattern="yyyy.MM.dd"/>
+                                                &nbsp;(D<c:if test="${f.daysDelta >= 0}">-</c:if>${f.daysDelta})
+                                              </span>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <span class="badge">점검 예정 없음</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
                                 </div>
                                 </div>
                             </a>
