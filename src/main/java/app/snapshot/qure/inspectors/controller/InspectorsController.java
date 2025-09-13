@@ -29,6 +29,7 @@ public class InspectorsController {
         model.addAttribute("inspectors", inspectors);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalCount",totalCount);
         return "inspectors/inspectorsList";
     }
 }

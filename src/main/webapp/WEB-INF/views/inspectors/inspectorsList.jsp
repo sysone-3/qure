@@ -30,7 +30,7 @@
 
         <div class="boardContainer">
             <span class="totalTitle">전체</span>
-            <span class="highlight">0명</span>
+            <span class="highlight">${totalCount}명</span>
             <table class="inspectorTable">
                  <thead>
                     <tr>
@@ -50,9 +50,10 @@
                 </tbody>
             </table>
             <div class="pagination">
-                    <a href="?page=${currentPage - 1}" class="circle-btn prev">
-                        <img src="<c:url value='/assets/images/left.svg'/>" alt="left" class="icon" />
-                    </a>
+                     <a href="<c:out value='?page=${currentPage - 1}'/>"
+                         class="circle-btn prev ${currentPage == 1 ? 'disabled' : ''}">
+                         <img src="<c:url value='/assets/images/left.svg'/>" alt="left" class="icon" />
+                      </a>
 
                     <span class="circle-btn active" id="pageNumber">${currentPage}</span>
 
