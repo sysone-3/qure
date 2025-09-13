@@ -28,92 +28,117 @@
 
                     <form method="get" action="<c:url value='/inspection/list'/>" class="filter-form">
                         <div class="filter-row">
-
                             <!-- 키워드 검색 -->
                             <input type="text" name="keyword" value="${param.keyword}" placeholder="설비명·점검자명 검색하기" class="input-search"/>
 
                             <!-- 날짜 범위 -->
-                            <input type="text" name="dateRange"
-                                   value="<c:if test='${not empty param.startDate and not empty param.endDate}'>${fn:trim(param.startDate)} ~ ${fn:trim(param.endDate)}</c:if>"
-                           class="input-date"/>
+                            <div class="input-wrapper">
+                                <img src="<c:url value='/assets/images/calendar.svg'/>" alt="" class="input-icon"/>
+                                <input type="text" name="dateRange"
+                                       value="<c:if test='${not empty param.startDate and not empty param.endDate}'>${fn:trim(param.startDate)} ~ ${fn:trim(param.endDate)}</c:if>"
+                                       class="input-date"/>
+                            </div>
 
                             <!-- hidden 으로 실제 검색 값 전달 -->
                             <input type="hidden" name="startDate" id="startDate" value="${param.startDate}"/>
                             <input type="hidden" name="endDate" id="endDate" value="${param.endDate}"/>
 
                             <!-- 상태 필터 -->
-                            <select name="status" class="input-select">
-                                <option value="">전체 상태</option>
-                                <option value="PASS" <c:if test="${param.status == 'PASS'}">selected</c:if>>완료</option>
-                                <option value="FAIL" <c:if test="${param.status == 'FAIL'}">selected</c:if>>이상 발견</option>
-                            </select>
+                            <div class="filter" id="status-filter">
+                                <span id="selected-status">
+                                    <c:choose>
+                                        <c:when test="${param.status == 'PASS'}">완료</c:when>
+                                        <c:when test="${param.status == 'FAIL'}">이상 발견</c:when>
+                                        <c:otherwise>전체 상태</c:otherwise>
+                                    </c:choose>
+                                </span>
+                                <img src="<c:url value='/assets/images/arrow-down.svg'/>" alt="arrow" class="icon"/>
+
+                                <!-- 드롭다운 메뉴 -->
+                                <ul class="dropdown hidden" id="status-dropdown">
+                                    <li data-value="">전체 상태</li>
+                                    <li data-value="PASS">완료</li>
+                                    <li data-value="FAIL">이상 발견</li>
+                                </ul>
+
+                                <!-- 실제 제출 값 -->
+                                <input type="hidden" name="status" id="status" value="${param.status}"/>
+                            </div>
 
                             <!-- 검색 버튼 -->
                             <button type="submit" class="btn-search">검색</button>
                         </div>
                     </form>
                 </div>
-
                 <hr class="divider"/>
-
-                <!-- 테이블 -->
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>유형</th>
-                        <th>점검 설비</th>
-                        <th>점검일</th>
-                        <th>점검자</th>
-                        <th>점검 상태</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="r" items="${inspections}">
+                <div style="display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+                    <!-- 테이블 -->
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td>${r.domain}</td>
-                            <td>
-                                <c:out value="${r.facilityName}" />
-                                <c:if test="${not empty r.floor}"> ${r.floor}층</c:if>
-                                <c:if test="${not empty r.zone}"> ${r.zone}구역</c:if>
-                            </td>
-                            <td><fmt:formatDate value="${r.submittedAt}" pattern="yyyy년 M월 d일" /></td>
-                            <td>${r.inspectorName}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${r.result == 'PASS'}">
-                                        <span class="badge ok">완료</span>
-                                    </c:when>
-                                    <c:when test="${r.result == 'FAIL'}">
-                                        <span class="badge warn">이상 발견</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="badge">${r.result}</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
+                            <th>유형</th>
+                            <th>점검 설비</th>
+                            <th>점검일</th>
+                            <th>점검자</th>
+                            <th>점검 상태</th>
                         </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="r" items="${inspections}">
+                            <tr>
+                                <td>${r.domain}</td>
+                                <td>
+                                    <c:out value="${r.facilityName}" />
+                                    <c:if test="${not empty r.floor}"> ${r.floor}층</c:if>
+                                    <c:if test="${not empty r.zone}"> ${r.zone}구역</c:if>
+                                </td>
+                                <td><fmt:formatDate value="${r.submittedAt}" pattern="yyyy년 M월 d일" /></td>
+                                <td>${r.inspectorName}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${r.result == 'PASS'}">
+                                            <span class="badge ok">완료</span>
+                                        </c:when>
+                                        <c:when test="${r.result == 'FAIL'}">
+                                            <span class="badge warn">이상 발견</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge">${r.result}</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
 
-                <!-- 페이지네이션 -->
-                <div class="pagination">
-                    <c:if test="${page > 1}">
-                        <a href="?page=1&size=${param.size}&keyword=${param.keyword}&startDate=${param.startDate}&endDate=${param.endDate}&status=${param.status}">&laquo;</a>
-                        <a href="?page=${page-1}&size=${param.size}&keyword=${param.keyword}&startDate=${param.startDate}&endDate=${param.endDate}&status=${param.status}">&lt;</a>
-                    </c:if>
+                    <!-- 페이지네이션 -->
+                    <div class="pagination">
+                        <c:if test="${page > 1}">
+                            <a href="?page=1" class="page-btn first">
+                                <img src="<c:url value='/assets/images/arrow-left-double.svg'/>" alt="처음"/>
+                            </a>
+                            <a href="?page=${page-1}" class="page-btn prev">
+                                <img src="<c:url value='/assets/images/arrow-left.svg'/>" alt="이전"/>
+                            </a>
+                        </c:if>
 
-                    <c:forEach begin="1" end="${totalPages}" var="p">
-                        <a href="?page=${p}&size=${param.size}&keyword=${param.keyword}&startDate=${param.startDate}&endDate=${param.endDate}&status=${param.status}"
-                           class="${p == page ? 'active' : ''}">
-                                ${p}
-                        </a>
-                    </c:forEach>
+                        <c:forEach begin="1" end="${totalPages}" var="p">
+                            <a href="?page=${p}&size=${param.size}&keyword=${param.keyword}&startDate=${param.startDate}&endDate=${param.endDate}&status=${param.status}"
+                               class="${p == page ? 'active' : ''}">
+                                    ${p}
+                            </a>
+                        </c:forEach>
 
-                    <c:if test="${page < totalPages}">
-                        <a href="?page=${page+1}&size=${param.size}&keyword=${param.keyword}&startDate=${param.startDate}&endDate=${param.endDate}&status=${param.status}">&gt;</a>
-                        <a href="?page=${totalPages}&size=${param.size}&keyword=${param.keyword}&startDate=${param.startDate}&endDate=${param.endDate}&status=${param.status}">&raquo;</a>
-                    </c:if>
+                        <c:if test="${page < totalPages}">
+                            <a href="?page=${page+1}" class="page-btn next">
+                                <img src="<c:url value='/assets/images/arrow-right.svg'/>" alt="다음"/>
+                            </a>
+                            <a href="?page=${totalPages}" class="page-btn last">
+                                <img src="<c:url value='/assets/images/arrow-right-double.svg'/>" alt="끝"/>
+                            </a>
+                        </c:if>
+                    </div>
                 </div>
             </section>
         </div>
@@ -161,5 +186,6 @@
                 });
             });
         </script>
+        <script src="<c:url value='/assets/js/inspection.js'/>"></script>
     </body>
 </html>

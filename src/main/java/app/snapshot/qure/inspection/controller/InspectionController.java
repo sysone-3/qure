@@ -29,7 +29,7 @@ public class InspectionController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
             @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "7") int size,
             Model model) {
 
         List<InspectionItemDto> inspections =
