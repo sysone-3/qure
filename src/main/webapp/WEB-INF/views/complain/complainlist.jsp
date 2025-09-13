@@ -56,37 +56,32 @@
 <body>
 <div class="layout">
 	
-  <aside class="sidebar">
+  <aside class="sidebar app-nav">
   <a href="<c:url value='/home' context='/'/>"
      class="nav-btn ${nav=='home'?'active':''}" aria-label="대시보드"
      <c:if test="${nav=='home'}">aria-current="page"</c:if>>
     <img src="<c:url value='/assets/images/LOGO.svg'/>" alt="대시보드" class="nav-img">
   </a>
-
   <a href="<c:url value='/facilities' context='/'/>"
      class="nav-btn ${nav=='facilities'?'active':''}" aria-label="설비"
      <c:if test="${nav=='facilities'}">aria-current="page"</c:if>>
     <img src="<c:url value='/assets/images/ICON_1.svg'/>" alt="설비" class="nav-img">
   </a>
-
   <a href="<c:url value='/inspections' context='/'/>"
      class="nav-btn ${nav=='inspections'?'active':''}" aria-label="점검표"
      <c:if test="${nav=='inspections'}">aria-current="page"</c:if>>
     <img src="<c:url value='/assets/images/ICON_2.svg'/>" alt="점검표" class="nav-img">
   </a>
-
   <a href="<c:url value='/inspectors' context='/'/>"
      class="nav-btn ${nav=='inspectors'?'active':''}" aria-label="작업자"
      <c:if test="${nav=='inspectors'}">aria-current="page"</c:if>>
     <img src="<c:url value='/assets/images/ICON_3.svg'/>" alt="작업자" class="nav-img">
   </a>
-
   <a href="<c:url value='/admin/complain' context='/'/>"
      class="nav-btn ${nav=='complain'?'active':''}" aria-label="민원"
      <c:if test="${nav=='complain'}">aria-current="page"</c:if>>
     <img src="<c:url value='/assets/images/ICON_4.svg'/>" alt="민원" class="nav-img">
   </a>
-
   <a href="<c:url value='/map' context='/'/>"
      class="nav-btn ${nav=='map'?'active':''}" aria-label="지도"
      <c:if test="${nav=='map'}">aria-current="page"</c:if>>
@@ -99,6 +94,7 @@
     <img src="<c:url value='/assets/images/ICON_6.svg'/>" alt="로그아웃" class="nav-img">
   </a>
 </aside>
+
 
 
 

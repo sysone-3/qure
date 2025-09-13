@@ -2,12 +2,9 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="app.snapshot.qure.mobile.repository.MobileMapper">
 
-  <!-- 태그 요약 -->
-  <select id="selectTagSummaryById"
-          parameterType="int"
+  <select id="selectTagSummaryById" parameterType="int"
           resultType="app.snapshot.qure.mobile.dto.TagSummaryDto">
     SELECT
       ft.tag_id      AS tagId,
@@ -17,48 +14,38 @@
       f.zone         AS zone,
       f.facility_id  AS facilityId
     FROM facility_tags ft
-    JOIN facilities f
-      ON f.facility_id = ft.facility_id
+    JOIN facilities f ON f.facility_id = ft.facility_id
     WHERE ft.tag_id = #{tagId}
       AND ft.active = 'Y'
       AND ft.revoked_at IS NULL
   </select>
 
-  <select id="selectPin4byTagId"
-          parameterType="int"
-          resultType="string">
-    SELECT
-      SUBSTR(REGEXP_REPLACE(ip.phone,'[^0-9]',''), -4) AS phone_last4
+  <select id="selectPin4byTagId" parameterType="int" resultType="string">
+    SELECT SUBSTR(REGEXP_REPLACE(ip.phone,'[^0-9]',''), -4) AS phone_last4
     FROM facility_tags ft
-    JOIN facilities f
-      ON f.facility_id = ft.facility_id
-    JOIN inspector_profile ip
-      ON ip.inspector_id = f.inspector_id
+    JOIN facilities f      ON f.facility_id = ft.facility_id
+    JOIN inspector_profile ip ON ip.inspector_id = f.inspector_id
     WHERE ft.tag_id = #{tagId}
       AND ft.active = 'Y'
       AND ft.revoked_at IS NULL
     FETCH FIRST 1 ROWS ONLY
   </select>
 
-  <!-- [CHANGED] domain/cycle_unit/is_active를 Enum 필드에 매핑 -->
-  <select id="selectTemplateByTagId"
-          parameterType="int"
+  <select id="selectTemplateByTagId" parameterType="int"
           resultType="app.snapshot.qure.mobile.dto.ChecklistTemplateDto">
     SELECT
       ct.template_id  AS templateId,
-      ct.domain       AS domain,      -- DomainType
+      ct.domain       AS domain,
       ct.name         AS name,
       ct.cycle        AS cycle,
-      ct.cycle_unit   AS cycleUnit,   -- CycleUnit
+      ct.cycle_unit   AS cycleUnit,
       ct.version      AS version,
-      ct.is_active    AS isActive,    -- ActiveStatus (Y/N)
+      ct.is_active    AS isActive,
       ct.created_at   AS createdAt,
       ct.facility_id  AS facilityId
     FROM facility_tags ft
-    JOIN facilities f
-      ON ft.facility_id = f.facility_id
-    JOIN checklist_templates ct
-      ON ct.facility_id = f.facility_id
+    JOIN facilities f ON ft.facility_id = f.facility_id
+    JOIN checklist_templates ct ON ct.facility_id = f.facility_id
     WHERE ft.tag_id = #{tagId}
       AND ft.active = 'Y'
       AND ft.revoked_at IS NULL
@@ -67,15 +54,13 @@
     FETCH FIRST 1 ROWS ONLY
   </select>
 
-  <!-- [CHANGED] resultType를 FQCN으로 명시, type은 Enum으로 자동 매핑 -->
-  <select id="selectAllChecklistByTemplateId"
-          parameterType="int"
+  <select id="selectAllChecklistByTemplateId" parameterType="int"
           resultType="app.snapshot.qure.mobile.dto.ChecklistItemDto">
     SELECT
       ci.item_id      AS itemId,
       ci.order_no     AS orderNo,
       ci.label        AS label,
-      ci.type         AS type,        -- ChecklistType (BOOL/NUM/TEXT/IMAGE)
+      ci.type         AS type,
       CASE WHEN ci.required = 'Y' THEN 1 ELSE 0 END AS required,
       ci.note         AS note,
       ci.guideline    AS guide,
@@ -85,15 +70,13 @@
     ORDER BY ci.order_no
   </select>
 
-  <select id="selectSubmitIdByTagId"
-          parameterType="int"
+  <select id="selectSubmitIdByTagId" parameterType="int"
           resultType="app.snapshot.qure.mobile.dto.SubmitIdDto">
     SELECT
       f.facility_id   AS facilityId,
       f.inspector_id  AS inspectorId
     FROM facility_tags ft
-    JOIN facilities f
-      ON f.facility_id = ft.facility_id
+    JOIN facilities f ON f.facility_id = ft.facility_id
     WHERE ft.tag_id = #{tagId}
       AND ft.active = 'Y'
       AND ft.revoked_at IS NULL
@@ -109,16 +92,14 @@
       inspection_id, submitted_at, result, facility_id, inspector_id
     ) VALUES (
       #{inspectionId},
-      #{submittedAt, jdbcType=TIMESTAMP},
+      SYSTIMESTAMP,
       #{result},
       #{facilityId},
       #{inspectorId}
     )
   </insert>
 
-  <!-- [CHANGED] resultType을 Enum FQCN으로 지정 -->
-  <select id="selectItemTypeById"
-          parameterType="long"
+  <select id="selectItemTypeById" parameterType="long"
           resultType="app.snapshot.qure.checklist.model.ChecklistType">
     SELECT type
     FROM checklist_items
@@ -158,21 +139,18 @@
     )
   </insert>
 
-  <select id="selectImageMeta"
-          parameterType="long"
+  <select id="selectImageMeta" parameterType="long"
           resultType="app.snapshot.qure.mobile.dto.ImageMetaInsertDto">
     SELECT
       image_id  AS imageId,
       file_path AS filePath,
-      mime_type AS mimeType,
+      mime_type AS MimeType,
       result_id AS resultId
     FROM images
     WHERE image_id = #{imageId}
   </select>
 
-  <!-- [TEST] 최근 이미지 조회: 최신 image_id 기준 -->
-  <select id="selectLatestImages"
-          parameterType="int"
+  <select id="selectLatestImages" parameterType="int"
           resultType="app.snapshot.qure.mobile.dto.ImageMetaInsertDto">
     SELECT
       image_id  AS imageId,
@@ -184,8 +162,7 @@
     FETCH FIRST ${limit} ROWS ONLY
   </select>
 
-  <select id="selectManagerIdByFacilityId"
-          parameterType="int"
+  <select id="selectManagerIdByFacilityId" parameterType="int"
           resultType="java.lang.Integer">
     SELECT managers_id
     FROM facilities
@@ -193,7 +170,6 @@
     FETCH FIRST 1 ROWS ONLY
   </select>
 
-  <!-- facilityId 조회는 기존 selectTagSummaryById 사용 -->
   <insert id="insertComplain"
           parameterType="app.snapshot.qure.mobile.dto.CitizenReportDto">
     <selectKey keyProperty="citizenReportId" resultType="long" order="BEFORE">
@@ -206,13 +182,27 @@
       #{citizenReportId, jdbcType=NUMERIC},
       #{facilityId, jdbcType=NUMERIC},
       #{category, jdbcType=VARCHAR},
-      #{description, jdbcType=VARCHAR},   <!-- CLOB이면 CLOB로 -->
-      #{email, jdbcType=VARCHAR},         <!-- null 가능 -->
+      #{description, jdbcType=VARCHAR},
+      #{email, jdbcType=VARCHAR},
       'PENDING',
       SYSTIMESTAMP,
-      #{resolvedBy, jdbcType=NUMERIC},    <!-- null 가능 -->
+      #{resolvedBy, jdbcType=NUMERIC},
       NULL
     )
   </insert>
+
+  <!-- 다음 예정일 갱신: 기준 SYSTIMESTAMP -->
+  <update id="updateNextScheduledAtByFacility" parameterType="map">
+    UPDATE facilities
+       SET next_scheduled_at =
+         CASE
+           WHEN #{cycleUnit} = 'DAY'   THEN (SYSTIMESTAMP + #{cycle})
+           WHEN #{cycleUnit} = 'WEEK'  THEN (SYSTIMESTAMP + (7 * #{cycle}))
+           WHEN #{cycleUnit} = 'MONTH' THEN ADD_MONTHS(SYSTIMESTAMP, #{cycle})
+           WHEN #{cycleUnit} = 'YEAR'  THEN ADD_MONTHS(SYSTIMESTAMP, 12 * #{cycle})
+           ELSE next_scheduled_at
+         END
+     WHERE facility_id = #{facilityId}
+  </update>
 
 </mapper>

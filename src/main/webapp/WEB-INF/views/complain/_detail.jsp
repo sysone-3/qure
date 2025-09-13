@@ -39,10 +39,10 @@
 	  <input type="hidden" name="id" value="${selected.citizenReportId}"/>
 	
 	  <select name="status" class="status-select">
-	    <option value="PENDING"     ${selected.status == 'PENDING' ? 'selected' : ''}>미처리</option>
-	    <option value="IN_PROGRESS" ${selected.status == 'IN_PROGRESS' ? 'selected' : ''}>처리중</option>
-	    <option value="RESOLVED"    ${selected.status == 'RESOLVED' ? 'selected' : ''}>완료</option>
-	  </select>
+		  <option value="IN_PROGRESS" ${selected.status == 'IN_PROGRESS' ? 'selected' : ''}>처리중</option>
+		  <option value="RESOLVED"    ${selected.status == 'RESOLVED' ? 'selected' : ''}>완료</option>
+		</select>
+
 	
 	  <button type="submit" class="btn ok">상태 변경</button>
 	</form>
