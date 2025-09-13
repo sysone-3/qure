@@ -59,7 +59,7 @@ public class LoginController {
 
             System.out.println("세션에 저장 완료: managerId=" + manager.getManagersId());
 
-            return "manager/home";
+            return "redirect:/dashboard";
         }
 
         // 로그인되지 않은 경우
