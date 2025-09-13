@@ -1,4 +1,3 @@
-// src/main/java/app/snapshot/qure/admin/complain/repository/ComplainMapper.java
 package app.snapshot.qure.admin.complain.repository;
 
 import java.time.LocalDateTime;
