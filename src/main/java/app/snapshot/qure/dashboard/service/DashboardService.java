@@ -1,11 +1,11 @@
 package app.snapshot.qure.dashboard.service;
 
-import app.snapshot.qure.dashboard.dto.OtherInspectionStats;
-import app.snapshot.qure.dashboard.dto.DashboardSessionView;
-import app.snapshot.qure.dashboard.dto.TodayInspectionStats;
+import app.snapshot.qure.dashboard.dto.*;
 import app.snapshot.qure.dashboard.repository.IDashboardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DashboardService implements IDashboardService {
@@ -36,5 +36,15 @@ public class DashboardService implements IDashboardService {
         vm.setTodayTotal(todayStats.getTodayTotal());
         vm.setTodayCompleted(todayStats.getTodayCompleted());
         return vm;
+    }
+
+    @Override
+    public List<DailyCompletionPoint> getRecentDailyCompletion(int days) {
+        return dashboardRepository.selectRecentDailyCompletion(days);
+    }
+
+    @Override
+    public List<RecentInspectionItem> getRecentInspections(int limit) {
+        return dashboardRepository.selectRecentInspections(limit);
     }
 }

@@ -1,5 +1,6 @@
 package app.snapshot.qure.dashboard.controller;
 
+import app.snapshot.qure.dashboard.dto.DailyCompletionPoint;
 import app.snapshot.qure.dashboard.dto.DashboardSessionView;
 import app.snapshot.qure.dashboard.dto.OtherInspectionStats;
 import app.snapshot.qure.dashboard.dto.TodayInspectionStats;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -26,13 +29,17 @@ public class DashboardController {
         String name = SessionUtil.getKakaoName(session);
         String email = SessionUtil.getKakaoEmail(session);
         DashboardSessionView vm = dashboardService.buildDashboardView(name, email);
+
         TodayInspectionStats todayStats = dashboardService.getTodayInspectionStats();
         OtherInspectionStats otherStats = dashboardService.getOtherInspectionStats();
+        List<DailyCompletionPoint> recent = dashboardService.getRecentDailyCompletion(11);
 
         model.addAttribute("vm", vm);
         model.addAttribute("todayStats", todayStats);
         model.addAttribute("otherStats", otherStats);
+        model.addAttribute("recentPoints", recent);
+        model.addAttribute("recentInspections", dashboardService.getRecentInspections(7));
 
-        return "dashboard/dashboard"; // JSP 뷰
+        return "dashboard/dashboard";
     }
 }
