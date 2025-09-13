@@ -139,6 +139,11 @@ public class FacilitiesService implements IFacilitiesService {
         return Math.round(v * p) / p;
     }
 
+    @Transactional
+    public void attachTemplatesToFacility(Long facilityId, List<Long> templateIds, Long managerId) {
+        if (templateIds == null || templateIds.isEmpty()) return;
+        facilitiesRepository.attachTemplatesToFacility(facilityId, templateIds , managerId);
+    }
 
 }
 
