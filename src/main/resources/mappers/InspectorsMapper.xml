@@ -1,7 +1,24 @@
-<select id="findAll" resultType="app.snapshot.qure.inspectors.dto.InspectorDTO">
-    SELECT inspector_id AS inspectorId,
-    phone,
-    name
-    FROM inspector_profile
-    ORDER BY inspector_id
-</select>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.snapshot.qure.inspectors.repository.InspectorsMapper">
+
+    <select id="findPaged" resultType="app.snapshot.qure.inspectors.dto.InspectorDTO">
+        SELECT inspector_id AS inspectorId,
+        name,
+        phone
+        FROM (
+        SELECT inspector_id, name, phone,
+        ROW_NUMBER() OVER (ORDER BY inspector_id) AS rn
+        FROM inspector_profile
+        )
+        WHERE rn BETWEEN #{startRow} AND #{endRow}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM inspector_profile
+    </select>
+
+</mapper>

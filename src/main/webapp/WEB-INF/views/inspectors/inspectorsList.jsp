@@ -42,21 +42,23 @@
                 <tbody>
                     <c:forEach var="inspector" items="${inspectors}">
                         <tr>
-                            <td>{inspector.id}</td>
-                            <td>{inspector.name}</td>
-                            <td>{inspector.phone}</td>
+                            <td>${inspector.inspectorId}</td>
+                            <td>${inspector.name}</td>
+                            <td>${inspector.phone}</td>
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
             <div class="pagination">
-                 <button class="circle-btn prev">
-                    <img src="<c:url value='/assets/images/left.svg'/>" alt="left" class="icon" />
-                 </button>
-                 <button class="circle-btn active" id="pageNumber">1</button>
-                 <button class="circle-btn next">
-                     <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon" />
-                 </button>
+                    <a href="?page=${currentPage - 1}" class="circle-btn prev">
+                        <img src="<c:url value='/assets/images/left.svg'/>" alt="left" class="icon" />
+                    </a>
+
+                    <span class="circle-btn active" id="pageNumber">${currentPage}</span>
+
+                    <a href="?page=${currentPage + 1}" class="circle-btn next">
+                         <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon" />
+                    </a>
             </div>
         </div>
     </div>
