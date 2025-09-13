@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MapService {
     private final String kakaoAppKey;
+    private final String kakaoApiKey;
 
-    public MapService(@Value("${kakao.app.key}") String kakaoAppKey) {
+    public MapService(@Value("${kakao.app.key}") String kakaoAppKey, @Value("${kakao.api.key}") String kakaoApiKey) {
         this.kakaoAppKey = kakaoAppKey;
+        this.kakaoApiKey = kakaoApiKey;
     }
 
 

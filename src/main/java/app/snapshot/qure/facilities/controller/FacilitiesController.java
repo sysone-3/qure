@@ -129,7 +129,6 @@ public class FacilitiesController {
     }
 
     // 설비 수정
-    // 설비 수정
     @GetMapping("/{facilityId}/edit")
     public String editForm(@PathVariable("facilityId") Long facilityId,
                            Model model, RedirectAttributes ra, HttpSession session) {
