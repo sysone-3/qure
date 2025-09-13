@@ -127,7 +127,7 @@ public class FacilitiesController {
         model.addAttribute("tag", tag);
         return "facilities/facility_qr";
     }
-
+    
     // 설비 수정
     // 설비 수정
     @GetMapping("/{facilityId}/edit")
