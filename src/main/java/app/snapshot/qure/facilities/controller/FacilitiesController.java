@@ -39,6 +39,7 @@ public class FacilitiesController {
                 ? facilitiesService.getFacilitiesListByManager(managerId)
                 : facilitiesService.searchFacilitiesByManager(managerId, q.trim());
         model.addAttribute("facilities", facilities);
+
         return "facilities/facilities";
     }
 

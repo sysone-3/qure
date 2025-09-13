@@ -10,7 +10,7 @@ public class FacilitySummaryDto {
     private String address;
     private String domain;
     private String zone;
-    private java.sql.Timestamp updateAt;
+    private java.sql.Timestamp updatedAt;
     private String status; // 합격/미흡/보류 등
     // 점검자
     private String inspectorName;

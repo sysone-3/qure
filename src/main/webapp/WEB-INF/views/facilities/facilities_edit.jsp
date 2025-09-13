@@ -6,86 +6,98 @@
     <meta charset="UTF-8">
     <title>설비 수정</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- facilities 전용 CSS -->
     <link rel="stylesheet" href="<c:url value='/assets/css/facilities_add.css'/>">
 </head>
 <body>
 <div class="page">
     <div class="form-card">
-        <form id="facilityForm"  action="<c:url value='/facilities/${facility.facilityId}'/>"
-              method="post">
+        <!-- 타이틀  -->
+        <div class="title-row">
+            <h2 class="form-title">설비 수정</h2>
+        </div>
 
+        <form id="facilityForm" action="<c:url value='/facilities/${facility.facilityId}'/>" method="post">
             <!-- PK hidden -->
             <input type="hidden" name="facilityId" value="${facility.facilityId}"/>
 
+            <!-- 시설명 -->
             <div class="cell">시설명</div>
-            <input type="text" name="name" value="${facility.name}" placeholder="예: 본관 전기실" required>
-
-            <div class="cell">설비 주소</div>
-            <div id="addressBlock">
-                <table>
-                    <colgroup><col style="width:20%"><col></colgroup>
-                    <tbody>
-                    <tr>
-                        <th>우편번호</th>
-                        <td>
-                            <input type="text" id="zipNo" name="zipNo" readonly style="width:100px">
-                            <input type="button" value="주소검색" onclick="goPopup();">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>도로명주소</th>
-                        <td>
-                            <input type="text" id="roadAddrPart1" name="roadAddrPart1" style="width:85%">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>상세주소</th>
-                        <td>
-                            <input type="text" id="addrDetail" name="addrDetail" style="width:40%">
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <!-- DB에 저장/전송되는 최종 주소 -->
-                <input type="hidden" id="address" name="address" value="${facility.address}">
+            <div class="input-wrapper">
+                <input type="text" name="name" class="text-input"
+                       value="${facility.name}" placeholder="예: 본관 전기실" required>
             </div>
 
+            <!-- 설비 주소 (그리드 레이아웃) -->
+            <div class="cell">설비 주소</div>
+            <div id="addressBlock" class="address-grid">
+                <div class="address-row">
+                    <label class="label" for="zipNo">우편번호</label>
+                    <div class="field with-action">
+                        <input type="text" id="zipNo" name="zipNo" class="text-input" readonly>
+                        <button type="button" class="btn-inline-action" onclick="goPopup()">주소검색</button>
+                    </div>
+                </div>
+
+                <div class="address-row">
+                    <label class="label" for="roadAddrPart1">도로명주소</label>
+                    <div class="field">
+                        <!-- SSR 기본값: 전체 주소를 일단 도로명에 박아둔다(보여주기 보장) -->
+                        <input type="text" id="roadAddrPart1" name="roadAddrPart1"
+                               class="text-input" value="${facility.address}">
+                    </div>
+                </div>
+
+                <div class="address-row">
+                    <label class="label" for="addrDetail">상세주소</label>
+                    <div class="field">
+                        <input type="text" id="addrDetail" name="addrDetail" class="text-input">
+                    </div>
+                </div>
+            </div>
+            <!-- DB에 저장/전송되는 최종 주소 -->
+            <input type="hidden" id="address" name="address" value="${facility.address}">
+
+            <!-- 도메인 -->
             <div class="cell">도메인</div>
-            <label>
-                <select name="domain">
+            <div class="input-wrapper">
+                <select name="domain" class="select-input">
                     <option value="청결" <c:if test="${facility.domain == '청결'}">selected</c:if>>청결</option>
                     <option value="순찰" <c:if test="${facility.domain == '순찰'}">selected</c:if>>순찰</option>
                     <option value="소방" <c:if test="${facility.domain == '소방'}">selected</c:if>>소방</option>
                 </select>
-            </label>
+            </div>
 
+            <!-- 층 -->
             <div class="cell">층</div>
             <div class="row">
-                <input type="text" name="floor" value="${facility.floor}" placeholder="(예: B2)">
+                <input type="text" name="floor" class="text-input"
+                       value="${facility.floor}" placeholder="(예: B2)">
             </div>
 
+            <!-- 상세 구역 -->
             <div class="cell">상세 구역</div>
             <div class="row">
-                <input type="text" name="zone" value="${facility.zone}" placeholder="(예: 로비)">
+                <input type="text" name="zone" class="text-input"
+                       value="${facility.zone}" placeholder="(예: 로비)">
             </div>
 
+            <!-- 점검자 ID -->
             <div class="cell">점검자 ID</div>
             <div class="row">
-                <input type="text" name="inspectorId" value="${facility.inspectorId}" placeholder="(예: 1)">
+                <input type="text" name="inspectorId" class="text-input"
+                       value="${facility.inspectorId}" placeholder="(예: 1)">
             </div>
 
-            <!-- 점검표 선택 섹션 추가 -->
+            <!-- 점검표 선택 -->
             <div class="cell">점검표 선택</div>
             <div class="template-section">
                 <button type="button" id="btnAddTemplate" class="btn-add-template">
-                    <span class="plus-icon"></span>
-                    점검표 추가
+                    <span class="add-plus">+</span> 점검표 추가
                 </button>
 
                 <div class="template-list" id="selectedTemplates">
-                    <div class="empty-template">
-                        선택된 점검표가 없습니다
-                    </div>
+                    <div class="empty-template">선택된 점검표가 없습니다</div>
                 </div>
 
                 <!-- 선택된 점검표 ID들을 저장할 hidden input -->
@@ -101,7 +113,6 @@
 </div>
 
 <!-- 서버에서 전달받은 기존 점검표들을 저장할 숨김 영역 -->
-<!-- 서버에서 전달받은 기존 점검표들을 저장할 숨김 영역 -->
 <div id="server-templates" style="display:none;">
     <c:forEach var="template" items="${attachedTemplates}">
         <div class="template-data"
@@ -112,11 +123,8 @@
     </c:forEach>
 </div>
 
-
 <script>
-    // 선택된 점검표들을 저장할 배열
-    let selectedTemplates = [];
-
+    // ===== 주소검색 팝업 =====
     function goPopup(){
         var url = "<c:url value='/popup/juso'/>";
         window.open(url, "pop", "width=570,height=420,scrollbars=yes,resizable=yes");
@@ -124,7 +132,7 @@
 
     // juso 콜백
     function jusoCallBack(fullAddress, roadAddrPart1, addrDetail, zipNo) {
-        document.getElementById('roadAddrPart1').value = roadAddrPart1 || '';
+        document.getElementById('roadAddrPart1').value = roadAddrPart1 || fullAddress || '';
         document.getElementById('addrDetail').value    = addrDetail    || '';
         document.getElementById('zipNo').value         = zipNo         || '';
         document.getElementById('address').value =
@@ -133,23 +141,59 @@
                 : [roadAddrPart1, addrDetail].filter(Boolean).join(' ');
     }
 
-    // 페이지 최초 진입 시 DB 주소를 보조필드에 풀어넣기(단순 분리)
-    (function prefillAddress(){
-        var full = document.getElementById('address').value || '';
-        if (!full) return;
-        // 마지막 공백 뒤를 상세주소로 가정
-        var idx = full.lastIndexOf(' ');
-        if (idx > 0) {
-            var road = full.substring(0, idx);
-            var detail = full.substring(idx + 1);
-            if (!document.getElementById('roadAddrPart1').value) document.getElementById('roadAddrPart1').value = road;
-            if (!document.getElementById('addrDetail').value)    document.getElementById('addrDetail').value    = detail;
-        } else {
-            if (!document.getElementById('roadAddrPart1').value) document.getElementById('roadAddrPart1').value = full;
-        }
-    })();
+    // ===== 주소 프리필(안전모드) =====
+    document.addEventListener('DOMContentLoaded', function () {
+        const addrFullEl = document.getElementById('address');       // hidden full address
+        const roadEl     = document.getElementById('roadAddrPart1'); // 도로명
+        const detailEl   = document.getElementById('addrDetail');    // 상세
 
-    // 서버에서 전달된 기존 점검표 데이터를 selectedTemplates 배열에 로드
+        if (!addrFullEl || !roadEl || !detailEl) {
+            console.warn('[prefill] 필요한 엘리먼트를 못 찾았습니다.');
+            return;
+        }
+
+        const full = (addrFullEl.value || '').trim();
+        if (!full) {
+            // 컨트롤러에서 facility.address가 비어있으면 여기서 종료
+            return;
+        }
+
+        // 1) SSR에서 이미 도로명에 전체 주소를 박아뒀음(보장)
+        // 2) 이제 상세주소 패턴이 보이면 분리 시도 → 실패하면 그대로 둠
+
+        let road = full, detail = '';
+
+        // 쉼표 기반: "도로명, 상세"
+        if (full.includes(',')) {
+            const parts = full.split(',');
+            road = parts[0].trim();
+            detail = parts.slice(1).join(',').trim();
+        } else {
+            // 괄호 상세: "도로명 (상세)"
+            const m = full.match(/^(.*)\s*\((.+)\)\s*$/);
+            if (m) {
+                road = m[1].trim();
+                detail = m[2].trim();
+            } else {
+                // 마지막 공백 분리(보조)
+                const idx = full.lastIndexOf(' ');
+                if (idx > 0) {
+                    road = full.substring(0, idx).trim();
+                    detail = full.substring(idx + 1).trim();
+                }
+            }
+        }
+
+        if (!detailEl.value && detail) detailEl.value = detail;
+        if (!roadEl.value && road)     roadEl.value   = road;
+
+        // hidden도 도로명+상세로 정리(서브밋 일관성)
+        addrFullEl.value = [roadEl.value, detailEl.value].filter(Boolean).join(' ');
+    });
+
+    // ===== 점검표 선택 관리 =====
+    let selectedTemplates = [];
+
     function loadExistingTemplates() {
         const serverTemplates = document.getElementById('server-templates');
         if (!serverTemplates) return;
@@ -174,48 +218,30 @@
         updateTemplateDisplay();
     }
 
-    // 점검표 선택 팝업 열기
     function openTemplateSelectPopup() {
         const url = "<c:url value='/template/select'/>?popup=true";
         window.open(url, "templateSelectPop", "width=720,height=640,scrollbars=yes,resizable=yes");
     }
 
-    // 점검표 선택 팝업에서 호출되는 콜백
     function selectTemplateCallback(templateId, templateName, domain) {
-        // 이미 선택된 점검표인지 확인
         if (selectedTemplates.find(t => t.id === templateId)) {
             alert('이미 선택된 점검표입니다.');
             return;
         }
-
-        // 새 점검표 추가
-        selectedTemplates.push({
-            id: templateId,
-            name: templateName,
-            domain: domain
-        });
-
+        selectedTemplates.push({ id: templateId, name: templateName, domain });
         updateTemplateDisplay();
     }
 
-    // 새로 등록된 점검표 추가용 콜백
     function addNewTemplateCallback(templateId, templateName, domain) {
-        selectedTemplates.push({
-            id: templateId,
-            name: templateName,
-            domain: domain
-        });
-
+        selectedTemplates.push({ id: templateId, name: templateName, domain });
         updateTemplateDisplay();
     }
 
-    // 점검표 제거
     function removeTemplate(templateId) {
         selectedTemplates = selectedTemplates.filter(t => t.id !== templateId);
         updateTemplateDisplay();
     }
 
-    // 점검표 목록 화면 업데이트
     function updateTemplateDisplay() {
         const container = document.getElementById('selectedTemplates');
         const templateIdsInput = document.getElementById('templateIds');
@@ -223,78 +249,60 @@
         if (selectedTemplates.length === 0) {
             container.innerHTML = '<div class="empty-template">선택된 점검표가 없습니다</div>';
             templateIdsInput.value = '';
-        } else {
-            let html = '';
-            selectedTemplates.forEach(template => {
-                html +=
-                    '<div class="template-item">' +
-                    '<div class="template-info">' +
-                    '<div class="template-name">' + escapeHtml(template.name) + '</div>' +
-                    '<div class="template-domain">' + getDomainText(template.domain) + '</div>' +
-                    '</div>' +
-                    '<div class="template-actions">' +
-                    '<button type="button" class="btn-remove" onclick="removeTemplate(\'' + template.id + '\')">삭제</button>' +
-                    '</div>' +
-                    '</div>';
-            });
-            container.innerHTML = html;
-
-            // 선택된 템플릿 ID들을 쉼표로 구분하여 hidden input에 설정
-            templateIdsInput.value = selectedTemplates.map(t => t.id).join(',');
+            return;
         }
+
+        let html = '';
+        selectedTemplates.forEach(template => {
+            html +=
+                '<div class="template-item">' +
+                '<div class="template-info">' +
+                '<div class="template-name">' + escapeHtml(template.name) + '</div>' +
+                '<div class="template-domain">' + getDomainText(template.domain) + '</div>' +
+                '</div>' +
+                '<div class="template-actions">' +
+                '<button type="button" class="btn-remove" onclick="removeTemplate(\'' + template.id + '\')">삭제</button>' +
+                '</div>' +
+                '</div>';
+        });
+        container.innerHTML = html;
+
+        templateIdsInput.value = selectedTemplates.map(t => t.id).join(',');
     }
 
-    // HTML 이스케이프 함수
     function escapeHtml(text) {
         if (!text) return '';
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-    // 도메인 텍스트 변환
     function getDomainText(domain) {
         switch(domain) {
             case 'CLEANING': return '미화';
-            case 'FIRE': return '소방';
-            case 'PATROL': return '순찰';
-            case '청결': return '청결';
-            case '소방': return '소방';
-            case '순찰': return '순찰';
-            default: return domain || '';
+            case 'FIRE':     return '소방';
+            case 'PATROL':   return '순찰';
+            case '청결':     return '청결';
+            case '소방':     return '소방';
+            case '순찰':     return '순찰';
+            default:         return domain || '';
         }
     }
 
-    // DOM 로드 완료 후 실행
     document.addEventListener("DOMContentLoaded", function() {
-        // 기존 점검표 로드
         loadExistingTemplates();
-
-        // 점검표 추가 버튼 이벤트
         const btnAddTemplate = document.getElementById("btnAddTemplate");
-        if (btnAddTemplate) {
-            btnAddTemplate.addEventListener("click", function() {
-                openTemplateSelectPopup();
-            });
-        }
+        if (btnAddTemplate) btnAddTemplate.addEventListener("click", openTemplateSelectPopup);
     });
 
-    // 페이지 로드 시 URL 파라미터에서 새로 등록된 점검표 정보 확인
+    // 새로 등록된 점검표 파라미터 처리
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const newTemplateId = urlParams.get('newTemplateId');
-        const newTemplateName = urlParams.get('newTemplateName');
-        const newTemplateDomain = urlParams.get('newTemplateDomain');
+        const id = urlParams.get('newTemplateId');
+        const name = urlParams.get('newTemplateName');
+        const domain = urlParams.get('newTemplateDomain');
 
-        if (newTemplateId && newTemplateName && newTemplateDomain) {
-            addNewTemplateCallback(newTemplateId, decodeURIComponent(newTemplateName), newTemplateDomain);
-
-            // URL에서 파라미터 제거 (브라우저 기록에 남지 않도록)
+        if (id && name && domain) {
+            addNewTemplateCallback(id, decodeURIComponent(name), domain);
             const cleanUrl = window.location.pathname;
             history.replaceState({}, document.title, cleanUrl);
         }

@@ -2,6 +2,8 @@ package app.snapshot.qure.facilities.dto;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class FacilitiesDto {
 	private Long facilityId;
@@ -18,8 +20,11 @@ public class FacilitiesDto {
     private java.sql.Timestamp updatedAt;
     private Long managersId;
     private Long inspectorId;
+    private Date nextScheduledAt;
+
 
     private String templateIds; // "12,15,19" 같은 CSV
-    public String getTemplateIds() { return templateIds; }
-    public void setTemplateIds(String templateIds) { this.templateIds = templateIds; }
+    private String scheduleStatus; // OVERDUE | UPCOMING | NONE
+    private Integer daysDelta;     // 경과/남은 일수
+
 }

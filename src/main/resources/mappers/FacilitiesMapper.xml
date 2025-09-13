@@ -6,7 +6,7 @@
 <mapper namespace="app.snapshot.qure.facilities.repository.IFacilitiesRepository">
 
     <!-- Dto 매핑 -->
-    <resultMap id="facilityMap" type="app.snapshot.qure.facilities.dto.FacilitiesDto">
+    <resultMap id="FacilityMap" type="app.snapshot.qure.facilities.dto.FacilitiesDto">
         <result property="facilityId" column="FACILITY_ID"/>
         <result property="domain" column="DOMAIN"/>
         <result property="name" column="NAME"/>
@@ -21,6 +21,10 @@
         <result property="updatedAt" column="UPDATED_AT"/>
         <result property="managersId" column="MANAGERS_ID"/>
         <result property="inspectorId" column="INSPECTOR_ID"/>
+        <result property="nextScheduledAt" column="NEXT_SCHEDULED_AT"/>
+
+        <result property="scheduleStatus" column="SCHEDULE_STATUS"/>
+        <result property="daysDelta" column="DAYS_DELTA" jdbcType="INTEGER"/>
     </resultMap>
 
     <resultMap id="templateMap" type="app.snapshot.qure.facilities.dto.ChecklistTemplateDto">
@@ -43,37 +47,111 @@
     </resultMap>
 
     <!-- 목록(관리자 한정) -->
-    <select id="getFacilitiesListByManager"
-            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        SELECT *
-        FROM FACILITIES
-        WHERE MANAGERS_ID = #{managerId}
-        ORDER BY FACILITY_ID DESC
-    </select>
+    <select id="getFacilitiesListByManager" parameterType="long" resultMap="FacilityMap">
+  <![CDATA[
+        SELECT
+            f.FACILITY_ID,
+            f.DOMAIN,
+            f.NAME,
+            f.ADDRESS,
+            f.FLOOR,
+            f.ZONE,
+            f.STATUS,
+            f.MEMO,
+            f.CREATED_AT,
+            f.UPDATED_AT,
+            f.NEXT_SCHEDULED_AT,
 
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+                ELSE 'UPCOMING'
+                END AS SCHEDULE_STATUS,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE))
+                    THEN TRUNC(NVL(f.UPDATED_AT, SYSDATE)) - TRUNC(f.NEXT_SCHEDULED_AT)
+                ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)
+                END AS DAYS_DELTA
+
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+        ORDER BY f.FACILITY_ID DESC
+        ]]>
+  </select>
     <!-- 검색(관리자 한정) -->
-    <select id="searchFacilitiesByManager"
-            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        SELECT *
-        FROM FACILITIES
-        WHERE MANAGERS_ID = #{managerId}
-          AND (
-            LOWER(NAME)   LIKE '%' || LOWER(#{q}) || '%'
-                OR LOWER(DOMAIN) LIKE '%' || LOWER(#{q}) || '%'
-                OR LOWER(ZONE)   LIKE '%' || LOWER(#{q}) || '%'
-                OR CAST(FACILITY_ID AS VARCHAR(20)) LIKE '%' || #{q} || '%'
-            )
-        ORDER BY FACILITY_ID DESC
-    </select>
+    <select id="searchFacilitiesByManager" parameterType="map" resultMap="FacilityMap">
+  <![CDATA[
+        SELECT
+            f.FACILITY_ID,
+            f.DOMAIN,
+            f.NAME,
+            f.ADDRESS,
+            f.FLOOR,
+            f.ZONE,
+            f.STATUS,
+            f.MEMO,
+            f.CREATED_AT,
+            f.UPDATED_AT,
+            f.NEXT_SCHEDULED_AT,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+                ELSE 'UPCOMING'
+                END AS SCHEDULE_STATUS,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE))
+                    THEN TRUNC(NVL(f.UPDATED_AT, SYSDATE)) - TRUNC(f.NEXT_SCHEDULED_AT)
+                ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)
+                END AS DAYS_DELTA
+
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+          AND (f.NAME LIKE '%'||#{q}||'%' OR f.DOMAIN LIKE '%'||#{q}||'%')
+        ORDER BY f.FACILITY_ID DESC
+        ]]>
+  </select>
 
     <!-- 단건(관리자 한정) -->
     <select id="getFacilitiesInfoByManager"
-            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        SELECT *
-        FROM FACILITIES
-        WHERE FACILITY_ID = #{facilityId}
-          AND MANAGERS_ID = #{managerId}
-    </select>
+            resultMap="FacilityMap">
+  <![CDATA[
+        SELECT
+            f.FACILITY_ID,
+            f.DOMAIN,
+            f.NAME,
+            f.ADDRESS,
+            f.FLOOR,
+            f.ZONE,
+            f.STATUS,
+            f.MEMO,
+            f.CREATED_AT,
+            f.UPDATED_AT,
+            f.NEXT_SCHEDULED_AT,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+                ELSE 'UPCOMING'
+                END AS SCHEDULE_STATUS,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE))
+                    THEN TRUNC(NVL(f.UPDATED_AT, SYSDATE)) - TRUNC(f.NEXT_SCHEDULED_AT)  -- 지연일수
+                ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)                       -- 남은일수
+                END AS DAYS_DELTA
+
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+          AND f.MANAGERS_ID = #{managerId}
+        ]]>
+</select>
+
     <insert id="insertFacilitiesByManager">
         <selectKey keyProperty="f.facilityId" resultType="Long" order="BEFORE">
             SELECT FACILITIES_SEQ.NEXTVAL FROM dual
@@ -82,7 +160,7 @@
         INSERT INTO FACILITIES (
         FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
         GPS_LAT, GPS_LNG, STATUS, MEMO,
-        CREATED_AT, UPDATED_AT, MANAGERS_ID, INSPECTOR_ID
+        CREATED_AT, UPDATED_AT, MANAGERS_ID, INSPECTOR_ID, NEXT_SCHEDULED_AT
         ) VALUES (
         #{f.facilityId, jdbcType=INTEGER},
         #{f.domain,     jdbcType=VARCHAR},
@@ -97,7 +175,8 @@
         SYSTIMESTAMP,
         #{f.updatedAt, jdbcType=TIMESTAMP},
         #{managerId,    jdbcType=INTEGER},
-        #{f.inspectorId,jdbcType=INTEGER}
+        #{f.inspectorId,jdbcType=INTEGER},
+        #{f.nextScheduledAt,jdbcType=DATE}
         )
     </insert>
 
@@ -210,5 +289,29 @@
         )
     </update>
 
+    <select id="findFacilityWithSchedule" resultMap="FacilityMap">
+        SELECT
+        f.FACILITY_ID,
+        f.NAME,
+        f.ADDRESS,
+        f.UPDATED_AT,
+        f.NEXT_SCHEDULED_AT,
+
+        CASE
+        WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+        WHEN TRUNC(f.NEXT_SCHEDULED_AT) &lt; TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+            ELSE 'UPCOMING'
+        END AS schedule_status,
+
+        CASE
+        WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+        WHEN f.NEXT_SCHEDULED_AT &lt; CAST(f.UPDATED_AT AS DATE)
+        THEN TRUNC(CAST(f.UPDATED_AT AS DATE)) - TRUNC(f.NEXT_SCHEDULED_AT)
+        ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)
+        END AS days_delta
+
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+    </select>
 
 </mapper>
