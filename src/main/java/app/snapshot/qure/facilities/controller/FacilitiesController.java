@@ -94,7 +94,7 @@ public class FacilitiesController {
         }
 
         ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
-        return "redirect:/facilities";
+        return "redirect:/facilities/" + facilityId + "/qr";
     }
 
     // 쉼표 구분 문자열 → Long 리스트
@@ -128,8 +128,10 @@ public class FacilitiesController {
     }
 
     // 설비 수정
+    // 설비 수정
     @GetMapping("/{facilityId}/edit")
-    public String editForm(@PathVariable("facilityId") Long facilityId, Model model, RedirectAttributes ra, HttpSession session) {
+    public String editForm(@PathVariable("facilityId") Long facilityId,
+                           Model model, RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
 
         FacilitiesDto facility = facilitiesService.findByfacilityIdAndManager(facilityId, managerId);
@@ -137,9 +139,15 @@ public class FacilitiesController {
             ra.addFlashAttribute("msg", "해당 설비가 없습니다. (ID: " + facilityId + ")");
             return "redirect:/facilities";
         }
+
+        // ★ 설비에 연결된 템플릿 조회 → 모델에 넣기
+        var attached = facilitiesService.findTemplatesByFacilityIdAndManager(facilityId, managerId);
         model.addAttribute("facility", facility);
-        return "facilities/facilities_edit"; // JSP 경로
+        model.addAttribute("attachedTemplates", attached); // ← JSP는 이것만 사용
+
+        return "facilities/facilities_edit";
     }
+
 
     // 상세 (본인 소유만 접근)
     @GetMapping("/{facilityId}")
@@ -184,8 +192,31 @@ public class FacilitiesController {
                        @ModelAttribute("facility") FacilitiesDto facility,
                        RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
+
+        // 1) 주소 → 좌표 (주소가 변경된 경우)
+        if (facility.getAddress() != null && !facility.getAddress().isBlank()) {
+            GeocodingService.LatLng ll = geocodingService.geocode(facility.getAddress());
+            if (ll != null) {
+                facility.setGpsLat(round(ll.lat(), 6));
+                facility.setGpsLng(round(ll.lng(), 6));
+            } else {
+                facility.setGpsLat(null);
+                facility.setGpsLng(null);
+            }
+        }
+
         facility.setFacilityId(facilityId);
         int rows = facilitiesService.updateFacilitiesByManager(facility, managerId);
+
+        // 2) 점검표 연결 업데이트 (설비 수정이 성공한 경우에만)
+        if (rows > 0 && facility.getTemplateIds() != null && !facility.getTemplateIds().isBlank()) {
+            facilitiesService.attachTemplatesToFacility(
+                    facilityId,
+                    parseIds(facility.getTemplateIds()),
+                    managerId
+            );
+        }
+
         ra.addFlashAttribute("msg", rows > 0 ? "설비가 수정되었습니다." : "수정 권한이 없거나 실패했습니다.");
         return "redirect:/facilities/" + facilityId;
     }
