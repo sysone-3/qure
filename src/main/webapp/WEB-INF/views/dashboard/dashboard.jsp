@@ -59,24 +59,29 @@
     </div>
 
     <!-- 최근 점검 현황 -->
-    <section class="card ring-row" style="margin-top:22px">
-        <h3 style="margin:0 0 16px 0;font-size:22px;font-weight:800">최근 점검 현황</h3>
+    <section class="card ring-row">
+        <h3 style="font-size:23px;font-weight:600">최근 점검 현황</h3>
 
         <div class="rings">
             <c:forEach var="p" items="${recentPoints}" varStatus="s">
                 <fmt:formatDate value="${p.dayValue}" pattern="d" var="dnum"/>
-                <canvas id="ring${s.index}" class="ring"
+                <fmt:formatDate value="${p.dayValue}" pattern="E" var="wday"/>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 15px">
+                    <canvas id="ring${s.index}" class="ring"
                         width="72" height="72" style="width:72px;height:72px"
                         data-percent="${p.percent}" data-day="${dnum}"></canvas>
+                    <div class="weekday">${wday}</div>
+                </div>
             </c:forEach>
         </div>
     </section>
 
-    <section class="card">
-        <div style="display: flex; justify-content: space-between">
-            <h3 style="margin:0 0 16px 0;font-size:22px;font-weight:800">최근 점검 내역</h3>
-            <span>전체 보기</span>
+    <section class="card card-table">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+            <h3 style="font-size:23px;font-weight:600">최근 점검 내역</h3>
+            <div class="btn-all"><span>전체 보기</span></div>
         </div>
+        <hr class="divider"/>
         <table class="table">
             <thead>
             <tr>
@@ -98,7 +103,19 @@
                     </td>
                     <td><fmt:formatDate value="${r.submittedAt}" pattern="yyyy년 M월 d일" /></td>
                     <td>${r.inspectorName}</td>
-                    <td>${r.result}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${r.result == 'PASS'}">
+                                <span class="badge ok">완료</span>
+                            </c:when>
+                            <c:when test="${r.result == 'FAIL'}">
+                                <span class="badge warn">이상 발견</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="badge">${r.result}</span>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -120,7 +137,7 @@
                 const label = chart.config.options.plugins.centerText?.label ?? '';
                 ctx.save();
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.font = 'bold 16px system-ui'; ctx.fillStyle = '#111';
+                ctx.font = '600 20px Pretendard, sans-serif'; ctx.fillStyle = '#111';
                 ctx.fillText(label, x, y);
                 ctx.restore();
             }
