@@ -1,7 +1,7 @@
 package app.snapshot.qure.dashboard.service;
 
 import app.snapshot.qure.dashboard.dto.*;
-import jakarta.servlet.http.HttpSession;
+import app.snapshot.qure.inspection.dto.InspectionItemDto;
 
 import java.util.List;
 
@@ -10,5 +10,4 @@ public interface IDashboardService {
     OtherInspectionStats getOtherInspectionStats();
     DashboardSessionView buildDashboardView(String name, String email);
     List<DailyCompletionPoint> getRecentDailyCompletion(int days);
-    List<RecentInspectionItem> getRecentInspections(int limit);
 }

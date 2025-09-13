@@ -108,6 +108,9 @@ canvas.ring{
     align-items: center;
     padding: 10px 21px;
     border-radius: 35px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
 }
 .btn-all span {
     font-weight: 500;

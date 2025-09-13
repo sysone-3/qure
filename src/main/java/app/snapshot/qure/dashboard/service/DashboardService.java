@@ -2,6 +2,7 @@ package app.snapshot.qure.dashboard.service;
 
 import app.snapshot.qure.dashboard.dto.*;
 import app.snapshot.qure.dashboard.repository.IDashboardRepository;
+import app.snapshot.qure.inspection.dto.InspectionItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,10 +42,5 @@ public class DashboardService implements IDashboardService {
     @Override
     public List<DailyCompletionPoint> getRecentDailyCompletion(int days) {
         return dashboardRepository.selectRecentDailyCompletion(days);
-    }
-
-    @Override
-    public List<RecentInspectionItem> getRecentInspections(int limit) {
-        return dashboardRepository.selectRecentInspections(limit);
     }
 }

@@ -5,6 +5,7 @@ import app.snapshot.qure.dashboard.dto.DashboardSessionView;
 import app.snapshot.qure.dashboard.dto.OtherInspectionStats;
 import app.snapshot.qure.dashboard.dto.TodayInspectionStats;
 import app.snapshot.qure.dashboard.service.IDashboardService;
+import app.snapshot.qure.inspection.service.IInspectionService;
 import app.snapshot.qure.login.util.SessionUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,9 @@ public class DashboardController {
     @Autowired
     IDashboardService dashboardService;
 
+    @Autowired
+    IInspectionService inspectionService;
+
     @GetMapping("")
     public String dashboardPage(HttpSession session, Model model) {
         String name = SessionUtil.getKakaoName(session);
@@ -38,7 +42,7 @@ public class DashboardController {
         model.addAttribute("todayStats", todayStats);
         model.addAttribute("otherStats", otherStats);
         model.addAttribute("recentPoints", recent);
-        model.addAttribute("recentInspections", dashboardService.getRecentInspections(7));
+        model.addAttribute("recentInspections", inspectionService.getRecentInspections(7));
 
         return "dashboard/dashboard";
     }

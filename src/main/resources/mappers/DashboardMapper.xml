@@ -103,31 +103,4 @@
         LEFT JOIN cc ON cc.day_val = d.day_val
         ORDER BY d.day_val
     </select>
-
-    <select id="selectRecentInspections"
-            parameterType="int"
-            resultType="app.snapshot.qure.dashboard.dto.RecentInspectionItem">
-        <![CDATA[
-            SELECT *
-            FROM (
-                SELECT
-                 i.inspection_id AS inspectionId,
-                 i.submitted_at  AS submittedAt,
-                 i.result        AS result,
-                 i.facility_id   AS facilityId,
-                 f.domain        AS domain,
-                 f.name          AS facilityName,
-                 f.floor         AS floor,
-                 f.zone          AS zone,
-                 i.inspector_id  AS inspectorId,
-                 ip.name         AS inspectorName
-                FROM inspections i
-                      JOIN facilities f        ON f.facility_id = i.facility_id
-                      LEFT JOIN inspector_profile ip ON ip.inspector_id = i.inspector_id
-                ORDER BY i.submitted_at DESC
-                )
-            WHERE ROWNUM <= #{limit}
-            ]]>
-    </select>
-
 </mapper>

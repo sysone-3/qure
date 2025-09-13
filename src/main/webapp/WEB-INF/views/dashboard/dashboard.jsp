@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="<c:url value='/assets/css/dashboard.css?after'/>"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+
 <div class="container">
     <!-- 상단 3열 -->
     <div class="grid">
@@ -79,7 +79,7 @@
     <section class="card card-table">
         <div style="display: flex; justify-content: space-between; align-items: center">
             <h3 style="font-size:23px;font-weight:600">최근 점검 내역</h3>
-            <div class="btn-all"><span>전체 보기</span></div>
+            <a href="<c:url value='/inspection'/>" class="btn-all"><span>전체 보기</span></a>
         </div>
         <hr class="divider"/>
         <table class="table">

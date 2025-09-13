@@ -1,10 +1,10 @@
-package app.snapshot.qure.dashboard.dto;
+package app.snapshot.qure.inspection.dto;
 
 import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-public class RecentInspectionItem {
+public class InspectionItemDto {
     private Long inspectionId;
     private Timestamp submittedAt;
     private String result;
