@@ -164,3 +164,146 @@ button:hover {
 .circle-btn.disabled {
     pointer-events: none;
 }
+
+/* 모달 레이아웃 */
+/* 모달 레이아웃 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 15px;
+    width: 400px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #474D56;
+}
+
+/* 폼 그룹 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #474D56;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #FFBF58;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #FFBF58;
+}
+
+/* 전화번호 input */
+.phone-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.phone-input input {
+    border: 1px solid #FFBF58;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* 첫 번째 칸 */
+.phone-input input:first-of-type {
+    width: 80px;
+}
+
+/* 두 번째, 세 번째 칸 */
+.phone-input input:not(:first-of-type) {
+    width: 105px;
+}
+
+.phone-input span {
+    color: #FFBF58;
+    font-weight: bold;
+}
+
+/* 버튼 영역 */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-top: 50px;
+}
+
+.btn {
+    width: 150px;
+    padding: 10px 0;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn.cancel {
+    background-color: #FFF2CC;
+    color: #FFBF58;
+}
+
+.btn.cancel:hover {
+    background-color: #FFE599;
+}
+
+.btn.submit {
+    background-color: #FFBF58;
+    color: white;
+}
+
+.btn.submit:hover {
+    background-color: #e6a843;
+}
+
+select {
+  background-color: #fff;
+  border: 1px solid #FFBF58;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+select option {
+  background: #FFF9F0;
+  color: #474D56;
+}
+
+select option:hover {
+  background: #FFBF58;
+  color: #474D56;
+}
