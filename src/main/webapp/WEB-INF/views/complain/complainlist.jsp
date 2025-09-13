@@ -127,14 +127,9 @@
             <input type="date" name="from" value="${param.from}"><span>~</span>
             <input type="date" name="to" value="${param.to}">
           </div>
-          <div class="fld">
-            <label>페이지당</label>
-            <select name="size" onchange="this.form.submit()">
-              <option value="10"  <c:if test="${size==10}">selected</c:if>>10</option>
-              <option value="20"  <c:if test="${size==20}">selected</c:if>>20</option>
-              <option value="50"  <c:if test="${size==50}">selected</c:if>>50</option>
-            </select>
-          </div>
+          <!-- ★ 초기화: 모든 필터 제거 -->
+  		  <a class="btn reset" href="<c:url value='/admin/complain'/>">초기화</a>
+
         </div>
       </form>
 

@@ -12,7 +12,7 @@ public interface ComplainMapper {
 
     // 필터(무페이징)
     List<ComplainDto> selectAllComplainList(
-            @Param("managerId") int managerId,
+            @Param("managerId") Long managerId,
             @Param("q") String q,
             @Param("status") String status,
             @Param("fromDt") LocalDateTime fromDt,
@@ -20,7 +20,7 @@ public interface ComplainMapper {
 
     // 필터 + 페이징
     List<ComplainDto> selectAllComplainList(
-            @Param("managerId") int managerId,
+            @Param("managerId") Long managerId,
             @Param("q") String q,
             @Param("status") String status,
             @Param("fromDt") LocalDateTime fromDt,
@@ -29,19 +29,19 @@ public interface ComplainMapper {
             @Param("size") int size);
 
     int countComplainList(
-            @Param("managerId") int managerId,
+            @Param("managerId") Long managerId,
             @Param("q") String q,
             @Param("status") String status,
             @Param("fromDt") LocalDateTime fromDt,
             @Param("toEx") LocalDateTime toEx);
 
     ComplainDto selectOneForManager(@Param("reportId") int reportId,
-                                    @Param("managerId") int managerId);
+                                    @Param("managerId") Long managerId);
 
     int deleteByIdForManager(@Param("id") int id,
-                             @Param("managerId") int managerId);
+                             @Param("managerId") Long managerId);
 
     int updateStatusForManager(@Param("id") int id,
-                               @Param("managerId") int managerId,
+                               @Param("managerId") Long managerId,
                                @Param("status") String status);
 }

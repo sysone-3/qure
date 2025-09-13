@@ -17,20 +17,20 @@ public class ComplainService implements IComplainService {
     private final ComplainMapper complainMapper;
 
     @Override
-    public List<ComplainDto> getAllComplainList(int managerId) {
+    public List<ComplainDto> getAllComplainList(Long managerId) {
         return complainMapper.selectAllComplainList(managerId, null, null, null, null);
     }
 
     @Override
     public List<ComplainDto> getAllComplainList(
-            int managerId, String q, String status,
+    		Long managerId, String q, String status,
             LocalDateTime fromDt, LocalDateTime toExclusive) {
         return complainMapper.selectAllComplainList(managerId, q, status, fromDt, toExclusive);
     }
 
     @Override
     public List<ComplainDto> getAllComplainList(
-            int managerId, String q, String status,
+            Long managerId, String q, String status,
             LocalDateTime fromDt, LocalDateTime toEx,
             int offset, int size) {
         return complainMapper.selectAllComplainList(
@@ -39,23 +39,23 @@ public class ComplainService implements IComplainService {
 
     @Override
     public int countComplainList(
-            int managerId, String q, String status,
+    		Long managerId, String q, String status,
             LocalDateTime fromDt, LocalDateTime toEx) {
         return complainMapper.countComplainList(managerId, q, status, fromDt, toEx);
     }
 
     @Override
-    public ComplainDto getByIdForManager(int reportId, int managerId) {
+    public ComplainDto getByIdForManager(int reportId, Long managerId) {
         return complainMapper.selectOneForManager(reportId, managerId);
     }
 
     @Override
-    public int deleteByIdForManager(int reportId, int managerId) {
+    public int deleteByIdForManager(int reportId, Long managerId) {
         return complainMapper.deleteByIdForManager(reportId, managerId);
     }
 
     @Override
-    public int updateStatusForManager(int reportId, int managerId, String status) {
+    public int updateStatusForManager(int reportId, Long managerId, String status) {
         return complainMapper.updateStatusForManager(reportId, managerId, status);
     }
 }

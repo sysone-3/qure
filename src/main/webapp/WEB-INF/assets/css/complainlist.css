@@ -405,3 +405,33 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* 검색 버튼과 초기화 버튼을 동일 스타일로(중복 허용) */
+.btn.search, a.btn.search,
+.btn.reset,  a.btn.reset{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:36px;
+  padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--accent);
+  color:var(--accent-text);
+  font-weight:600;
+  line-height:1;
+  text-decoration:none; /* 밑줄 제거 */
+  white-space:nowrap;
+  cursor:pointer;
+  transition:background-color .2s ease, transform .02s ease;
+}
+.btn.search:hover, a.btn.search:hover,
+.btn.reset:hover,  a.btn.reset:hover{ background:var(--accent-weak); }
+.btn.search:active, a.btn.search:active,
+.btn.reset:active,  a.btn.reset:active{ transform:translateY(1px); }
+
+/* 행 하단 정렬 보정 */
+.filters-row.bottom{ gap:12px; align-items:end; }
+.filters-row.bottom .btn.search,
+.filters-row.bottom .btn.reset{ align-self:end; }
+
