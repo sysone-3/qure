@@ -79,7 +79,7 @@
     <section class="card card-table">
         <div style="display: flex; justify-content: space-between; align-items: center">
             <h3 style="font-size:23px;font-weight:600">최근 점검 내역</h3>
-            <a href="<c:url value='/inspection'/>" class="btn-all"><span>전체 보기</span></a>
+            <a href="<c:url value='/inspection/list'/>" class="btn-all"><span>전체 보기</span></a>
         </div>
         <hr class="divider"/>
         <table class="table">
