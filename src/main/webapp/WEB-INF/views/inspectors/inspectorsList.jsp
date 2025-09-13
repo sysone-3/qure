@@ -86,7 +86,7 @@
                     <div class="form-group">
                         <label for="domain">소속</label>
                         <select id="domain" name="domain" required/>
-                            <option value="">선택하세요</option>
+                            <option value="">소속을 선택하세요</option>
                             <option value="소방">소방</option>
                             <option value="순찰">순찰</option>
                             <option value="청결">청결</option>
@@ -96,7 +96,7 @@
                    <div class="form-group">
                        <label for="equipment">설비</label>
                        <select id="equipment" name="equipment" required/>
-                            <option value="">부서를 먼저 선택하세요</option>
+                            <option value="">소속을 먼저 선택하세요</option>
                        </select>
                    </div>
                    <div class="modal-buttons">

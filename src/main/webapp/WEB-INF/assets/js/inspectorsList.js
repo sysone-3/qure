@@ -48,5 +48,42 @@ document.addEventListener("DOMContentLoaded",function () {
        }
     });
    }
+
+   const equipmentOptions = {
+    "소방" : ['스프링쿨러', '소화기', '화재경보기'],
+    "순찰" : ['CCTV', '비상벨', '출입통제'],
+    "청결" : ['분리수거함', '화장실', '소독기'],
+   };
+
+   const domainSelect = document.getElementById("domain");
+   const equipmentSelect = document.getElementById("equipment");
+
+   if (domainSelect && equipmentSelect) {
+        domainSelect.addEventListener("change", function() {
+            const selectDomain = this.value;
+
+            equipmentSelect.innerHTML = "";
+
+            if (selectDomain && equipmentOptions[selectDomain]) {
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent="설비를 선택하세요";
+                equipmentSelect.appendChild(defaultOption);
+
+                equipmentOptions[selectDomain].forEach(equip => {
+                    const option = document.createElement("option");
+                    option.value = equip;
+                    option.textContent = equip;
+                    equipmentSelect.appendChild(option);
+                });
+                equipmentSelect.appendChild(option);
+            }else {
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "소속을 먼저 선택하세요.";
+                equipmentSelect.appendChild(option);
+            }
+        })
+   }
 })
 
