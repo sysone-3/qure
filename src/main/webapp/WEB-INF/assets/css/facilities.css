@@ -13,12 +13,12 @@
     --danger:#ef4444;
 
     /* 그리드 폭 */
-    --w-id: 120px;      /* 설비 id */
-    --w-domain: 110px;  /* 도메인 */
-    --w-equip: 140px;   /* 설비명 */
-    --w-date: 150px;    /* 최근 점검일자 */
-    --w-status: 120px;  /* 상태 */
-    --w-actions: 64px;  /* 삭제 */
+    --w-id: 200px;      /* 설비 id */
+    --w-facility: 220px; /* 시설명 */
+    --w-domain: 200px;  /* 도메인 */
+    --w-equip: 200px;   /* 설비명 */
+    --w-date: 200px;    /* 최근 점검일자 */
+    --w-action: 200px;  /* 다음 점검 */
 }
 
 @font-face {
@@ -41,7 +41,7 @@ body{
     font:14px/1.5 "Pretendard",sans-serif;
 }
 
-.page{max-width:1040px;margin:24px auto;padding:0 16px}
+.page{max-width:1412px;margin:24px auto;padding:0 16px}
 
 /* 카드 */
 .card{background:#fff;border-radius:30px;box-shadow:0 10px 24px rgba(0,0,0,.06);overflow:hidden}
@@ -72,12 +72,11 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
     display:grid;
     grid-template-columns:
     var(--w-id)      /* 설비 id   */
-    1fr              /* 시설명     */
+    var(--w-facility)  /* 시설명     */
     var(--w-domain)  /* 도메인     */
     var(--w-equip)   /* 설비명     */
-    var(--w-date)    /* 최근 점검  */
-    var(--w-status)  /* 상태       */
-    var(--w-actions) /* 삭제       */;
+    var(--w-date)   /* 최근 점검  */
+    var(--w-action);
     align-items:center;
     column-gap:0;
 }
@@ -107,12 +106,12 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
     font-family: inherit;                 /* Pretendard 상속 */
     font-variant-numeric: tabular-nums;   /* 숫자 폭 고정 */
     font-feature-settings: "tnum" 1;      /* 브라우저 호환용 */}
-.col-facility{color:#6b7280; font-weight:700}
+.col-facility{color:#6b7280}
 .col-domain{color:#6b7280}
 .col-equip{color:#6b7280}
 .col-updated{color:#6b7280}
 .col-status{color:#6b7280}
-.col-actions{display:flex;justify-content:center}
+.col-actions{color:#6b7280}
 
 /* 링크 스타일 */
 .col-id a{color:inherit;text-decoration:none}
@@ -126,7 +125,7 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
 .dot.danger{background:var(--danger)}
 
 /* 삭제 버튼 */
-.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;display:grid;place-items:center}
+.icon-btn{width:60px;height:42px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;display:grid;place-items:center}
 .icon-btn:hover{background:#fff9e6;border-color:#f7d58a}
 .icon-btn svg{width:18px;height:18px}
 
@@ -138,7 +137,7 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
     .col-domain,.col-equip,.col-updated{display:none}
     .row, .row.head{
         grid-template-columns:
-      var(--w-id) 1fr var(--w-status) var(--w-actions);
+      var(--w-id) 1fr var(--w-status);
     }
 }
 
@@ -147,9 +146,15 @@ a {
     color: inherit;         /* 부모 요소 글자색 그대로 */
 }
 
+.template-section { position: relative; }
+#templateValidator{
+    position:absolute; top:8px; left:8px;
+    width:1px; height:1px; padding:0; border:0; outline:0;
+    opacity:0; pointer-events:none;
+}
 /* ------------- facilities_detail ------------*/
 .detail-page {
-    max-width: 960px;
+    max-width: 1412px;
     margin: 0 auto;
     padding: 24px;
     font-family: Pretendard, sans-serif;
@@ -168,6 +173,13 @@ a {
     margin-bottom: 16px;
 }
 
+/* 삭제/수정 버튼 나란히 배치 */
+.facility-card .actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 .facility-card h2 {
     font-size: 20px;
     font-weight: bold;
@@ -176,6 +188,18 @@ a {
     font-size: 14px;
     color: #666;
 }
+
+/* 점검 예정일 */
+.badge {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 10px; border-radius:999px; font-weight:600; font-size:12px;
+    background:#f1f3f5; color:#495057;
+}
+.badge-danger { background:#ffe3e3; color:#c92a2a; }
+.badge-info   { background:#e7f5ff; color:#1c7ed6; }
+
+.facility-header .note { margin-left:8px; color:#495057; font-weight:500; }
+
 .btn-edit {
     padding: 6px 14px;
     border: 1px solid #ccc;
@@ -279,37 +303,44 @@ a {
 
 
 /* --------- qr 정렬 --------------  */
-/* QR 영역을 가로 정렬 + 세로 중앙 정렬 */
+/* QR 영역을 세로로 정렬하여 더 깔끔하게 */
 .qr-box{
-    display:flex;
-    align-items:center;   /* 세로 중앙 */
-    gap:8px;             /* QR와 버튼 간격 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
-/* 원형 다운로드 아이콘 버튼 */
+.qr-box img {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 다운로드 버튼 - 텍스트 보이도록 개선 */
 .btn-circle{
-    width:44px;
-    height:44px;
-    border-radius:50%;
-    border:1px solid var(--line);
-    background:#fff;
-    display:grid;
-    place-items:center;
-    box-shadow:0 1px 3px rgba(0,0,0,.06);
-    text-indent:-9999px;        /* ‘다운로드’ 텍스트 숨김 */
-    overflow:hidden;
-    position:relative;
+    width: auto;
+    height: auto;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    font-size: 12px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
 }
+
 .btn-circle::before{
-    content:"\2193";            /* ↓ */
-    position:absolute;
-    inset:0;
-    display:grid;
-    place-items:center;
-    font-size:20px;
-    color:#555;
+    content: "↓";
+    font-size: 14px;
 }
+
 .btn-circle:hover{
-    background:#fff9e6;
-    border-color:#f7d58a;
+    background: #fff9e6;
+    border-color: #f7d58a;
+    color: #5a4a21;
 }

@@ -1,0 +1,203 @@
+/* 폼 요소들 */
+.searchbox input[type=text] {
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 0 14px;
+    background: #fff;
+}
+
+select,
+input[type=date] {
+    height: 34px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 8px;
+    background: #fff;
+}
+
+.status-select {
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 10px;
+    background: #fff;
+}
+
+/* 버튼 스타일 */
+.btn {
+    height: 34px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn.search,
+a.btn.search,
+.btn.reset,
+a.btn.reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--accent-text);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color .2s ease, transform .02s ease;
+}
+
+.btn.search:hover,
+a.btn.search:hover,
+.btn.reset:hover,
+a.btn.reset:hover {
+    background: var(--accent-weak);
+}
+
+.btn.search:active,
+a.btn.search:active,
+.btn.reset:active,
+a.btn.reset:active {
+    transform: translateY(1px);
+}
+
+.btn.del {
+    background: #fff;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 6px;
+}
+
+.btn.ok {
+    background: var(--accent);
+    color: var(--accent-text);
+    font-weight: 700;
+    height: 36px;
+    padding: 0 16px;
+}
+
+/* 테이블 스타일 */
+thead th {
+    background: var(--accent);
+    color: #5b4a00;
+    font-weight: 700;
+}
+
+th,
+td {
+    border-bottom: 1px solid var(--line);
+    padding: 10px 12px;
+    text-align: left;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+tbody tr:hover {
+    background: #fffdfa;
+}
+
+/* 상태 스타일 */
+.st {
+    font-weight: 700;
+}
+
+.table-wrap td .st.pending {
+    color: #ED6F62 !important;
+}
+
+.table-wrap td .st.progress {
+    color: #FFE59A !important;
+}
+
+.table-wrap td .st.resolved {
+    color: #A9DECE !important;
+}
+
+/* 빈 데이터 표시 */
+.no-data {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* 메타 정보 */
+.meta b {
+    font-weight: 700;
+}
+
+/* 모달 텍스트 스타일 */
+:root {
+    --qm-accent: #FEE39A;
+    --qm-text: #222;
+    --qm-line: #e5e5e5;
+}
+
+.qm-title {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--qm-text);
+}
+
+.qm-message {
+    margin: 0 0 14px;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.qm-btn {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--qm-line);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.qm-btn.qm-ok {
+    background: var(--qm-accent);
+    border-color: var(--qm-accent);
+}
+
+.qm-btn:focus {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
+
+/* 로고 (사용되지 않는 것 같지만 포함) */
+.logo {
+    width: 36px;
+    height: 36px;
+    border: 2px solid #111;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+}
+
+.logo div {
+    border: 2px solid #111;
+}
+
+.nav-ico {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fafafa;
+}

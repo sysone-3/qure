@@ -6,16 +6,53 @@
 <head>
     <meta charset="UTF-8">
     <title>${facility.name} 상세</title>
+    <!-- 기본 레이아웃 CSS 추가 -->
+    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
+
     <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
 </head>
 <body>
-<div class="detail-page">
+
+<!-- nav 변수 설정 (사이드바에서 '설비' 메뉴 활성화) -->
+<c:set var="nav" value="facilities" scope="request"/>
+
+<div class="layout">
+    <!-- 사이드바 포함 -->
+    <%@ include file="../fragments/sidebar.jspf" %>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="content">
+        <div class="detail-page">
 
     <!-- 상단 카드 -->
     <div class="facility-card">
         <div class="facility-info">
             <h2>${facility.name} ${facility.floor}층 ${facility.zone}</h2>
             <p>${facility.address}</p>
+            <div class="facility-header">
+                <c:choose>
+                    <c:when test="${facility.scheduleStatus == 'OVERDUE'}">
+                        <span class="badge badge-danger">점검 지연</span>
+                        <span class="note">
+            <fmt:formatDate value="${facility.nextScheduledAt}" pattern="yyyy.MM.dd"/>
+            이후 &nbsp;<strong>${facility.daysDelta}</strong>일 경과
+          </span>
+                    </c:when>
+
+                    <c:when test="${facility.scheduleStatus == 'UPCOMING'}">
+                        <span class="badge badge-info">다음 점검</span>
+                        <span class="note">
+            <fmt:formatDate value="${facility.nextScheduledAt}" pattern="yyyy.MM.dd"/>
+            &nbsp;(D<c:if test="${facility.daysDelta >= 0}">-</c:if>${facility.daysDelta})
+          </span>
+                    </c:when>
+
+                    <c:otherwise>
+                        <span class="badge">다음 점검 예정 없음</span>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
         <div class="actions">
             <form method="post" action="<c:url value='/facilities/${facility.facilityId}/delete'/>"
@@ -24,7 +61,9 @@
             </form>
             <a href="<c:url value='/facilities/${facility.facilityId}/edit'/>" class="icon-btn">수정</a>
         </div>
+
     </div>
+
 
     <!-- QR + 점검표 버튼 -->
     <div class="checklist-section qr-box-card">
@@ -35,7 +74,7 @@
         </div>
         <div class="checklist-buttons">
             <c:forEach var="t" items="${templates}">
-                <a href="<c:url value='/checklist/${t.templateId}'/>" class="btn-template">${t.name}</a>
+                <a href="<c:url value='/template/${t.templateId}'/>" class="btn-template">${t.name}</a>
             </c:forEach>
         </div>
     </div>
@@ -94,6 +133,8 @@
         </table>
     </div>
 
+</div>
+    </main>
 </div>
 
 <script>

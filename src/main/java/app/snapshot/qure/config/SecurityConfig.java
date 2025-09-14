@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -40,9 +41,15 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
+
+                // 세션 관리 설정
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/")   // 카카오 진입 전에 JSP 경로 잡아주기
-                        .defaultSuccessUrl("/manager/home")
+                        .loginPage("/")
+                        .defaultSuccessUrl("/manager/home", true)
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
                 );
 

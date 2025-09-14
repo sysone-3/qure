@@ -20,7 +20,7 @@ public class ChecklistTemplateDto {
     private int cycle;
     private CycleUnit cycleUnit;
     private int version;
-    private ActiveStatus isActive;   // ← String → Enum
+    private ActiveStatus isActive;
     private java.time.LocalDateTime createdAt;
     private int facilityId;
 }

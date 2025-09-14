@@ -6,7 +6,7 @@
 <mapper namespace="app.snapshot.qure.facilities.repository.IFacilitiesRepository">
 
     <!-- Dto 매핑 -->
-    <resultMap id="facilityMap" type="app.snapshot.qure.facilities.dto.FacilitiesDto">
+    <resultMap id="FacilityMap" type="app.snapshot.qure.facilities.dto.FacilitiesDto">
         <result property="facilityId" column="FACILITY_ID"/>
         <result property="domain" column="DOMAIN"/>
         <result property="name" column="NAME"/>
@@ -21,6 +21,10 @@
         <result property="updatedAt" column="UPDATED_AT"/>
         <result property="managersId" column="MANAGERS_ID"/>
         <result property="inspectorId" column="INSPECTOR_ID"/>
+        <result property="nextScheduledAt" column="NEXT_SCHEDULED_AT"/>
+
+        <result property="scheduleStatus" column="SCHEDULE_STATUS"/>
+        <result property="daysDelta" column="DAYS_DELTA" jdbcType="INTEGER"/>
     </resultMap>
 
     <resultMap id="templateMap" type="app.snapshot.qure.facilities.dto.ChecklistTemplateDto">
@@ -43,48 +47,123 @@
     </resultMap>
 
     <!-- 목록(관리자 한정) -->
-    <select id="getFacilitiesListByManager"
-            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        SELECT *
-        FROM FACILITIES
-        WHERE MANAGERS_ID = #{managerId}
-        ORDER BY FACILITY_ID DESC
-    </select>
+    <select id="getFacilitiesListByManager" parameterType="long" resultMap="FacilityMap">
+  <![CDATA[
+        SELECT
+            f.FACILITY_ID,
+            f.DOMAIN,
+            f.NAME,
+            f.ADDRESS,
+            f.FLOOR,
+            f.ZONE,
+            f.STATUS,
+            f.MEMO,
+            f.CREATED_AT,
+            f.UPDATED_AT,
+            f.INSPECTOR_ID,
+            f.NEXT_SCHEDULED_AT,
 
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+                ELSE 'UPCOMING'
+                END AS SCHEDULE_STATUS,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE))
+                    THEN TRUNC(NVL(f.UPDATED_AT, SYSDATE)) - TRUNC(f.NEXT_SCHEDULED_AT)
+                ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)
+                END AS DAYS_DELTA
+
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+        ORDER BY f.FACILITY_ID DESC
+        ]]>
+  </select>
     <!-- 검색(관리자 한정) -->
-    <select id="searchFacilitiesByManager"
-            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        SELECT *
-        FROM FACILITIES
-        WHERE MANAGERS_ID = #{managerId}
-          AND (
-            LOWER(NAME)   LIKE '%' || LOWER(#{q}) || '%'
-                OR LOWER(DOMAIN) LIKE '%' || LOWER(#{q}) || '%'
-                OR LOWER(ZONE)   LIKE '%' || LOWER(#{q}) || '%'
-                OR CAST(FACILITY_ID AS VARCHAR(20)) LIKE '%' || #{q} || '%'
-            )
-        ORDER BY FACILITY_ID DESC
-    </select>
+    <select id="searchFacilitiesByManager" parameterType="map" resultMap="FacilityMap">
+  <![CDATA[
+        SELECT
+            f.FACILITY_ID,
+            f.DOMAIN,
+            f.NAME,
+            f.ADDRESS,
+            f.FLOOR,
+            f.ZONE,
+            f.STATUS,
+            f.MEMO,
+            f.CREATED_AT,
+            f.UPDATED_AT,
+            f.INSPECTOR_ID,
+            f.NEXT_SCHEDULED_AT,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+                ELSE 'UPCOMING'
+                END AS SCHEDULE_STATUS,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE))
+                    THEN TRUNC(NVL(f.UPDATED_AT, SYSDATE)) - TRUNC(f.NEXT_SCHEDULED_AT)
+                ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)
+                END AS DAYS_DELTA
+
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+          AND (f.NAME LIKE '%'||#{q}||'%' OR f.DOMAIN LIKE '%'||#{q}||'%')
+        ORDER BY f.FACILITY_ID DESC
+        ]]>
+  </select>
 
     <!-- 단건(관리자 한정) -->
     <select id="getFacilitiesInfoByManager"
-            resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
-        SELECT *
-        FROM FACILITIES
-        WHERE FACILITY_ID = #{facilityId}
-          AND MANAGERS_ID = #{managerId}
-    </select>
+            resultMap="FacilityMap">
+  <![CDATA[
+        SELECT
+            f.FACILITY_ID,
+            f.DOMAIN,
+            f.NAME,
+            f.ADDRESS,
+            f.FLOOR,
+            f.ZONE,
+            f.STATUS,
+            f.MEMO,
+            f.CREATED_AT,
+            f.UPDATED_AT,
+            f.INSPECTOR_ID,
+            f.NEXT_SCHEDULED_AT,
 
-    <!-- 설비 등록(관리자 한정) -->
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+                ELSE 'UPCOMING'
+                END AS SCHEDULE_STATUS,
+
+            CASE
+                WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+                WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE))
+                    THEN TRUNC(NVL(f.UPDATED_AT, SYSDATE)) - TRUNC(f.NEXT_SCHEDULED_AT)  -- 지연일수
+                ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)                       -- 남은일수
+                END AS DAYS_DELTA
+
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+          AND f.MANAGERS_ID = #{managerId}
+        ]]>
+</select>
+
     <insert id="insertFacilitiesByManager">
-        <selectKey keyProperty="f.facilityId" resultType="int" order="BEFORE">
+        <selectKey keyProperty="f.facilityId" resultType="Long" order="BEFORE">
             SELECT FACILITIES_SEQ.NEXTVAL FROM dual
         </selectKey>
 
         INSERT INTO FACILITIES (
         FACILITY_ID, DOMAIN, NAME, FLOOR, ZONE, ADDRESS,
         GPS_LAT, GPS_LNG, STATUS, MEMO,
-        CREATED_AT, UPDATED_AT, MANAGERS_ID, INSPECTOR_ID
+        CREATED_AT, UPDATED_AT, MANAGERS_ID, INSPECTOR_ID, NEXT_SCHEDULED_AT
         ) VALUES (
         #{f.facilityId, jdbcType=INTEGER},
         #{f.domain,     jdbcType=VARCHAR},
@@ -92,17 +171,17 @@
         #{f.floor,      jdbcType=VARCHAR},
         #{f.zone,       jdbcType=VARCHAR},
         #{f.address,    jdbcType=VARCHAR},
-        #{f.gpsLat,     jdbcType=NUMERIC},
-        #{f.gpsLng,     jdbcType=NUMERIC},
+        #{f.gpsLat,     jdbcType=DOUBLE},
+        #{f.gpsLng,     jdbcType=DOUBLE},
         #{f.status,     jdbcType=VARCHAR},
         #{f.memo,       jdbcType=CLOB},
         SYSTIMESTAMP,
-        NULL,
+        #{f.updatedAt, jdbcType=TIMESTAMP},
         #{managerId,    jdbcType=INTEGER},
-        #{f.inspectorId,jdbcType=INTEGER}
+        #{f.inspectorId,jdbcType=INTEGER},
+        #{f.nextScheduledAt,jdbcType=DATE}
         )
     </insert>
-
 
     <!-- 수정(관리자 한정) -->
     <update id="updateFacilitiesByManager">
@@ -117,6 +196,35 @@
           AND MANAGERS_ID = #{managerId, jdbcType=INTEGER}
     </update>
 
+    <!-- 점검표 연결 해제 (특정 템플릿들만) -->
+    <update id="detachTemplatesFromFacility">
+        UPDATE CHECKLIST_TEMPLATES t
+        SET t.FACILITY_ID = NULL
+        WHERE t.TEMPLATE_ID IN
+        <foreach collection="templateIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND t.FACILITY_ID = #{facilityId}
+        AND EXISTS (
+        SELECT 1
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+        AND f.MANAGERS_ID = #{managerId}
+        )
+    </update>
+
+    <!-- 설비의 모든 점검표 연결 해제 -->
+    <update id="detachAllTemplatesFromFacility">
+        UPDATE CHECKLIST_TEMPLATES t
+        SET t.FACILITY_ID = NULL
+        WHERE t.FACILITY_ID = #{facilityId}
+          AND EXISTS (
+            SELECT 1
+            FROM FACILITIES f
+            WHERE f.FACILITY_ID = #{facilityId}
+              AND f.MANAGERS_ID = #{managerId}
+        )
+    </update>
 
     <!-- 삭제(관리자 한정) -->
     <delete id="deleteFacilitiesByManager">
@@ -159,5 +267,83 @@
         ORDER BY i.INSPECTION_ID DESC
     </select>
 
+    <!-- 좌표 NULL 대상 조회 -->
+    <select id="findByManagerWithNullCoords" resultType="app.snapshot.qure.facilities.dto.FacilitiesDto">
+        SELECT
+            f.FACILITY_ID     AS facilityId,
+            f.NAME            AS name,
+            f.ADDRESS         AS address,
+            f.GPS_LAT         AS gpsLat,
+            f.GPS_LNG         AS gpsLng,
+            f.MANAGERS_ID     AS managersId
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+          AND (f.GPS_LAT IS NULL OR f.GPS_LNG IS NULL)
+        ORDER BY f.FACILITY_ID DESC
+    </select>
+
+    <!-- 좌표만 업데이트 -->
+    <update id="updateCoords">
+        UPDATE FACILITIES
+        SET GPS_LAT = #{gpsLat},
+            GPS_LNG = #{gpsLng},
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE FACILITY_ID = #{facilityId}
+    </update>
+
+    <!-- 지도 좌표별 마커 -->
+    <select id="findMarkersByManagerId" resultType="app.snapshot.qure.facilities.dto.FacilityMarkerDto">
+        SELECT
+            f.FACILITY_ID AS facilityId,
+            f.NAME        AS name,
+            f.ADDRESS     AS address,
+            f.GPS_LAT     AS gpsLat,
+            f.GPS_LNG     AS gpsLng
+        FROM FACILITIES f
+        WHERE f.MANAGERS_ID = #{managerId}
+          AND f.GPS_LAT IS NOT NULL
+          AND f.GPS_LNG IS NOT NULL
+        ORDER BY f.FACILITY_ID DESC
+    </select>
+
+    <update id="attachTemplatesToFacility">
+        UPDATE CHECKLIST_TEMPLATES t
+        SET t.FACILITY_ID = #{facilityId}
+        WHERE t.TEMPLATE_ID IN
+        <foreach collection="templateIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND EXISTS (
+        SELECT 1
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+        AND f.MANAGERS_ID = #{managerId}
+        )
+    </update>
+
+    <select id="findFacilityWithSchedule" resultMap="FacilityMap">
+        SELECT
+        f.FACILITY_ID,
+        f.NAME,
+        f.ADDRESS,
+        f.UPDATED_AT,
+        f.NEXT_SCHEDULED_AT,
+
+        CASE
+        WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+        WHEN TRUNC(f.NEXT_SCHEDULED_AT) &lt; TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+            ELSE 'UPCOMING'
+        END AS schedule_status,
+
+        CASE
+        WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+        WHEN f.NEXT_SCHEDULED_AT &lt; CAST(f.UPDATED_AT AS DATE)
+        THEN TRUNC(CAST(f.UPDATED_AT AS DATE)) - TRUNC(f.NEXT_SCHEDULED_AT)
+        ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)
+        END AS days_delta
+
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+    </select>
 
 </mapper>
