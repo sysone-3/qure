@@ -1,0 +1,75 @@
+.card{
+    background:#fff;
+    border-radius:28px;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+    padding:40px;
+    max-width:920px;
+    margin:24px auto;
+    font-family: 'Pretendard', sans-serif;
+}
+h2{
+    margin:0 0 24px;
+    font-size:24px
+}
+.section{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.muted{
+    color:#6b7280
+}
+.subtitle{
+    font-size: 17px;
+    font-weight: 600;
+}
+.desc{
+    font-size: 16px;
+    font-weight: 400;
+}
+.list{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.row{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    /*padding:14px 0;*/
+}
+.row:last-child{
+    border-bottom:0
+}
+.badge{
+    display:inline-block;
+    border-radius:9999px;
+    padding:6px 10px;
+    font-size:12px;
+    line-height:1;
+    font-weight:600
+}
+.badge-ok{
+    background:#e8fbf1;
+    color:#0f9d58
+}
+.badge-bad{
+    background:#ffecec;
+    color:#ea4335
+}
+.q{
+    font-weight:500;
+    margin-bottom:6px
+}
+.a{
+    /*white-space:pre-wrap*/
+}
+.thumb{
+    width:96px;
+    height:96px;
+    object-fit:cover;
+    border-radius:12px;
+    display:inline-block;
+    margin-right:8px;
+    border:1px solid #eee
+}

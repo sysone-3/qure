@@ -15,4 +15,5 @@ public class Template {
     private ActiveStatus isActive;
     private LocalDateTime createdAt;
     private Integer facilityId;
+    private Long managerId;
 }

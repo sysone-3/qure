@@ -3,9 +3,11 @@ package app.snapshot.qure.template.controller;
 import app.snapshot.qure.checklist.dto.TemplateCreateForm;
 import app.snapshot.qure.checklist.model.Checklist;
 import app.snapshot.qure.checklist.service.IChecklistService;
+import app.snapshot.qure.login.util.SessionUtil;
 import app.snapshot.qure.template.dto.TemplateUpdateForm;
 import app.snapshot.qure.template.model.Template;
 import app.snapshot.qure.template.service.ITemplateService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,20 +25,22 @@ public class TemplateController {
     @Autowired ITemplateService templateService;
     @Autowired IChecklistService checklistService;
 
-    /** 목록 */
-    @RequestMapping(value = "")
-    public String getAllTemplates(Model model) {
-        List<Template> list = templateService.getTemplateList();
+    @RequestMapping(value="")
+    public String getAllTemplates(Model model, HttpSession session) {
+        Long managerId = SessionUtil.getManagerId(session);
+        List<Template> list = templateService.getTemplateList(managerId);
         model.addAttribute("templateList", list);
+
         return "template/templateList";
     }
 
     /** (신규) 선택 팝업: /template/select?popup=true[&q=] */
     @GetMapping("/select")
-    public String selectPopup(@RequestParam(value = "q", required = false) String q,
+    public String selectPopup(@RequestParam(value = "q", required = false) String q, HttpSession session,
                               @RequestParam(value = "popup", required = false, defaultValue = "false") boolean popup,
                               Model model) {
-        List<Template> list = templateService.getTemplateList();
+        Long managerId = SessionUtil.getManagerId(session);
+        List<Template> list = templateService.getTemplateList(managerId);
 
         model.addAttribute("templateList", list);
         model.addAttribute("q", q);
@@ -58,11 +62,13 @@ public class TemplateController {
 
     /** 등록 처리 (POST) — 팝업 모드면 returnUrl로 되돌아가게 */
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public String insertTemplate(TemplateCreateForm form,
+    public String insertTemplate(TemplateCreateForm form, HttpSession session,
                                  @RequestParam(value = "popup", required = false, defaultValue = "false") boolean popup,
                                  @RequestParam(value = "returnUrl", required = false) String returnUrl,
                                  RedirectAttributes ra) {
+        Long id = SessionUtil.getManagerId(session);
         try {
+            form.setManagerId(id);
             long templateId = templateService.insertTemplate(form);
             ra.addFlashAttribute("message", templateId + " 번 점검표가 등록되었습니다.");
 
@@ -81,7 +87,7 @@ public class TemplateController {
         }
     }
 
-    /** 단건 조회 + 수정 폼 */
+    // 단건 조회 + 수정 폼 (같은 화면)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String getTemplateAndEdit(@PathVariable Long id, Model model) {
         Template template = templateService.getTemplateById(id);
@@ -92,7 +98,6 @@ public class TemplateController {
         return "template/editTemplate";
     }
 
-    /** 새 버전으로 저장 */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateAsNewVersion(TemplateUpdateForm form, RedirectAttributes ra) {
         long newId = templateService.saveAsNewVersion(form);
@@ -100,14 +105,15 @@ public class TemplateController {
         return "redirect:/template";
     }
 
-    /** 삭제 */
+    // 삭제 처리 (POST)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public String deleteTemplate(@RequestParam("templateId") Long id, RedirectAttributes ra) {
+    public String deleteTemplate(@RequestParam("templateId") Long id, RedirectAttributes redirectAttributes) {
         try {
             templateService.deleteTemplate(id);
-            ra.addFlashAttribute("message", id + " 번 점검표가 삭제되었습니다.");
+            redirectAttributes.addFlashAttribute("message",
+                    id + " 번 점검표가 삭제되었습니다.");
         } catch (RuntimeException ex) {
-            ra.addFlashAttribute("message", ex.getMessage());
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
         }
         return "redirect:/template";
     }
