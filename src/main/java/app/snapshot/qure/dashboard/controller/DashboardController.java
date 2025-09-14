@@ -33,11 +33,11 @@ public class DashboardController {
         Long id = SessionUtil.getManagerId(session);
         String name = SessionUtil.getKakaoName(session);
         String email = SessionUtil.getKakaoEmail(session);
-        DashboardSessionView vm = dashboardService.buildDashboardView(name, email);
+        DashboardSessionView vm = dashboardService.buildDashboardView(name, email, id);
 
-        TodayInspectionStats todayStats = dashboardService.getTodayInspectionStats();
-        OtherInspectionStats otherStats = dashboardService.getOtherInspectionStats();
-        List<DailyCompletionPoint> recent = dashboardService.getRecentDailyCompletion(11);
+        TodayInspectionStats todayStats = dashboardService.getTodayInspectionStats(id);
+        OtherInspectionStats otherStats = dashboardService.getOtherInspectionStats(id);
+        List<DailyCompletionPoint> recent = dashboardService.getRecentDailyCompletion(11, id);
 
         model.addAttribute("vm", vm);
         model.addAttribute("todayStats", todayStats);

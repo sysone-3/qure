@@ -9,8 +9,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface IDashboardRepository {
-    TodayInspectionStats selectTodayInspectionStats();
-    OtherInspectionStats selectOtherInspectionStats();
-    int selectOpenComplaints();
-    List<DailyCompletionPoint> selectRecentDailyCompletion(@Param("days") int days);
+    TodayInspectionStats selectTodayInspectionStats(@Param("managerId") Long managerId);
+    OtherInspectionStats selectOtherInspectionStats(@Param("managerId") Long managerId);
+    int selectOpenComplaints(@Param("managerId") Long managerId);
+    List<DailyCompletionPoint> selectRecentDailyCompletion(@Param("days") int days,
+                                                           @Param("managerId") Long managerId);
 }

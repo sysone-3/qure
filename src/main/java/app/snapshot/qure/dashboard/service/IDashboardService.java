@@ -6,8 +6,8 @@ import app.snapshot.qure.inspection.dto.InspectionItemDto;
 import java.util.List;
 
 public interface IDashboardService {
-    TodayInspectionStats getTodayInspectionStats();
-    OtherInspectionStats getOtherInspectionStats();
-    DashboardSessionView buildDashboardView(String name, String email);
-    List<DailyCompletionPoint> getRecentDailyCompletion(int days);
+    TodayInspectionStats getTodayInspectionStats(Long managerId);
+    OtherInspectionStats getOtherInspectionStats(Long managerId);
+    DashboardSessionView buildDashboardView(String name, String email, Long managerId);
+    List<DailyCompletionPoint> getRecentDailyCompletion(int days, Long managerId);
 }
