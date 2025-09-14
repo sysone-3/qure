@@ -119,7 +119,7 @@
                      <input type="hidden" name="selectedIds" id="selectedIdsInput" />
                      <div class="modal-buttons">
                            <button type="button" class="btn cancel" id="deleteCancel">취소</button>
-                           <button type="submit" class="btn submit">등록</button>
+                           <button type="submit" class="btn submit">삭제</button>
                      </div>
                 </form>
             </div>
