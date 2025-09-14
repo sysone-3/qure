@@ -6,16 +6,28 @@
     <meta charset="UTF-8">
     <title>설비 추가</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 기본 레이아웃 CSS 추가 -->
+    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
     <!-- facilities 전용 CSS만 사용 -->
     <link rel="stylesheet" href="<c:url value='/assets/css/facilities_add.css'/>">
 </head>
 <body>
-<div class="page">
+<!-- nav 변수 설정 (사이드바에서 '설비' 메뉴 활성화) -->
+<c:set var="nav" value="facilities" scope="request"/>
+
+<div class="layout">
+    <!-- 사이드바 포함 -->
+    <%@ include file="../fragments/sidebar.jspf" %>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="content">
+        <div class="page">
     <div class="form-card">
 
         <!-- 타이틀  -->
         <div class="title-row">
-            <h2 class="form-title">설비 수정</h2>
+            <h2 class="form-title">설비 등록</h2>
         </div>
 
         <form id="facilityForm" action="<c:url value='/facilities'/>" method="post">
@@ -29,7 +41,7 @@
 
             <!-- 설비 주소 (그리드 레이아웃로 전면 개편) -->
             <div class="form-box">
-                <div class="cell">설비 주소</div>
+                <div class="cell">주소</div>
 
                 <div id="addressBlock" class="address-grid">
                     <div class="address-row">
@@ -43,7 +55,7 @@
                     <div class="address-row">
                         <label class="label" for="roadAddrPart1">도로명주소</label>
                         <div class="field">
-                            <input type="text" id="roadAddrPart1" name="roadAddrPart1" class="text-input">
+                            <input type="text" id="roadAddrPart1" name="roadAddrPart1" class="text-input" required>
                         </div>
                     </div>
 
@@ -92,24 +104,24 @@
             <div class="form-box">
                 <div class="cell">점검자 ID</div>
                 <div class="input-wrapper">
-                    <input type="text" name="inspectorId" class="text-input" placeholder="(예: 1)">
+                    <input type="text" name="inspectorId" class="text-input" placeholder="(예: 1)" required>
                 </div>
             </div>
 
-            <!-- 점검표 선택 -->
+            <!-- 점검표 선택 (단일 선택으로 수정, 하지만 기존 구조 유지) -->
             <div class="form-box">
-                <div class="cell">점검표 선택</div>
+                <div class="cell">점검표 선택 <span class="required">*</span></div>
 
                 <div class="template-section">
                     <button type="button" id="btnAddTemplate" class="btn-add-template">
-                        <span class="add-plus">+</span> 점검표 추가
+                        <span class="add-plus">+</span> 점검표 선택
                     </button>
 
                     <div class="template-list" id="selectedTemplates">
-                        <div class="empty-template">선택된 점검표가 없습니다</div>
+                        <div class="empty-template">점검표를 선택해주세요</div>
                     </div>
 
-                    <!-- 선택된 점검표 ID들 -->
+                    <!-- 선택된 점검표 ID들 (기존 구조 유지) -->
                     <input type="hidden" id="templateIds" name="templateIds" value="">
                 </div>
             </div>
@@ -122,7 +134,8 @@
         </form>
     </div>
 </div>
-
+    </main>
+</div>
 <script>
     // ===== 주소 검색 팝업 =====
     function goPopup(){
@@ -139,8 +152,8 @@
                 : [roadAddrPart1, addrDetail].filter(Boolean).join(' ');
     }
 
-    // ===== 점검표 선택 관리 =====
-    let selectedTemplates = [];
+    // ===== 점검표 선택 관리 (단일 선택으로 수정하되 기존 구조 유지) =====
+    let selectedTemplates = []; // 배열로 유지하되 최대 1개만
 
     document.addEventListener("DOMContentLoaded", function() {
         const btn = document.getElementById("btnAddTemplate");
@@ -148,57 +161,87 @@
             const url = "<c:url value='/template/select'/>?popup=true";
             window.open(url, "templateSelectPop", "width=720,height=640,scrollbars=yes,resizable=yes");
         });
+
+        // 폼 제출 시 점검표 선택 여부 검증
+        const form = document.getElementById("facilityForm");
+        if (form) {
+            form.addEventListener("submit", function(e) {
+                if (selectedTemplates.length === 0) {
+                    e.preventDefault();
+                    alert('점검표를 선택해주세요.');
+                    return false;
+                }
+            });
+        }
     });
 
-    // 팝업에서 호출될 콜백들
+    // 팝업에서 호출될 콜백들 (단일 선택으로 수정)
     function selectTemplateCallback(templateId, templateName, domain) {
-        if (selectedTemplates.find(t => t.id === templateId)) {
-            alert('이미 선택된 점검표입니다.');
-            return;
-        }
-        selectedTemplates.push({ id: templateId, name: templateName, domain });
+        // 기존 선택된 것이 있으면 교체
+        selectedTemplates = [{ id: templateId, name: templateName, domain }];
         updateTemplateDisplay();
     }
+
     function addNewTemplateCallback(templateId, templateName, domain) {
-        selectedTemplates.push({ id: templateId, name: templateName, domain });
+        selectedTemplates = [{ id: templateId, name: templateName, domain }];
         updateTemplateDisplay();
     }
+
     function removeTemplate(templateId) {
-        selectedTemplates = selectedTemplates.filter(t => t.id !== templateId);
+        selectedTemplates = [];
         updateTemplateDisplay();
     }
+
     function updateTemplateDisplay() {
         const container = document.getElementById('selectedTemplates');
         const templateIdsInput = document.getElementById('templateIds');
+        const btnAddTemplate = document.getElementById('btnAddTemplate');
 
         if (selectedTemplates.length === 0) {
-            container.innerHTML = '<div class="empty-template">선택된 점검표가 없습니다</div>';
+            container.innerHTML = '<div class="empty-template">점검표를 선택해주세요</div>';
             templateIdsInput.value = '';
+            btnAddTemplate.innerHTML = '<span class="add-plus">+</span> 점검표 선택';
             return;
         }
-        let html = '';
+
+        // DOM 요소를 안전하게 생성
+        container.innerHTML = '';
         selectedTemplates.forEach(template => {
-            html += `
-              <div class="template-item">
-                <div class="template-info">
-                  <div class="template-name">${template.name}</div>
-                  <div class="template-domain">
-                    <c:choose>
-                        <c:when test="${t.domain eq 'CLEANING'}">미화</c:when>
-                        <c:when test="${t.domain eq 'FIRE'}">소방</c:when>
-                        <c:when test="${t.domain eq 'PATROL'}">순찰</c:when>
-                        <c:otherwise>${t.domain}</c:otherwise>
-                    </c:choose>
-                   </div>
-                </div>
-                <div class="template-actions">
-                  <button type="button" class="btn-remove" onclick="removeTemplate('${template.id}')">삭제</button>
-                </div>
-              </div>`;
+            const templateItem = document.createElement('div');
+            templateItem.className = 'template-item';
+
+            const templateInfo = document.createElement('div');
+            templateInfo.className = 'template-info';
+
+            const templateName = document.createElement('div');
+            templateName.className = 'template-name';
+            templateName.textContent = template.name;
+
+            const templateDomain = document.createElement('div');
+            templateDomain.className = 'template-domain';
+            templateDomain.textContent = getDomainText(template.domain);
+
+            const templateActions = document.createElement('div');
+            templateActions.className = 'template-actions';
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn-remove';
+            removeButton.textContent = '삭제';
+            removeButton.onclick = () => removeTemplate(template.id);
+
+            templateInfo.appendChild(templateName);
+            templateInfo.appendChild(templateDomain);
+            templateActions.appendChild(removeButton);
+            templateItem.appendChild(templateInfo);
+            templateItem.appendChild(templateActions);
+            container.appendChild(templateItem);
         });
-        container.innerHTML = html;
+
         templateIdsInput.value = selectedTemplates.map(t => t.id).join(',');
+        btnAddTemplate.innerHTML = '<span class="add-plus">+</span> 점검표 변경';
     }
+
     function getDomainText(domain) {
         switch(domain) {
             case 'CLEANING': return '미화';

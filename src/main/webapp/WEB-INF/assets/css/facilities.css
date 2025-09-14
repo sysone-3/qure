@@ -13,12 +13,12 @@
     --danger:#ef4444;
 
     /* 그리드 폭 */
-    --w-id: 120px;      /* 설비 id */
-    --w-domain: 110px;  /* 도메인 */
-    --w-equip: 140px;   /* 설비명 */
-    --w-date: 150px;    /* 최근 점검일자 */
-    --w-status: 120px;  /* 상태 */
-    --w-actions: 64px;  /* 삭제 */
+    --w-id: 200px;      /* 설비 id */
+    --w-facility: 220px; /* 시설명 */
+    --w-domain: 200px;  /* 도메인 */
+    --w-equip: 200px;   /* 설비명 */
+    --w-date: 200px;    /* 최근 점검일자 */
+    --w-action: 200px;  /* 다음 점검 */
 }
 
 @font-face {
@@ -72,12 +72,11 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
     display:grid;
     grid-template-columns:
     var(--w-id)      /* 설비 id   */
-    1fr              /* 시설명     */
+    var(--w-facility)  /* 시설명     */
     var(--w-domain)  /* 도메인     */
     var(--w-equip)   /* 설비명     */
-    var(--w-date)    /* 최근 점검  */
-    var(--w-status)  /* 상태       */
-    var(--w-actions) /* 삭제       */;
+    var(--w-date)   /* 최근 점검  */
+    var(--w-action);
     align-items:center;
     column-gap:0;
 }
@@ -107,7 +106,7 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
     font-family: inherit;                 /* Pretendard 상속 */
     font-variant-numeric: tabular-nums;   /* 숫자 폭 고정 */
     font-feature-settings: "tnum" 1;      /* 브라우저 호환용 */}
-.col-facility{color:#6b7280; font-weight:700}
+.col-facility{color:#6b7280}
 .col-domain{color:#6b7280}
 .col-equip{color:#6b7280}
 .col-updated{color:#6b7280}
@@ -138,7 +137,7 @@ a.btn, a.btn:link, a.btn:visited{color:inherit;text-decoration:none}
     .col-domain,.col-equip,.col-updated{display:none}
     .row, .row.head{
         grid-template-columns:
-      var(--w-id) 1fr var(--w-status) var(--w-actions);
+      var(--w-id) 1fr var(--w-status);
     }
 }
 
@@ -147,6 +146,12 @@ a {
     color: inherit;         /* 부모 요소 글자색 그대로 */
 }
 
+.template-section { position: relative; }
+#templateValidator{
+    position:absolute; top:8px; left:8px;
+    width:1px; height:1px; padding:0; border:0; outline:0;
+    opacity:0; pointer-events:none;
+}
 /* ------------- facilities_detail ------------*/
 .detail-page {
     max-width: 1412px;

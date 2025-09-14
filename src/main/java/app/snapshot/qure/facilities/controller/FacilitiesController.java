@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 @Controller
 @RequestMapping("/facilities")
@@ -100,6 +101,9 @@ public class FacilitiesController {
 
     // 쉼표 구분 문자열 → Long 리스트
     private List<Long> parseIds(String csv) {
+        if (csv == null || csv.isBlank()) {
+            return new ArrayList<>();
+        }
         return java.util.Arrays.stream(csv.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
@@ -129,11 +133,11 @@ public class FacilitiesController {
     }
     
     // 설비 수정
-    // 설비 수정
     @GetMapping("/{facilityId}/edit")
     public String editForm(@PathVariable("facilityId") Long facilityId,
                            Model model, RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
+
 
         FacilitiesDto facility = facilitiesService.findByfacilityIdAndManager(facilityId, managerId);
         if (facility == null) {
@@ -191,6 +195,8 @@ public class FacilitiesController {
     @PostMapping("/{id}")
     public String edit(@PathVariable("id") Long facilityId,
                        @ModelAttribute("facility") FacilitiesDto facility,
+                       @RequestParam(value = "removedTemplateIds", required = false) String removedTemplateIds,
+                       @RequestParam(value = "addedTemplateIds", required = false) String addedTemplateIds,
                        RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
 
@@ -209,19 +215,34 @@ public class FacilitiesController {
         facility.setFacilityId(facilityId);
         int rows = facilitiesService.updateFacilitiesByManager(facility, managerId);
 
-        // 2) 점검표 연결 업데이트 (설비 수정이 성공한 경우에만)
-        if (rows > 0 && facility.getTemplateIds() != null && !facility.getTemplateIds().isBlank()) {
-            facilitiesService.attachTemplatesToFacility(
+        // 2) 점검표 변경사항 처리
+        if (rows > 0) {
+            // 변경사항 방식 (삭제/추가 개별 처리)
+            List<Long> removedIds = parseIds(removedTemplateIds);
+            List<Long> addedIds = parseIds(addedTemplateIds);
+
+            if (!removedIds.isEmpty() || !addedIds.isEmpty()) {
+                facilitiesService.updateFacilityTemplates(facilityId, removedIds, addedIds, managerId);
+                System.out.println("점검표 변경 처리 - 삭제: " + removedIds + ", 추가: " + addedIds);
+            }
+
+        /* 또는 전체 교체 방식 (더 단순하지만 덜 효율적)
+        if (facility.getTemplateIds() != null && !facility.getTemplateIds().isBlank()) {
+            facilitiesService.replaceAllFacilityTemplates(
                     facilityId,
                     parseIds(facility.getTemplateIds()),
                     managerId
             );
+        } else {
+            // 모든 점검표 연결 해제
+            facilitiesService.replaceAllFacilityTemplates(facilityId, new ArrayList<>(), managerId);
+        }
+        */
         }
 
         ra.addFlashAttribute("msg", rows > 0 ? "설비가 수정되었습니다." : "수정 권한이 없거나 실패했습니다.");
         return "redirect:/facilities/" + facilityId;
     }
-
     @PostMapping("/{facilityId}/delete")
     public String delete(@PathVariable Long facilityId, RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
