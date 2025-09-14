@@ -43,7 +43,7 @@ public class DashboardController {
         model.addAttribute("todayStats", todayStats);
         model.addAttribute("otherStats", otherStats);
         model.addAttribute("recentPoints", recent);
-        model.addAttribute("recentInspections", inspectionService.getRecentInspections(7));
+        model.addAttribute("recentInspections", inspectionService.getRecentInspections(7, id));
 
         return "dashboard/dashboard";
     }
