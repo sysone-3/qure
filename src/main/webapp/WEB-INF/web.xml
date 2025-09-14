@@ -28,14 +28,27 @@
     </filter-mapping>
 
     <servlet>
-        <servlet-name>appServlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:config/mybatis/servlet-context.xml</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+    <servlet-name>appServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:config/mybatis/servlet-context.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+
+    <!-- ★ 멀티파트 업로드 설정 -->
+    <multipart-config>
+        <!-- 업로드 임시 디렉토리 (비워두면 기본 tmp 디렉토리) -->
+        <location></location>
+        <!-- 파일 하나의 최대 크기 (20MB) -->
+        <max-file-size>20971520</max-file-size>
+        <!-- 전체 요청 크기 (50MB) -->
+        <max-request-size>52428800</max-request-size>
+        <!-- 메모리 임계값 (바로 디스크로 쓸 최소 사이즈) -->
+        <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
+</servlet>
+
 
     <servlet-mapping>
     <servlet-name>appServlet</servlet-name>

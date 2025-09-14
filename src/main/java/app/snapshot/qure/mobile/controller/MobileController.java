@@ -107,6 +107,8 @@ public class MobileController {
                                 ChecklistSubmitForm form,
                                 HttpSession session,
                                 RedirectAttributes ra) {
+    	
+    	log.info("POST /mobile/{}/checklist entered", tagId);
 
         // [유지] 세션 플래그 확인
         Boolean ok = (Boolean) session.getAttribute("INSPECT_OK:" + tagId);
@@ -114,7 +116,8 @@ public class MobileController {
             ra.addFlashAttribute("errorMsg", "세션 만료. 다시 인증하세요.");
             return "redirect:/mobile/main/" +tagId;
         }
-
+        
+        
         // [유지] NONCE 검증 및 제거
         String key = "NONCE:" + tagId;
         String expected = (String) session.getAttribute(key);
@@ -123,6 +126,7 @@ public class MobileController {
             ra.addFlashAttribute("errorMsg", "잘못된 요청입니다. 다시 시도하세요.");
             return "redirect:/mobile/main/"+tagId;
         }
+        
 
         try {
             Long inspectionId = mobileService.saveChecklistSubmission(tagId, form);
