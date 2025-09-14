@@ -17,16 +17,20 @@ public class InspectorRegisterService {
 
     @Transactional
     public void registerInspectorWithFacility(InspectorRegisterDTO inspectorDto, FacilityRegisterDTO facilityDto) {
-        // 1. 점검자 등록
-        inspectorsRegisterMapper.insertInspector(inspectorDto);
+        // 1. 이미 존재하는 작업자인지 확인
+        Integer existingId = inspectorsRegisterMapper.findInspectorIdByNameAndPhone(inspectorDto.getName(), inspectorDto.getPhone());
 
-        // 2. 방금 생성된 inspector_id 가져오기
-        int inspectorId = inspectorsRegisterMapper.getLastInsertedId();
+        int inspectorId;
+        if (existingId != null) {
+            inspectorId = existingId; // 기존 inspector 재사용
+        } else {
+            inspectorsRegisterMapper.insertInspector(inspectorDto);
+            inspectorId = inspectorsRegisterMapper.getLastInsertedId();
+        }
 
-        // 3. 설비 DTO에 inspectorId 주입
+        // 2. 설비 등록
         facilityDto.setInspectorId(inspectorId);
-
-        // 4. 설비 등록
         facilitiesRegisterMapper.insertFacility(facilityDto);
     }
+
 }

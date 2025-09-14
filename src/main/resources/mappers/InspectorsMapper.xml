@@ -6,12 +6,12 @@
 <mapper namespace="app.snapshot.qure.inspectors.repository.InspectorsMapper">
 
     <select id="findPaged" resultType="app.snapshot.qure.inspectors.dto.InspectorDTO">
-        SELECT inspector_id AS inspectorId,
-        name,
-        phone
+        SELECT inspector_id, name, phone
         FROM (
-        SELECT inspector_id, name, phone,
-        ROW_NUMBER() OVER (ORDER BY inspector_id) AS rn
+            SELECT ROW_NUMBER() OVER (ORDER BY inspector_id) AS rn,
+            inspector_id,
+            name,
+            phone
         FROM inspector_profile
         )
         WHERE rn BETWEEN #{startRow} AND #{endRow}
