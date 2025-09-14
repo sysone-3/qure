@@ -23,30 +23,40 @@
 <div class="container">
     <div class="inner-container">
         <p class="title">점검표 목록</p>
-        <div class="header">
+        <form id="filterForm" class="header" method="get" action="<c:url value='/template'/>">
             <div class="filter">
-                <span id="selected-domain">전체</span>
+                <!-- 선택된 도메인 표시 + hidden 파라미터 -->
+                <c:set var="domainLabel"
+                       value="${param.domain=='CLEANING'?'미화':(param.domain=='FIRE'?'소방':(param.domain=='PATROL'?'순찰':'전체'))}" />
+                <input type="hidden" name="domain" id="domainInput" value="${empty param.domain ? 'ALL' : param.domain}"/>
+
+                <span id="selected-domain">${domainLabel}</span>
                 <img src="<c:url value='/assets/images/arrow-down.svg'/>" alt="arrow" class="icon"/>
 
-                <!-- 드롭다운 메뉴 -->
                 <ul class="dropdown hidden" id="domain-dropdown">
-                    <li data-value="전체">전체</li>
-                    <li data-value="미화">미화</li>
-                    <li data-value="소방">소방</li>
-                    <li data-value="순찰">순찰</li>
+                    <li data-value="ALL">전체</li>
+                    <li data-value="CLEANING">미화</li>
+                    <li data-value="FIRE">소방</li>
+                    <li data-value="PATROL">순찰</li>
                 </ul>
             </div>
+
             <div class="actions">
-                <div class="search-box">
-                    <img src="<c:url value='/assets/images/search.svg'/>" alt="search" class="icon"/>
-                    <input type="text" placeholder="점검표 검색"/>
+                <div class="keyword-row">
+                    <div class="search-box">
+                        <img src="<c:url value='/assets/images/search.svg'/>" alt="search" class="icon"/>
+                        <!-- name=q 로 넘김 -->
+                        <input type="text" name="q" value="${fn:escapeXml(param.q)}" placeholder="점검표 검색"/>
+                    </div>
+                    <button type="submit" class="btn-search">검색</button>
                 </div>
+
                 <my:iconButton label="추가하기"
                                icon="/assets/images/plus.svg"
                                action="/template/insert"
                                bgColor="#FEE39A"/>
             </div>
-        </div>
+        </form>
         <div class="card-grid">
             <c:forEach var="temp" items="${templateList}">
                 <a class="card-link"
@@ -90,6 +100,14 @@
         const filter = document.querySelector(".filter");
         const dropdown = document.getElementById("domain-dropdown");
         const selected = document.getElementById("selected-domain");
+        const form = document.getElementById("filterForm");
+        const domainInput = document.getElementById("domainInput");
+
+        const labelOf = (code) => (
+            code === "CLEANING" ? "미화" :
+                code === "FIRE"     ? "소방" :
+                    code === "PATROL"   ? "순찰" : "전체"
+        );
 
         filter.addEventListener("click", () => {
             dropdown.classList.toggle("hidden");
@@ -98,19 +116,16 @@
         dropdown.querySelectorAll("li").forEach(li => {
             li.addEventListener("click", (e) => {
                 e.stopPropagation();
-                const value = li.getAttribute("data-value");
-                selected.textContent = value;
+                const code = li.getAttribute("data-value");   // ALL | CLEANING | FIRE | PATROL
+                domainInput.value = code;
+                selected.textContent = labelOf(code);
                 dropdown.classList.add("hidden");
-
-                // TODO: 도메인별 검색 API 호출
-                console.log("선택된 도메인:", value);
+                form.submit(); 
             });
         });
 
         document.addEventListener("click", (e) => {
-            if (!filter.contains(e.target)) {
-                dropdown.classList.add("hidden");
-            }
+            if (!filter.contains(e.target)) dropdown.classList.add("hidden");
         });
     });
 </script>

@@ -24,6 +24,22 @@
         ORDER BY TEMPLATE_ID DESC
     </select>
 
+    <select id="getTemplateListFiltered" resultMap="templateMap">
+        SELECT *
+        FROM CHECKLIST_TEMPLATES
+        WHERE IS_ACTIVE = 'Y'
+        <if test="managerId != null">
+            AND MANAGER_ID = #{managerId}
+        </if>
+        <if test="domain != null and domain != '' and domain != 'ALL'">
+            AND DOMAIN = #{domain}
+        </if>
+        <if test="q != null and q != ''">
+            AND LOWER(NAME) LIKE '%' || LOWER(#{q}) || '%'
+        </if>
+        ORDER BY TEMPLATE_ID DESC
+    </select>
+
     <!-- 단건 조회 -->
     <select id="getTemplateById" parameterType="long" resultMap="templateMap">
         SELECT * FROM CHECKLIST_TEMPLATES WHERE TEMPLATE_ID = #{id}
