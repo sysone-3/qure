@@ -39,13 +39,29 @@ public class FacilitiesController {
                 ? facilitiesService.getFacilitiesListByManager(managerId)
                 : facilitiesService.searchFacilitiesByManager(managerId, q.trim());
         model.addAttribute("facilities", facilities);
+
         return "facilities/facilities";
     }
 
     // 설비 등록 폼
     @GetMapping("/new")
-    public String addForm(Model model) {
+    public String newForm(Model model,
+                          @RequestParam(value = "popup", required = false, defaultValue = "false") boolean popup,
+                          @RequestParam(value = "returnUrl", required = false) String returnUrl) {
+
+        // 기본 속성들
+        model.addAttribute("popup", popup);
+        model.addAttribute("returnUrl", returnUrl != null ? returnUrl : "");
+
+        // 빈 DTO 객체 추가 (JSP에서 사용할 수 있음)
         model.addAttribute("facility", new FacilitiesDto());
+
+        // 도메인 옵션들 추가
+        model.addAttribute("domains", List.of("청결", "순찰", "소방"));
+
+        // 디버깅을 위한 로그
+        System.out.println("newForm 메서드 호출됨 - popup: " + popup + ", returnUrl: " + returnUrl);
+
         return "facilities/facilities_add";
     }
 
@@ -56,23 +72,39 @@ public class FacilitiesController {
                          HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
 
-        // 1) 주소 → 좌표 변환
+        // 1) 주소 → 좌표
         GeocodingService.LatLng ll = geocodingService.geocode(dto.getAddress());
         if (ll != null) {
-            // DTO에 좌표 설정
             dto.setGpsLat(round(ll.lat(), 6));
             dto.setGpsLng(round(ll.lng(), 6));
         } else {
             dto.setGpsLat(null);
             dto.setGpsLng(null);
-            System.out.println("좌표 변환 실패 - null로 설정");
         }
 
-        // 2) 시설과 QR 생성 + 좌표까지 한번에 저장
+        // 2) 시설 + QR 생성
         Long facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
 
+        // 3) 템플릿 연결 (선택된 경우에만)
+        if (dto.getTemplateIds() != null && !dto.getTemplateIds().isBlank()) {
+            facilitiesService.attachTemplatesToFacility(
+                    facilityId,
+                    parseIds(dto.getTemplateIds()),
+                    managerId
+            );
+        }
+
         ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
-        return "redirect:/facilities";
+        return "redirect:/facilities/" + facilityId + "/qr";
+    }
+
+    // 쉼표 구분 문자열 → Long 리스트
+    private List<Long> parseIds(String csv) {
+        return java.util.Arrays.stream(csv.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::valueOf)
+                .toList();
     }
     // static 제거
     private Double round(double v, int scale) {
@@ -95,10 +127,12 @@ public class FacilitiesController {
         model.addAttribute("tag", tag);
         return "facilities/facility_qr";
     }
-
+    
+    // 설비 수정
     // 설비 수정
     @GetMapping("/{facilityId}/edit")
-    public String editForm(@PathVariable("facilityId") Long facilityId, Model model, RedirectAttributes ra, HttpSession session) {
+    public String editForm(@PathVariable("facilityId") Long facilityId,
+                           Model model, RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
 
         FacilitiesDto facility = facilitiesService.findByfacilityIdAndManager(facilityId, managerId);
@@ -106,8 +140,13 @@ public class FacilitiesController {
             ra.addFlashAttribute("msg", "해당 설비가 없습니다. (ID: " + facilityId + ")");
             return "redirect:/facilities";
         }
+
+        // ★ 설비에 연결된 템플릿 조회 → 모델에 넣기
+        var attached = facilitiesService.findTemplatesByFacilityIdAndManager(facilityId, managerId);
         model.addAttribute("facility", facility);
-        return "facilities/facilities_edit"; // JSP 경로
+        model.addAttribute("attachedTemplates", attached); // ← JSP는 이것만 사용
+
+        return "facilities/facilities_edit";
     }
 
 
@@ -154,8 +193,31 @@ public class FacilitiesController {
                        @ModelAttribute("facility") FacilitiesDto facility,
                        RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
+
+        // 1) 주소 → 좌표 (주소가 변경된 경우)
+        if (facility.getAddress() != null && !facility.getAddress().isBlank()) {
+            GeocodingService.LatLng ll = geocodingService.geocode(facility.getAddress());
+            if (ll != null) {
+                facility.setGpsLat(round(ll.lat(), 6));
+                facility.setGpsLng(round(ll.lng(), 6));
+            } else {
+                facility.setGpsLat(null);
+                facility.setGpsLng(null);
+            }
+        }
+
         facility.setFacilityId(facilityId);
         int rows = facilitiesService.updateFacilitiesByManager(facility, managerId);
+
+        // 2) 점검표 연결 업데이트 (설비 수정이 성공한 경우에만)
+        if (rows > 0 && facility.getTemplateIds() != null && !facility.getTemplateIds().isBlank()) {
+            facilitiesService.attachTemplatesToFacility(
+                    facilityId,
+                    parseIds(facility.getTemplateIds()),
+                    managerId
+            );
+        }
+
         ra.addFlashAttribute("msg", rows > 0 ? "설비가 수정되었습니다." : "수정 권한이 없거나 실패했습니다.");
         return "redirect:/facilities/" + facilityId;
     }

@@ -1,7 +1,5 @@
-// src/main/java/app/snapshot/qure/mobile/service/MobileService.java
 package app.snapshot.qure.mobile.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -38,7 +36,7 @@ public class MobileService implements IMobileService {
 
     @PostConstruct
     void init(){
-      s3.headBucket(b -> b.bucket(bucket)); // 연결 확인만 유지
+      s3.headBucket(b -> b.bucket(bucket));
     }
 
     @Transactional(readOnly = true)
@@ -77,7 +75,7 @@ public class MobileService implements IMobileService {
             throw new NoSuchElementException("inspector 없음");
 
         int inspectorId = submitIdDto.getInspectorId();
-        int facilityId = submitIdDto.getFacilityId();
+        int facilityId  = submitIdDto.getFacilityId();
 
         boolean hasFail = false;
         if (form.getResults() != null) {
@@ -88,21 +86,20 @@ public class MobileService implements IMobileService {
         }
         String finalResult = hasFail ? "FAIL" : "PASS";
 
+        // inspections INSERT: submitted_at = SYSTIMESTAMP (매퍼에서 처리)
         InspectionInsertDto dto = new InspectionInsertDto();
-        dto.setSubmittedAt(java.time.LocalDateTime.now());
         dto.setResult(finalResult);
         dto.setFacilityId(facilityId);
         dto.setInspectorId(inspectorId);
         mobileMapper.insertInspection(dto);
-
         Long inspectionId = dto.getInspectionId();
 
         if (form.getResults() != null) {
             for (ChecklistSubmitForm.ResultRow r : form.getResults()) {
                 if (r == null || r.getItemId() == null) continue;
 
-                ChecklistType type = mobileMapper.selectItemTypeById(r.getItemId()); // [CHANGED] Enum 사용
-                String raw  = r.getValue() == null ? "" : r.getValue().trim();
+                ChecklistType type = mobileMapper.selectItemTypeById(r.getItemId());
+                String raw = r.getValue() == null ? "" : r.getValue().trim();
 
                 InspectionItemResultInsertDto rd = new InspectionItemResultInsertDto();
                 rd.setInspectionId(inspectionId);
@@ -110,7 +107,7 @@ public class MobileService implements IMobileService {
                 rd.setCreatedAt(java.time.LocalDateTime.now());
                 rd.setImageId(null);
 
-                switch (type) {                                              // [CHANGED] switch로 분기
+                switch (type) {
                     case BOOL:
                         if ("Y".equalsIgnoreCase(raw) || "N".equalsIgnoreCase(raw)) {
                             rd.setValueBool(raw.toUpperCase());
@@ -123,16 +120,15 @@ public class MobileService implements IMobileService {
                         rd.setValueText(raw.isEmpty() ? null : raw);
                         break;
                     case IMAGE:
-                        // 값 셋업 없음. 아래 사진 업로드 처리
                         break;
                 }
 
                 mobileMapper.insertInspectionItemResult(rd);
                 Long resultId = rd.getResultId();
 
-                if (type == ChecklistType.IMAGE) {                           // [CHANGED] Enum 비교
-                    var files = r.getPhotos();
-                    if (files != null && !files.isEmpty()) {
+                if (type == ChecklistType.IMAGE) {
+                    MultipartFile[] files = r.getPhotos();
+                    if (files != null && files.length > 0) {
                         for (MultipartFile f : files) {
                             if (f == null || f.isEmpty()) continue;
 
@@ -150,7 +146,7 @@ public class MobileService implements IMobileService {
                                 throw new RuntimeException(e);
                             }
 
-                            var im = new ImageMetaInsertDto();
+                            ImageMetaInsertDto im = new ImageMetaInsertDto();
                             im.setFilePath(key);
                             im.setMimeType(ct);
                             im.setResultId(resultId);
@@ -160,16 +156,23 @@ public class MobileService implements IMobileService {
                 }
             }
         }
+
+        // 다음 예정일 갱신: 기준시각 = SYSTIMESTAMP (매퍼에서 계산)
+        ChecklistTemplateDto tpl = mobileMapper.selectTemplateByTagId(tagId);
+        String unit = tpl.getCycleUnit().name();
+        if (!unit.equals("DAY") && !unit.equals("WEEK") && !unit.equals("MONTH") && !unit.equals("YEAR"))
+            throw new IllegalStateException("invalid cycleUnit: " + unit);
+        mobileMapper.updateNextScheduledAtByFacility(facilityId, tpl.getCycle(), unit);
+
         return inspectionId;
     }
-    
- // [TEST] 최근 이미지 조회 구현
+
     @Transactional(readOnly = true)
     @Override
     public List<ImageMetaInsertDto> listLatestImages(int limit) {
         return mobileMapper.selectLatestImages(limit);
     }
-    
+
     @Override
     public long submitComplain(int tagId, String category, String description, String email) {
       String cat  = category == null ? "" : category.trim();
@@ -187,9 +190,7 @@ public class MobileService implements IMobileService {
       if (mail != null && mail.length() > 254) {
         throw new IllegalArgumentException("email too long");
       }
-      // 필요 시 정규식 검증 추가
-      
-      // 해당 시설을 관리하는 ManagersId 조회하는 메서드
+
       Integer managerId = mobileMapper.selectManagerIdByFacilityId(facilityId);
 
       CitizenReportDto dto = new CitizenReportDto();
@@ -199,11 +200,10 @@ public class MobileService implements IMobileService {
       dto.setEmail(mail);
       dto.setResolvedBy(managerId);
 
-      int rows = mobileMapper.insertComplain(dto); // selectKey로 PK 주입
+      int rows = mobileMapper.insertComplain(dto);
       if (rows != 1 || dto.getCitizenReportId() == null) {
         throw new IllegalStateException("insert failed");
       }
       return dto.getCitizenReportId();
     }
-
 }

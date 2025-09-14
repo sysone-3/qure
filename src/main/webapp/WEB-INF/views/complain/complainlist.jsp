@@ -7,6 +7,8 @@
 <meta charset="utf-8">
 <title>민원 관리</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="_csrf"        content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 <link rel="stylesheet" href="<c:url value='/assets/css/complainlist.css'/>" />
 <script defer src="<c:url value='/assets/js/complainlist.js'/>"></script>
 
@@ -53,13 +55,49 @@
 </head>
 <body>
 <div class="layout">
-  <aside class="sidebar">
-    <div class="logo"><div></div><div></div><div></div><div></div></div>
-    <div class="nav-ico"></div><div class="nav-ico"></div><div class="nav-ico"></div>
-    <div class="nav-ico"></div><div class="nav-ico"></div>
-    <div class="spacer"></div>
-    <div class="nav-ico"></div>
-  </aside>
+	
+  <aside class="sidebar app-nav">
+  <a href="<c:url value='/home' context='/'/>"
+     class="nav-btn ${nav=='home'?'active':''}" aria-label="대시보드"
+     <c:if test="${nav=='home'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/LOGO.svg'/>" alt="대시보드" class="nav-img">
+  </a>
+  <a href="<c:url value='/facilities' context='/'/>"
+     class="nav-btn ${nav=='facilities'?'active':''}" aria-label="설비"
+     <c:if test="${nav=='facilities'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_1.svg'/>" alt="설비" class="nav-img">
+  </a>
+  <a href="<c:url value='/inspections' context='/'/>"
+     class="nav-btn ${nav=='inspections'?'active':''}" aria-label="점검표"
+     <c:if test="${nav=='inspections'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_2.svg'/>" alt="점검표" class="nav-img">
+  </a>
+  <a href="<c:url value='/inspectors' context='/'/>"
+     class="nav-btn ${nav=='inspectors'?'active':''}" aria-label="작업자"
+     <c:if test="${nav=='inspectors'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_3.svg'/>" alt="작업자" class="nav-img">
+  </a>
+  <a href="<c:url value='/admin/complain' context='/'/>"
+     class="nav-btn ${nav=='complain'?'active':''}" aria-label="민원"
+     <c:if test="${nav=='complain'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_4.svg'/>" alt="민원" class="nav-img">
+  </a>
+  <a href="<c:url value='/map' context='/'/>"
+     class="nav-btn ${nav=='map'?'active':''}" aria-label="지도"
+     <c:if test="${nav=='map'}">aria-current="page"</c:if>>
+    <img src="<c:url value='/assets/images/ICON_5.svg'/>" alt="지도" class="nav-img">
+  </a>
+
+  <div class="spacer"></div>
+
+  <a href="<c:url value='/logout' context='/'/>" class="nav-btn" aria-label="로그아웃">
+    <img src="<c:url value='/assets/images/ICON_6.svg'/>" alt="로그아웃" class="nav-img">
+  </a>
+</aside>
+
+
+
+
 
   <main class="content">
     <section class="left">
@@ -85,14 +123,9 @@
             <input type="date" name="from" value="${param.from}"><span>~</span>
             <input type="date" name="to" value="${param.to}">
           </div>
-          <div class="fld">
-            <label>페이지당</label>
-            <select name="size" onchange="this.form.submit()">
-              <option value="10"  <c:if test="${size==10}">selected</c:if>>10</option>
-              <option value="20"  <c:if test="${size==20}">selected</c:if>>20</option>
-              <option value="50"  <c:if test="${size==50}">selected</c:if>>50</option>
-            </select>
-          </div>
+          <!-- ★ 초기화: 모든 필터 제거 -->
+  		  <a class="btn reset" href="<c:url value='/admin/complain'/>">초기화</a>
+
         </div>
       </form>
 
@@ -234,5 +267,19 @@
     </section>
   </main>
 </div>
+
+<!-- 삭제 확인 모달 -->
+<div id="confirmModal" class="qm-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="qm-title">
+  <div class="qm-dialog" role="document">
+    <h2 id="qm-title" class="qm-title">확인</h2>
+    <p id="qm-message" class="qm-message">삭제 하시겠습니까?</p>
+    <div class="qm-actions">
+      <button type="button" class="qm-btn qm-cancel" data-role="cancel">취소</button>
+      <button type="button" class="qm-btn qm-ok" data-role="ok">확인</button>
+    </div>
+  </div>
+  <button type="button" class="qm-backdrop" aria-label="닫기" data-role="cancel"></button>
+</div>
+
 </body>
 </html>

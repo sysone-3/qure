@@ -1,4 +1,3 @@
-// src/main/java/app/snapshot/qure/admin/complain/controller/ComplainController.java
 package app.snapshot.qure.admin.complain.controller;
 
 import java.time.LocalDate;
@@ -10,10 +9,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import app.snapshot.qure.admin.complain.dto.ComplainDto;
 import app.snapshot.qure.admin.complain.service.ComplainService;
+import app.snapshot.qure.login.util.SessionUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +40,11 @@ public class ComplainController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate to) {
-
-        int managerId = 20;
+    	
+    	model.addAttribute("nav","complain");
+    	
+    	Long managerId = SessionUtil.mustManagerId(session);
+        // int managerId = 20;
         LocalDateTime fromDt = (from == null) ? null : from.atStartOfDay(); // 해당날짜의 00시로 변경
         LocalDateTime toEx    = (to == null) ? null : to.plusDays(1).atStartOfDay(); // 그 다음 날짜의 00시로 변경
         int p = Math.max(page, 1); //페이지 번호 최소 1 보장
@@ -57,7 +64,10 @@ public class ComplainController {
 
     @GetMapping("/complain/detail")
     public String complainDetail(@RequestParam int id, HttpSession session, Model model) {
-        int managerId = 20;
+    	
+    	Long managerId = SessionUtil.mustManagerId(session);
+        //int managerId = 20;
+        
         ComplainDto selected = complainService.getByIdForManager(id, managerId);
         model.addAttribute("selected", selected);
         return "complain/_detail";
@@ -66,21 +76,26 @@ public class ComplainController {
     @PostMapping("/complain/delete")
     @ResponseBody
     public Map<String, Object> delete(@RequestParam int id, HttpSession session) {
-        int managerId = 20;
+    	
+    	Long managerId = SessionUtil.mustManagerId(session);
+        // int managerId = 20;
         int n = complainService.deleteByIdForManager(id, managerId);
         return java.util.Collections.singletonMap("ok", n > 0);
     }
 
     @PostMapping("/complain/status")
     @ResponseBody
-    public Map<String, Object> updateStatus(@RequestParam int id,
-                                            @RequestParam String status,
-                                            HttpSession session) {
-        int managerId = 20;
+    public Map<String,Object> updateStatus(@RequestParam int id,
+                                           @RequestParam String status,HttpSession session) {
+    	Long managerId = SessionUtil.mustManagerId(session);
+        // int managerId = 20;
+    	
+        status = status == null ? null : status.trim().toUpperCase();  // ← 추가
         if (!"IN_PROGRESS".equals(status) && !"RESOLVED".equals(status)) {
             return java.util.Collections.singletonMap("ok", false);
         }
         int n = complainService.updateStatusForManager(id, managerId, status);
         return java.util.Collections.singletonMap("ok", n > 0);
     }
+
 }

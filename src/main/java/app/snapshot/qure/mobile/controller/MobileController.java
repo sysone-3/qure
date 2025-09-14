@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistSubmitForm;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
-import app.snapshot.qure.mobile.dto.CitizenReportDto;
 import app.snapshot.qure.mobile.dto.TagSummaryDto;
 import app.snapshot.qure.mobile.repository.MobileMapper;
 import app.snapshot.qure.mobile.service.IMobileService;
@@ -69,6 +68,7 @@ public class MobileController {
 
         Boolean ok = mobileService.validateInspectorPin(tagId, pin);
         if (ok) {
+            // [추가] 인터셉터가 검사할 세션 플래그 설정
             session.setAttribute("INSPECT_OK:"+tagId, true);
             return "redirect:/mobile/" + tagId + "/checklist";
         }
@@ -79,6 +79,7 @@ public class MobileController {
 
     @GetMapping(value="/{tagId}/checklist")
     public String checklistView(@PathVariable("tagId") int tagId, Model model, HttpSession session, HttpServletRequest request) {
+        // [유지] 2차 방어. 인터셉터가 1차로 걸러도 여기서 한 번 더 확인.
         Boolean ok = (Boolean) session.getAttribute("INSPECT_OK:"+tagId);
         if (ok == null || !ok) return "redirect:/mobile/" + tagId + "/inspect";
 
@@ -93,6 +94,7 @@ public class MobileController {
 
         model.addAttribute("tagId", tagId);
 
+        // [유지] NONCE는 POST 위조/중복 방지 용도
         String nonce = UUID.randomUUID().toString();
         session.setAttribute("NONCE:"+tagId, nonce);
         request.setAttribute("nonce", nonce);
@@ -106,12 +108,14 @@ public class MobileController {
                                 HttpSession session,
                                 RedirectAttributes ra) {
 
+        // [유지] 세션 플래그 확인
         Boolean ok = (Boolean) session.getAttribute("INSPECT_OK:" + tagId);
         if (ok == null || !ok) {
             ra.addFlashAttribute("errorMsg", "세션 만료. 다시 인증하세요.");
             return "redirect:/mobile/main/" +tagId;
         }
 
+        // [유지] NONCE 검증 및 제거
         String key = "NONCE:" + tagId;
         String expected = (String) session.getAttribute(key);
         session.removeAttribute(key);
@@ -122,12 +126,16 @@ public class MobileController {
 
         try {
             Long inspectionId = mobileService.saveChecklistSubmission(tagId, form);
-            ra.addFlashAttribute("successMsg", "제출 완료 (ID: " + inspectionId + ")");
+
+            // [추가] 제출 완료 시 접근 플래그 제거 → 뒤로가기 등으로 재진입 차단
             session.removeAttribute("INSPECT_OK:" + tagId);
+
+            ra.addFlashAttribute("successMsg", "제출 완료 (ID: " + inspectionId + ")");
             return "redirect:/mobile/main/" + tagId;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("checklist submit error", e);
             ra.addFlashAttribute("errorMsg", "제출 실패");
+            // [보완] 실패 시에도 NONCE는 이미 제거됨. 재표시 위해 재인증 유도는 하지 않음.
             return "redirect:/mobile/main/" + tagId;
         }
     }
@@ -146,7 +154,7 @@ public class MobileController {
                 .body(new InputStreamResource(in));
     }
     
- // [TEST] 이미지 테스트 화면 엔드포인트 추가
+    // [TEST] 이미지 테스트 화면 엔드포인트
     @GetMapping("/test/images")
     public String imageTestPage(@RequestParam(name = "limit", defaultValue = "20") int limit,
                                 Model model) {
@@ -160,11 +168,9 @@ public class MobileController {
     
     @GetMapping("/{tagId}/complain")
     public String complainPage(@PathVariable("tagId") int tagId, Model model) {
-    	
-    	TagSummaryDto tagInfo = mobileService.getTagInfoByTagId(tagId);
-    	model.addAttribute("tagInfo",tagInfo);
-    	
-    	return "mobile/complain";
+        TagSummaryDto tagInfo = mobileService.getTagInfoByTagId(tagId);
+        model.addAttribute("tagInfo",tagInfo);
+        return "mobile/complain";
     }
     
     @PostMapping("/{tagId}/complain")
@@ -179,11 +185,10 @@ public class MobileController {
         ra.addFlashAttribute("complainMsg", "민원 접수 완료 (ID: " + id + ")");
         ra.addFlashAttribute("reportId", id);
       } catch (Exception e) {
+        log.error("complain submit error", e);
         ra.addFlashAttribute("complainStatus", "FAIL");
         ra.addFlashAttribute("complainMsg", "민원 접수 실패");
       }
       return "redirect:/mobile/main/" + tagId;
     }
-
-
 }
