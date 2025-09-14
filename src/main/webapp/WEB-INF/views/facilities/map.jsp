@@ -9,12 +9,24 @@
 
     <style>
         html, body { height:100%; margin:0; font-family: Arial, sans-serif; }
-        .container { display:flex; height:100vh; overflow:hidden; }
 
-        /* 사이드바 */
-        .sidebar { width:350px; background:#fff; border-right:1px solid #ddd; overflow-y:auto; flex-shrink:0; }
-        .sidebar-header { padding:20px; border-bottom:1px solid #eee; background:#f8f9fa; }
-        .sidebar-header h2 { margin:0; font-size:18px; color:#333; }
+        /* 레이아웃 */
+        .map-container { display:flex; height:100vh; overflow:hidden; }
+
+        /* 시설목록 사이드바 */
+        .facility-panel {
+            width:350px;
+            background:#fff;
+            border-right:1px solid #ddd;
+            overflow-y:auto;
+            flex-shrink:0;
+        }
+        .facility-header {
+            padding:20px;
+            border-bottom:1px solid #eee;
+            background:#f8f9fa;
+        }
+        .facility-header h2 { margin:0; font-size:18px; color:#333; }
 
         .facility-list { padding:0; }
         .facility-item { padding:15px 20px; border-bottom:1px solid #eee; cursor:pointer; transition:background-color .2s; }
@@ -27,7 +39,7 @@
         .facility-links a:hover { text-decoration:underline; }
 
         /* 지도 */
-        .map-wrap { flex:1; position:relative; overflow:hidden; }
+        .map-wrap { flex:1; position:relative; height:100vh; }
         #map { width:100%; height:100%; min-height:400px; }
 
         /* 정보창 */
@@ -38,36 +50,48 @@
         .loading { text-align:center; padding:40px 20px; color:#666; }
 
         @media (max-width:768px) {
-            .container { flex-direction:column; }
-            .sidebar { width:100%; height:200px; border-right:none; border-bottom:1px solid #ddd; }
+            .map-container { flex-direction:column; }
+            .facility-panel { width:100%; height:200px; border-right:none; border-bottom:1px solid #ddd; }
             .map-wrap { height:calc(100vh - 200px); }
         }
     </style>
 
+    <!-- 기본 레이아웃 CSS 추가 -->
+    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
     <!-- autoload=false 로드 -->
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=510d348c118386386188e7cf50c6db91&autoload=false"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoAppKey}&autoload=false"></script>
 </head>
 <body>
-<div class="container">
-    <div class="sidebar">
-        <div class="sidebar-header"><h2>시설 목록</h2></div>
-        <div id="facility-list" class="facility-list">
-            <div class="loading">시설 정보를 불러오는 중...</div>
+<!-- nav 변수 설정 (사이드바에서 '지도' 메뉴 활성화) -->
+<c:set var="nav" value="map" scope="request"/>
+
+<div class="layout">
+    <!-- 전역 메뉴 사이드바 -->
+    <%@ include file="../fragments/sidebar.jspf" %>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="content">
+        <div class="map-container">
+            <!-- 시설목록 패널 -->
+            <div class="facility-panel">
+                <div class="facility-header"><h2>시설 목록</h2></div>
+                <div id="facility-list" class="facility-list">
+                    <div class="loading">시설 정보를 불러오는 중...</div>
+                </div>
+            </div>
+
+            <!-- 지도 -->
+            <div class="map-wrap"><div id="map"></div></div>
         </div>
-    </div>
-    <div class="map-wrap"><div id="map"></div></div>
+    </main>
 </div>
-
 <script>
-    let map = null;
-    let markers = [];       // 원본 인덱스별 마커
-    let infoWindows = [];   // 원본 인덱스별 정보창
-    let facilityData = [];  // API 원본 데이터
-
-    function safeRelayout(m) {
-        if (!m) return;
-        try { const c = m.getCenter(); m.relayout(); m.setCenter(c); } catch(e) { console.warn(e); }
-    }
+    // 전역 변수 선언
+    var map;
+    var facilityData = [];
+    var markers = [];        // 추가된 부분
+    var infoWindows = [];    // 추가된 부분
 
     function formatDate(timestamp) {
         console.log('formatDate 호출됨:', timestamp);
@@ -158,7 +182,6 @@
         });
     }
 
-
     function renderFacilityList(facilities) {
         const list = document.getElementById('facility-list');
         if (!facilities || facilities.length === 0) {
@@ -189,8 +212,6 @@
         }
         list.innerHTML = html;
     }
-
-
 
     async function selectFacility(index) {
         var f = facilityData[index];
@@ -228,6 +249,13 @@
         } catch (e) {
             console.error(e);
             alert('상세 정보를 불러오지 못했습니다.');
+        }
+    }
+
+    // safeRelayout 함수 추가
+    function safeRelayout(map) {
+        if (map && typeof map.relayout === 'function') {
+            map.relayout();
         }
     }
 
@@ -331,7 +359,10 @@
                     html += '</div>';
 
                     var iw = new kakao.maps.InfoWindow({ content: html, removable: true });
-                    facilities.forEach(function(f){ markers[f.originalIndex] = marker; infoWindows[f.originalIndex] = iw; });
+                    facilities.forEach(function(f){
+                        markers[f.originalIndex] = marker;
+                        infoWindows[f.originalIndex] = iw;
+                    });
 
                     kakao.maps.event.addListener(marker, 'click', function () {
                         infoWindows.forEach(function(x){ x && x.close(); });
