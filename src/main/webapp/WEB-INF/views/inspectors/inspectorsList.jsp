@@ -12,9 +12,8 @@
 <body>
     <div class="innerContainer">
         <div class="topContainer">
-            <span class="title">작업자</span>
             <div class="statusContainer">
-                <span class="subTitle">현황</span>
+                <span class="subTitle">작업자 현황</span>
                 <div class="buttonContainer">
                     <button class="register">
                          <img src="<c:url value='/assets/images/plus.svg'/>" alt="+" class="icon" />
