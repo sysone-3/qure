@@ -53,12 +53,13 @@
                        AND (LOWER(f.name) LIKE '%' || LOWER(#{keyword}) || '%'
                     OR LOWER(ip.name) LIKE '%' || LOWER(#{keyword}) || '%')
                      </if>
-                   <if test="startDate != null and endDate != null">
-                       AND i.submitted_at BETWEEN #{startDate} AND #{endDate}
-        </if>
+                    <if test="startDate != null and endDate != null">
+                        AND i.submitted_at >= CAST(#{startDate} AS DATE)
+                        AND i.submitted_at &lt;  (CAST(#{endDate}   AS DATE) + 1)
+                    </if>
                    <if test="status != null and status != ''">
                        AND i.result = #{status}
-        </if>
+                    </if>
              )
         WHERE rn BETWEEN #{startRow} AND #{endRow}
     </select>
@@ -76,11 +77,84 @@
               AND (LOWER(f.name) LIKE '%' || LOWER(#{keyword}) || '%'
            OR LOWER(ip.name) LIKE '%' || LOWER(#{keyword}) || '%')
             </if>
-          <if test="startDate != null and endDate != null">
-              AND i.submitted_at BETWEEN #{startDate} AND #{endDate}
+        <if test="startDate != null and endDate != null">
+            AND i.submitted_at >= CAST(#{startDate} AS DATE)
+            AND i.submitted_at &lt; (CAST(#{endDate}   AS DATE) + 1)
         </if>
-          <if test="status != null and status != ''">
+        <if test="status != null and status != ''">
               AND i.result = #{status}
         </if>
+    </select>
+
+    <select id="selectInspectionHeader"
+            parameterType="long"
+            resultType="app.snapshot.qure.inspection.dto.InspectionHeaderDto">
+        SELECT
+            i.INSPECTION_ID    AS inspectionId,
+            i.SUBMITTED_AT     AS submittedAt,
+            f.NAME             AS facilityName,
+            f.FLOOR            AS facilityFloor,
+            f.ZONE             AS facilityZone,
+            ip.NAME            AS inspectorName,
+            ip.PHONE           AS inspectorPhone
+        FROM INSPECTIONS i
+                 LEFT JOIN FACILITIES f       ON f.FACILITY_ID = i.FACILITY_ID
+                 LEFT JOIN INSPECTOR_PROFILE ip ON ip.INSPECTOR_ID = i.INSPECTOR_ID
+        WHERE i.INSPECTION_ID = #{inspectionId}
+    </select>
+
+    <resultMap id="inspectionItemMap"
+               type="app.snapshot.qure.inspection.dto.InspectionResultItemDto">
+        <result column="item_id"      property="itemId"/>
+        <result column="label"        property="label"/>
+        <result column="type"         property="type"/>
+        <result column="order_no"     property="orderNo"/>
+        <result column="answer_text"  property="answerText"/>
+        <result column="status"       property="status"/>
+        <!-- IMAGE일 때만 주입 -->
+        <collection property="imagePaths" ofType="string"
+                    column="result_id"
+                    select="selectImagesByResultId"/>
+    </resultMap>
+
+    <select id="selectInspectionItems" parameterType="long" resultMap="inspectionItemMap">
+        SELECT
+            ci.ITEM_ID            AS item_id,
+            ci.LABEL              AS label,
+            ci.TYPE               AS type,
+            ci.ORDER_NO           AS order_no,
+            iir.RESULT_ID         AS result_id,
+
+            CASE ci.TYPE
+                WHEN 'BOOL' THEN
+                    CASE
+                        WHEN NVL(TRIM(iir.VALUE_BOOL), 'N') IN ('Y','1','T') THEN '예'
+                        ELSE '아니오'
+                        END
+                WHEN 'NUM'  THEN TO_CHAR(iir.VALUE_NUM)
+                WHEN 'TEXT' THEN DBMS_LOB.SUBSTR(iir.VALUE_TEXT, 4000, 1)
+                END AS answer_text,
+
+            CASE
+                WHEN ci.TYPE = 'BOOL' THEN
+                    CASE
+                        WHEN NVL(TRIM(iir.VALUE_BOOL), 'N') IN ('N','0','F') THEN '이상'
+                        ELSE '완료'
+                        END
+                ELSE '완료'
+                END AS status
+
+        FROM INSPECTION_ITEM_RESULTS iir
+                 JOIN CHECKLIST_ITEMS ci ON ci.ITEM_ID = iir.ITEM_ID
+        WHERE iir.INSPECTION_ID = #{inspectionId}
+        ORDER BY ci.ORDER_NO NULLS LAST, ci.ITEM_ID
+    </select>
+
+    <select id="selectImagesByResultId" parameterType="long" resultType="string">
+        SELECT
+            '/mobile/file/' || image_id AS url
+        FROM images
+        WHERE result_id = #{resultId}
+        ORDER BY image_id
     </select>
 </mapper>

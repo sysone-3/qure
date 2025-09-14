@@ -164,6 +164,9 @@ canvas.ring{
     text-align: center;
 }
 
+.table tbody tr.row-link { cursor: pointer; }
+.table tbody tr.row-link:hover { background: #fafafa; }
+
 /* 배지 */
 .badge {
     display: inline-flex;

@@ -66,10 +66,21 @@
             <c:forEach var="p" items="${recentPoints}" varStatus="s">
                 <fmt:formatDate value="${p.dayValue}" pattern="d" var="dnum"/>
                 <fmt:formatDate value="${p.dayValue}" pattern="E" var="wday"/>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 15px">
+                <fmt:formatDate value="${p.dayValue}" pattern="yyyy-MM-dd" var="dayIso"/>
+
+                <c:url var="dayListUrl" value="/inspection/list">
+                    <c:param name="startDate" value="${dayIso}"/>
+                    <c:param name="endDate"   value="${dayIso}"/>
+                    <c:param name="page"      value="1"/>
+                </c:url>
+
+                <!-- 전체 영역 클릭 가능 -->
+                <div class="ring-tile" data-href="${dayListUrl}" tabindex="0" role="link"
+                     aria-label="${dayIso} 점검 내역 보기"
+                     style="display:flex;flex-direction:column;align-items:center;gap:15px;cursor:pointer">
                     <canvas id="ring${s.index}" class="ring"
-                        width="72" height="72" style="width:72px;height:72px"
-                        data-percent="${p.percent}" data-day="${dnum}"></canvas>
+                            width="72" height="72" style="width:72px;height:72px"
+                            data-percent="${p.percent}" data-day="${dnum}"></canvas>
                     <div class="weekday">${wday}</div>
                 </div>
             </c:forEach>
@@ -94,26 +105,28 @@
             </thead>
             <tbody>
             <c:forEach var="r" items="${recentInspections}">
-                <tr>
+                <c:url var="detailUrl" value="/inspection/detail">
+                    <c:param name="inspectionId" value="${r.inspectionId}"/>
+                </c:url>
+
+                <tr class="row-link"
+                    data-href="${detailUrl}"
+                    tabindex="0"
+                    role="link"
+                    aria-label="점검 상세 보기: ${r.facilityName} ${r.inspectorName}">
                     <td>${r.domain}</td>
                     <td>
                         <c:out value="${r.facilityName}" />
                         <c:if test="${not empty r.floor}"> ${r.floor}층</c:if>
                         <c:if test="${not empty r.zone}"> ${r.zone}구역</c:if>
                     </td>
-                    <td><fmt:formatDate value="${r.submittedAt}" pattern="yyyy년 M월 d일" /></td>
+                    <td><fmt:formatDate value="${r.submittedAt}" pattern="yyyy년 M월 d일"/></td>
                     <td>${r.inspectorName}</td>
                     <td>
                         <c:choose>
-                            <c:when test="${r.result == 'PASS'}">
-                                <span class="badge ok">완료</span>
-                            </c:when>
-                            <c:when test="${r.result == 'FAIL'}">
-                                <span class="badge warn">이상 발견</span>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="badge">${r.result}</span>
-                            </c:otherwise>
+                            <c:when test="${r.result == 'PASS'}"><span class="badge ok">완료</span></c:when>
+                            <c:when test="${r.result == 'FAIL'}"><span class="badge warn">이상 발견</span></c:when>
+                            <c:otherwise><span class="badge">${r.result}</span></c:otherwise>
                         </c:choose>
                     </td>
                 </tr>
@@ -173,6 +186,42 @@
                     }
                 }
             });
+        });
+
+        document.addEventListener('click', function(e){
+            const tile = e.target.closest('[data-href]');
+            if (!tile) return;
+            const href = tile.getAttribute('data-href');
+            if (!href) return;
+            if (e.ctrlKey || e.metaKey || e.button === 1) {
+                window.open(href, '_blank');
+            } else {
+                window.location.href = href;
+            }
+        });
+
+        document.addEventListener('keydown', function(e){
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const tile = e.target.closest('[data-href]');
+            if (!tile) return;
+            e.preventDefault();
+            const href = tile.getAttribute('data-href');
+            if (href) window.location.href = href;
+        });
+
+        document.addEventListener('click', function(e){
+            const row = e.target.closest('tr.row-link');
+            if (!row) return;
+            if (e.target.closest('a,button,input,label,select,textarea')) return;
+
+            const href = row.getAttribute('data-href');
+            if (!href) return;
+
+            if (e.ctrlKey || e.metaKey || e.button === 1) {
+                window.open(href, '_blank');
+            } else {
+                window.location.href = href;
+            }
         });
     })();
 </script>

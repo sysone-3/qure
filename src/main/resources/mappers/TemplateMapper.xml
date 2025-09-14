@@ -13,6 +13,7 @@
         <result property="isActive" column="IS_ACTIVE" javaType="app.snapshot.qure.template.model.ActiveStatus"/>
         <result property="createdAt" column="CREATED_AT" />
         <result property="facilityId" column="FACILITY_ID" />
+        <result property="managerId" column="MANAGER_ID" />
     </resultMap>
 
     <select id="getTemplateList" resultMap="templateMap">
@@ -31,9 +32,9 @@
             SELECT CHECKLIST_TEMPLATES_SEQ.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO CHECKLIST_TEMPLATES
-        (TEMPLATE_ID, DOMAIN, NAME, CYCLE, CYCLE_UNIT, VERSION, IS_ACTIVE, CREATED_AT, FACILITY_ID)
+        (TEMPLATE_ID, DOMAIN, NAME, CYCLE, CYCLE_UNIT, VERSION, IS_ACTIVE, CREATED_AT, FACILITY_ID, MANAGER_ID)
         VALUES
-        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, #{version}, #{isActive}, SYSDATE, #{facilityId,jdbcType=INTEGER})
+        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, #{version}, #{isActive}, SYSDATE, #{facilityId,jdbcType=INTEGER}, #{managerId})
     </insert>
 
     <!-- 이전 템플릿 비활성화 (낙관적) -->

@@ -1,5 +1,6 @@
 package app.snapshot.qure.inspection.service;
 
+import app.snapshot.qure.inspection.dto.InspectionDetailDto;
 import app.snapshot.qure.inspection.dto.InspectionItemDto;
 
 import java.util.Date;
@@ -11,4 +12,5 @@ public interface IInspectionService {
                                            String status, int page, int size);
 
     int countInspections(String keyword, Date startDate, Date endDate, String status);
+    InspectionDetailDto getInspectionDetail(Long inspectionId);
 }

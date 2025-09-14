@@ -47,13 +47,10 @@
              WHERE TRUNC(f.next_scheduled_at) > TRUNC(SYSDATE)) AS upcomingCount,
 
             /* 5) 미점검 현황 (어제까지인데 점검 레코드가 전혀 없는 설비 수) */
-            (SELECT COUNT(*)
-             FROM facilities f
-             WHERE TRUNC(f.next_scheduled_at) < TRUNC(SYSDATE)
-               AND NOT EXISTS (
-                 SELECT 1 FROM inspections i
-                 WHERE i.facility_id = f.facility_id
-             )
+            (
+                SELECT COUNT(*)
+                FROM facilities f
+                WHERE f.next_scheduled_at < TRUNC(SYSDATE)  -- '어제까지' 포함
             ) AS overdueUninspected
         FROM dual
         ]]>

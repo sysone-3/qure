@@ -77,26 +77,26 @@
                         </thead>
                         <tbody>
                         <c:forEach var="r" items="${inspections}">
-                            <tr>
+                            <c:url var="detailUrl" value="/inspection/detail">
+                                <c:param name="inspectionId" value="${r.inspectionId}"/>
+                            </c:url>
+
+                            <tr class="row-link" data-href="${detailUrl}" tabindex="0"
+                                role="link"
+                                aria-label="점검 상세 보기: ${r.facilityName} ${r.inspectorName}">
                                 <td>${r.domain}</td>
                                 <td>
                                     <c:out value="${r.facilityName}" />
                                     <c:if test="${not empty r.floor}"> ${r.floor}층</c:if>
                                     <c:if test="${not empty r.zone}"> ${r.zone}구역</c:if>
                                 </td>
-                                <td><fmt:formatDate value="${r.submittedAt}" pattern="yyyy년 M월 d일" /></td>
+                                <td><fmt:formatDate value="${r.submittedAt}" pattern="yyyy년 M월 d일"/></td>
                                 <td>${r.inspectorName}</td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${r.result == 'PASS'}">
-                                            <span class="badge ok">완료</span>
-                                        </c:when>
-                                        <c:when test="${r.result == 'FAIL'}">
-                                            <span class="badge warn">이상 발견</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span class="badge">${r.result}</span>
-                                        </c:otherwise>
+                                        <c:when test="${r.result == 'PASS'}"><span class="badge ok">완료</span></c:when>
+                                        <c:when test="${r.result == 'FAIL'}"><span class="badge warn">이상 발견</span></c:when>
+                                        <c:otherwise><span class="badge">${r.result}</span></c:otherwise>
                                     </c:choose>
                                 </td>
                             </tr>
@@ -174,6 +174,18 @@
                     $(this).val('');
                     $('#startDate').val('');
                     $('#endDate').val('');
+                });
+
+                $('.table tbody').on('click', 'tr.row-link', function (e) {
+                    if ($(e.target).closest('a, button, input, label, select, textarea').length) return;
+
+                    const href = $(this).data('href');
+                    if (!href) return;
+                    if (e.ctrlKey || e.metaKey || e.which === 2) {
+                        window.open(href, '_blank');
+                    } else {
+                        window.location.href = href;
+                    }
                 });
             });
         </script>

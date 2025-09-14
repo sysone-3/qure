@@ -31,6 +31,9 @@ body{
 .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);}
 
 /* 테이블 */
+.table tbody tr.row-link{cursor:pointer}
+.table tbody tr.row-link:hover{background:#fafafa}
+
 .card-table{
     padding: 40px 40px;
     height: 100%;

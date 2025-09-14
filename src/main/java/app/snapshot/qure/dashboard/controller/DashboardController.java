@@ -30,6 +30,7 @@ public class DashboardController {
 
     @GetMapping("")
     public String dashboardPage(HttpSession session, Model model) {
+        Long id = SessionUtil.getManagerId(session);
         String name = SessionUtil.getKakaoName(session);
         String email = SessionUtil.getKakaoEmail(session);
         DashboardSessionView vm = dashboardService.buildDashboardView(name, email);

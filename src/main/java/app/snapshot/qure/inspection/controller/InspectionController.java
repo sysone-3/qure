@@ -1,5 +1,6 @@
 package app.snapshot.qure.inspection.controller;
 
+import app.snapshot.qure.inspection.dto.InspectionDetailDto;
 import app.snapshot.qure.inspection.dto.InspectionItemDto;
 import app.snapshot.qure.inspection.service.IInspectionService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -43,5 +46,29 @@ public class InspectionController {
         model.addAttribute("totalPages", totalPages);
 
         return "inspection/inspectionList";
+    }
+
+    @GetMapping("/detail")
+    public String detail(@RequestParam Long inspectionId, Model model) {
+        InspectionDetailDto detail = inspectionService.getInspectionDetail(inspectionId);
+        if (detail == null) {
+            return "error/404";
+        }
+
+        String submittedAtStr = "-";
+        Object ts = detail.getSubmittedAt();
+        try {
+            if (ts instanceof java.time.LocalDateTime) {
+                submittedAtStr = ((java.time.LocalDateTime) ts)
+                        .format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분"));
+            } else if (ts instanceof Date) {
+                submittedAtStr = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분")
+                        .format((Date) ts);
+            }
+        } catch (Exception ignore) {}
+
+        model.addAttribute("detail", detail);
+        model.addAttribute("submittedAtStr", submittedAtStr);
+        return "inspection/inspectionDetail";
     }
 }

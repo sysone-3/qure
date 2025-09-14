@@ -54,6 +54,7 @@ public class TemplateService implements ITemplateService {
         template.setVersion(1);
         template.setIsActive(ActiveStatus.Y);
         template.setFacilityId(null);
+        template.setManagerId(form.getManagerId());
 
         templateRepository.insertTemplate(template);
         long templateId = template.getTemplateId();

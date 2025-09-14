@@ -3,9 +3,11 @@ package app.snapshot.qure.template.controller;
 import app.snapshot.qure.checklist.dto.TemplateCreateForm;
 import app.snapshot.qure.checklist.model.Checklist;
 import app.snapshot.qure.checklist.service.IChecklistService;
+import app.snapshot.qure.login.util.SessionUtil;
 import app.snapshot.qure.template.dto.TemplateUpdateForm;
 import app.snapshot.qure.template.model.Template;
 import app.snapshot.qure.template.service.ITemplateService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,8 +48,10 @@ public class TemplateController {
 
     // 등록 처리 (POST)
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public String insertTemplate(TemplateCreateForm form, RedirectAttributes redirectAttributes) {
+    public String insertTemplate(TemplateCreateForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+        Long id = SessionUtil.getManagerId(session);
         try {
+            form.setManagerId(id);
             long templateId = templateService.insertTemplate(form);
             redirectAttributes.addFlashAttribute("message",
                     templateId + " 번 점검표가 등록되었습니다.");
