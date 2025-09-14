@@ -16,7 +16,7 @@
        <c:if test="${nav=='inspections'}">aria-current="page"</c:if>>
         <img src="<c:url value='/assets/images/ICON_2.svg'/>" alt="점검표" class="nav-img">
     </a>
-    <a href="<c:url value='/inspectors' context='/'/>"
+    <a href="<c:url value='/inspectors/inspectorsList?page=1'/>"
        class="nav-btn ${nav=='inspectors'?'active':''}" aria-label="작업자"
        <c:if test="${nav=='inspectors'}">aria-current="page"</c:if>>
         <img src="<c:url value='/assets/images/ICON_3.svg'/>" alt="작업자" class="nav-img">

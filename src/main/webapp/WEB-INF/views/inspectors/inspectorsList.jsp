@@ -8,9 +8,15 @@
     <title>점검자 리스트</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<c:url value='/assets/css/inspectorsList.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
 </head>
 <body>
+<c:set var="nav" value="inspectors" scope="request"/>
+    <div class="layout">
+    <%@ include file="../fragments/sidebar.jspf" %>
     <div class="innerContainer">
+
         <div class="topContainer">
             <span class="title">작업자</span>
             <div class="statusContainer">
@@ -132,5 +138,6 @@
         </div>
     </div>
     <script src="<c:url value='/assets/js/inspectorsList.js'/>"></script>
+    </div>
 </body>
 </html>
