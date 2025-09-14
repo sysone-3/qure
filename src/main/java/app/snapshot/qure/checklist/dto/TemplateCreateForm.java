@@ -11,4 +11,5 @@ public class TemplateCreateForm {
     private Integer cycle;      // cycleNumber
     private String cycleUnit;   // DAY | WEEK | MONTH | YEAR
     private List<CheckItemForm> items; // items[i].type / items[i].label
+    private Long managerId;
 }
