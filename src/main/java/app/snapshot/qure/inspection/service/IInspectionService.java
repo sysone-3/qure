@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.List;
 
 public interface IInspectionService {
-    List<InspectionItemDto> getRecentInspections(int limit);
+    List<InspectionItemDto> getRecentInspections(int limit, Long managerId);
     List<InspectionItemDto> getInspections(String keyword, Date startDate, Date endDate,
-                                           String status, int page, int size);
+                                           String status, int page, int size, Long managerId);
 
-    int countInspections(String keyword, Date startDate, Date endDate, String status);
-    InspectionDetailDto getInspectionDetail(Long inspectionId);
+    int countInspections(String keyword, Date startDate, Date endDate, String status, Long managerId);
+    InspectionDetailDto getInspectionDetail(Long inspectionId, Long managerId);
 }

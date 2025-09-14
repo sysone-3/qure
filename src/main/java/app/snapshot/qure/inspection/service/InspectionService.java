@@ -19,31 +19,31 @@ public class InspectionService implements IInspectionService {
     IInspectionRepository inspectionRepository;
 
     @Override
-    public List<InspectionItemDto> getRecentInspections(int limit) {
-        return inspectionRepository.selectRecentInspections(limit);
+    public List<InspectionItemDto> getRecentInspections(int limit, Long managerId) {
+        return inspectionRepository.selectRecentInspections(limit, managerId);
     }
 
     @Override
     public List<InspectionItemDto> getInspections(String keyword, Date startDate, Date endDate,
-                                                  String status, int page, int size) {
+                                                  String status, int page, int size, Long managerId) {
         int startRow = (page - 1) * size + 1;
         int endRow = page * size;
-        return inspectionRepository.selectInspectionsPage(keyword, startDate, endDate, status, startRow, endRow);
+        return inspectionRepository.selectInspectionsPage(keyword, startDate, endDate, status, startRow, endRow, managerId);
     }
 
     @Override
-    public int countInspections(String keyword, Date startDate, Date endDate, String status) {
-        return inspectionRepository.countInspections(keyword, startDate, endDate, status);
+    public int countInspections(String keyword, Date startDate, Date endDate, String status, Long managerId) {
+        return inspectionRepository.countInspections(keyword, startDate, endDate, status, managerId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public InspectionDetailDto getInspectionDetail(Long inspectionId) {
-        InspectionHeaderDto h = inspectionRepository.selectInspectionHeader(inspectionId);
+    public InspectionDetailDto getInspectionDetail(Long inspectionId, Long managerId) {
+        InspectionHeaderDto h = inspectionRepository.selectInspectionHeader(inspectionId, managerId);
         if (h == null) return null;
 
         List<InspectionResultItemDto> items =
-                inspectionRepository.selectInspectionItems(inspectionId);
+                inspectionRepository.selectInspectionItems(inspectionId, managerId);
 
         return InspectionDetailDto.builder()
                 .inspectionId(inspectionId)

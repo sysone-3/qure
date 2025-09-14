@@ -3,6 +3,8 @@ package app.snapshot.qure.inspection.controller;
 import app.snapshot.qure.inspection.dto.InspectionDetailDto;
 import app.snapshot.qure.inspection.dto.InspectionItemDto;
 import app.snapshot.qure.inspection.service.IInspectionService;
+import app.snapshot.qure.login.util.SessionUtil;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,12 +35,13 @@ public class InspectionController {
             @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "7") int size,
+            HttpSession session,
             Model model) {
-
+        Long managerId = SessionUtil.getManagerId(session);
         List<InspectionItemDto> inspections =
-                inspectionService.getInspections(keyword, startDate, endDate, status, page, size);
+                inspectionService.getInspections(keyword, startDate, endDate, status, page, size, managerId);
 
-        int total = inspectionService.countInspections(keyword, startDate, endDate, status);
+        int total = inspectionService.countInspections(keyword, startDate, endDate, status, managerId);
         int totalPages = (int) Math.ceil((double) total / size);
 
         model.addAttribute("inspections", inspections);
@@ -49,8 +52,9 @@ public class InspectionController {
     }
 
     @GetMapping("/detail")
-    public String detail(@RequestParam Long inspectionId, Model model) {
-        InspectionDetailDto detail = inspectionService.getInspectionDetail(inspectionId);
+    public String detail(@RequestParam Long inspectionId, HttpSession session, Model model) {
+        Long managerId = SessionUtil.getManagerId(session);
+        InspectionDetailDto detail = inspectionService.getInspectionDetail(inspectionId, managerId);
         if (detail == null) {
             return "error/404";
         }
