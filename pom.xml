@@ -202,9 +202,11 @@
             <artifactId>javase</artifactId>
             <version>3.5.3</version>
         </dependency>
+
     </dependencies>
 
     <build>
+        <finalName>qure</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

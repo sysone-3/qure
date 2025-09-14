@@ -38,7 +38,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()  // 일단 모든 요청 허용
+                        .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
 
@@ -72,7 +72,7 @@ public class SecurityConfig {
                 .clientSecret(kakaoClientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("{baseUrl}/login/oauth2/code/kakao")
+                .redirectUri("{baseUrl}/login/oauth2/code/kakao") // 이게 실제로는 /qure/login/oauth2/code/kakao가 됨
                 .scope("profile_nickname", "account_email")
                 .authorizationUri("https://kauth.kakao.com/oauth/authorize")
                 .tokenUri("https://kauth.kakao.com/oauth/token")
@@ -82,3 +82,4 @@ public class SecurityConfig {
                 .build();
     }
 }
+
