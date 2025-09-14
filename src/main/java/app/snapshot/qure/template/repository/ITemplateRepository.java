@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ITemplateRepository {
-    List<Template> getTemplateList();
+    List<Template> getTemplateList(@Param("managerId") Long managerId);
     Template getTemplateById(Long id);
     int deactivateIfActive(@Param("templateId") Long templateId,
                            @Param("version") Integer version);

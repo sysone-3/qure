@@ -18,6 +18,9 @@
 
     <select id="getTemplateList" resultMap="templateMap">
         SELECT * FROM CHECKLIST_TEMPLATES WHERE IS_ACTIVE = 'Y'
+        <if test="managerId != null">
+            AND MANAGER_ID = #{managerId}
+        </if>
         ORDER BY TEMPLATE_ID DESC
     </select>
 

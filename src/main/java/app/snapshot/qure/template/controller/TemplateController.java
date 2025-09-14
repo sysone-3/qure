@@ -32,8 +32,9 @@ public class TemplateController {
     IChecklistService checklistService;
 
     @RequestMapping(value="")
-    public String getAllTemplates(Model model){
-        List<Template> list = templateService.getTemplateList();
+    public String getAllTemplates(Model model, HttpSession session) {
+        Long managerId = SessionUtil.getManagerId(session);
+        List<Template> list = templateService.getTemplateList(managerId);
         model.addAttribute("templateList", list);
 
         return "template/templateList";

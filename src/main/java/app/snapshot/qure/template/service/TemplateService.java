@@ -35,8 +35,8 @@ public class TemplateService implements ITemplateService {
     IChecklistService checklistService;
 
     @Override
-    public List<Template> getTemplateList() {
-        return templateRepository.getTemplateList();
+    public List<Template> getTemplateList(Long managerId) {
+        return templateRepository.getTemplateList(managerId);
     }
 
     @Override
