@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                     <c:forEach var="inspector" items="${inspectors}">
-                        <tr>
+                        <tr onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'">
                             <td>
                                 <input type="checkbox" name="selectedIds" value="${inspector.inspectorId}" />
                                 ${inspector.inspectorId}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.snapshot.qure.inspectors.repository.InspectorsDetailMapper">
+
+    <select id="getInspectorDetail" resultType="app.snapshot.qure.inspectors.dto.InspectorDetailDTO">
+        SELECT ip.inspector_id,
+        ip.name AS name,      -- DTO의 name 필드랑 맞춤
+        ip.phone,
+        f.domain,
+        f.name AS facility
+        FROM inspector_profile ip
+        JOIN facilities f ON ip.inspector_id = f.inspector_id
+        WHERE ip.inspector_id = #{inspectorId}
+    </select>
+
+</mapper>
