@@ -1,30 +1,53 @@
-
+// /assets/js/checklist.js
 (function () {
   const form     = document.getElementById('chkForm');
   const btn      = document.getElementById('btnSubmit');
-  const doneCnt  = document.getElementById('doneCnt');   // 채워진 필수 개수
-  const totalCnt = document.getElementById('totalCnt');  // 전체 필수 개수
+  const doneCnt  = document.getElementById('doneCnt');   // 채워진 "필수" 개수
+  const totalCnt = document.getElementById('totalCnt');  // 전체 "필수" 개수
   const cards    = Array.from(document.querySelectorAll('.card'));
 
-  function isFilled(card){
-    const t = card.dataset.type;
-    if (t === 'BOOL') return !!card.querySelector('input[type=radio]:checked');
-    if (t === 'NUMBER')  { const el = card.querySelector('input[type=number]'); return !!(el && el.value !== ''); }
-    if (t === 'TEXT')    { const el = card.querySelector('textarea');           return !!(el && el.value.trim().length > 0); }
-    if (t === 'PHOTO')   { const el = card.querySelector('input[type=file]');   return !!(el && el.files && el.files.length > 0); }
-    return false;
+  function isRequired(card){
+    const v = (card.dataset.required || '').toString().trim().toLowerCase(); // '1'/'0' or 'true'/'false'
+    return v === '1' || v === 'true' || v === 'y';
   }
 
-  function calcDone(){
-    let reqTotal = 0;
-    let reqFilled = 0;
+  function isFilled(card){
+    const t = (card.dataset.type || '').toUpperCase(); // 'BOOL' | 'NUM' | 'TEXT' | 'IMAGE'
+    switch (t) {
+      case 'BOOL': {
+        return !!card.querySelector('input[type=radio]:checked');
+      }
+      case 'NUM': {
+        const el = card.querySelector('input[type=number]');
+        return !!(el && el.value !== '');
+      }
+      case 'TEXT': {
+        const el = card.querySelector('textarea');
+        return !!(el && el.value.trim().length > 0);
+      }
+      case 'IMAGE': {
+        const el = card.querySelector('input[type=file]');
+        return !!(el && el.files && el.files.length > 0);
+      }
+      default:
+        return false;
+    }
+  }
 
+  function clearErrors(){
     cards.forEach(card => {
       const err = card.querySelector('.err');
       if (err) err.textContent = '';
+    });
+  }
 
-      const required = card.dataset.required === 'true';
-      if (required) {
+  function calcDone(){
+    let reqTotal = 0, reqFilled = 0;
+
+    clearErrors();
+
+    cards.forEach(card => {
+      if (isRequired(card)) {
         reqTotal++;
         if (isFilled(card)) reqFilled++;
       }
@@ -33,15 +56,17 @@
     if (doneCnt)  doneCnt.textContent  = String(reqFilled);
     if (totalCnt) totalCnt.textContent = String(reqTotal);
 
-    btn.disabled = (reqFilled !== reqTotal);
+    if (btn) btn.disabled = (reqFilled !== reqTotal);
   }
 
+  // 초기화 및 변경 감지
   if (form){
-    form.addEventListener('input',  calcDone);
-    form.addEventListener('change', calcDone);
+    form.addEventListener('input',  calcDone, { passive: true });
+    form.addEventListener('change', calcDone, { passive: true }); // radio/file 대응
   }
   calcDone();
 
+  // 제출 처리
   if (btn){
     btn.addEventListener('click', function(e){
       if (btn.disabled){
@@ -49,17 +74,21 @@
         return;
       }
 
-      // 최종 검증 시 에러 메시지 표시
-      let hasErr = false;
+      let hasErr = false, firstBad = null;
       cards.forEach(card => {
-        if (card.dataset.required === 'true' && !isFilled(card)){
+        if (isRequired(card) && !isFilled(card)){
           const err = card.querySelector('.err');
           if (err) err.textContent = '필수 항목입니다.';
+          if (!firstBad) firstBad = card;
           hasErr = true;
         }
       });
+
       if (hasErr){
         e.preventDefault();
+        if (firstBad && typeof firstBad.scrollIntoView === 'function') {
+          firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         return;
       }
 
