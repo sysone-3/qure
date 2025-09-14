@@ -2,10 +2,12 @@ package app.snapshot.qure.facilities.service;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Getter
 @Service
+@PropertySource("classpath:application-map.properties")
 public class MapService {
     private final String kakaoAppKey;
     private final String kakaoApiKey;

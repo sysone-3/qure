@@ -6,10 +6,24 @@
 <head>
     <meta charset="UTF-8">
     <title>${facility.name} 상세</title>
+    <!-- 기본 레이아웃 CSS 추가 -->
+    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
+
     <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
 </head>
 <body>
-<div class="detail-page">
+
+<!-- nav 변수 설정 (사이드바에서 '설비' 메뉴 활성화) -->
+<c:set var="nav" value="facilities" scope="request"/>
+
+<div class="layout">
+    <!-- 사이드바 포함 -->
+    <%@ include file="../fragments/sidebar.jspf" %>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="content">
+        <div class="detail-page">
 
     <!-- 상단 카드 -->
     <div class="facility-card">
@@ -119,6 +133,8 @@
         </table>
     </div>
 
+</div>
+    </main>
 </div>
 
 <script>
