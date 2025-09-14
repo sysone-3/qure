@@ -103,12 +103,14 @@ button:hover {
     padding: 12px;
     font-weight: 600;
     border: 1px solid #eee;
+    text-align: left;
 }
 
 /* 바디 */
 .inspectorTable tbody td {
     padding: 10px;
     border-bottom: 1px solid #f2f2f2;
+    text-align: left;
 }
 
 /* 홀수/짝수 줄 구분 */
@@ -166,7 +168,6 @@ button:hover {
 }
 
 /* 모달 레이아웃 */
-/* 모달 레이아웃 */
 .modal {
     display: none;
     position: fixed;
@@ -191,6 +192,34 @@ button:hover {
     text-align: center;
     margin-bottom: 25px;
     color: #474D56;
+}
+
+.delete-modal {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  width: 400px;
+  text-align: center; /* 가운데 정렬 */
+}
+
+.delete-modal h2 {
+  text-align: center;
+  margin: 10px 0 8px 0;  /* 위, 아래 간격 줄이기 */
+  color: #474D56;
+}
+
+.delete-modal p {
+  text-align: center;
+  margin: 0 0 20px 0;
+  color: #474D56;
+  font-size: 16px;
+}
+
+
+.warning-icon {
+  width: 50px;
+  margin: 0 auto 15px auto;
+  display: block;
 }
 
 /* 폼 그룹 */

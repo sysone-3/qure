@@ -114,4 +114,39 @@ document.addEventListener("DOMContentLoaded", function () {
                     (p1 && p2 && p3) ? `${p1}-${p2}-${p3}` : "";
             });
         }
+
+         const deleteBtn = document.getElementById("deleteBtn");
+            const deleteModal = document.getElementById("deleteModal");
+            const deleteCancel = document.getElementById("deleteCancel");
+            const selectedIdsInput = document.getElementById("selectedIdsInput");
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener("click", () => {
+                    const checkedBoxes = document.querySelectorAll("input[name='selectedIds']:checked");
+                    if (checkedBoxes.length === 0) {
+                        alert("삭제할 작업자를 선택하세요.");
+                        return;
+                    }
+
+                    // 선택된 ID들을 hidden input에 담기
+                    const ids = Array.from(checkedBoxes).map(cb => cb.value);
+                    selectedIdsInput.value = ids.join(",");
+
+                    deleteModal.style.display = "flex";
+                });
+            }
+
+            if (deleteCancel) {
+                deleteCancel.addEventListener("click", () => {
+                    deleteModal.style.display = "none";
+                });
+            }
+
+            if (deleteModal) {
+                deleteModal.addEventListener("click", (e) => {
+                    if (e.target === deleteModal) {
+                        deleteModal.style.display = "none";
+                    }
+                });
+            }
 });

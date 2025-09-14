@@ -20,7 +20,7 @@
                          <img src="<c:url value='/assets/images/plus.svg'/>" alt="+" class="icon" />
                          작업자 등록
                      </button>
-                    <button class="delete">
+                    <button type="button" class="delete" id="deleteBtn">
                         <img src="<c:url value='/assets/images/pencil.svg'/>" alt="+" class="icon" />
                         작업자 삭제
                     </button>
@@ -42,7 +42,10 @@
                 <tbody>
                     <c:forEach var="inspector" items="${inspectors}">
                         <tr>
-                            <td>${inspector.inspectorId}</td>
+                            <td>
+                                <input type="checkbox" name="selectedIds" value="${inspector.inspectorId}" />
+                                ${inspector.inspectorId}
+                            </td>
                             <td>${inspector.name}</td>
                             <td>${inspector.phone}</td>
                         </tr>
@@ -104,6 +107,20 @@
                         <button type="button" class="btn cancel">취소</button>
                         <button type="submit" class="btn submit">등록</button>
                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="deleteModal" class="modal">
+             <div class="modal-content delete-modal">
+                <img src="<c:url value='/assets/images/warning.svg'/>" alt="경고" class="warning-icon" />
+                <h2>삭제하시겠습니까?</h2>
+                <p>한번 삭제한 데이터는 복구할 수 없습니다.</p>
+                <form id="deleteForm" action="<c:url value='/inspectors/delete'/>" method="post">
+                     <input type="hidden" name="selectedIds" id="selectedIdsInput" />
+                     <div class="modal-buttons">
+                           <button type="button" class="btn cancel" id="deleteCancel">취소</button>
+                           <button type="submit" class="btn submit">등록</button>
+                     </div>
                 </form>
             </div>
         </div>
