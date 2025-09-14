@@ -47,6 +47,11 @@ public class LoginController {
             String email = (String) kakaoAccount.get("email");
             String nickname = (String) profile.get("nickname");
 
+
+            System.out.println("=== 카카오 로그인 성공 ===");
+            System.out.println("카카오에서 받은 email = " + email);
+            System.out.println("카카오에서 받은 nickname = " + nickname);
+
             // 매니저 정보 처리
             ManagerDTO manager = managerService.processLogin(email, nickname);
 
