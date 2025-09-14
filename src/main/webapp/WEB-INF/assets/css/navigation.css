@@ -5,6 +5,14 @@
     --nav-offset: 24px;
 }
 
+*{box-sizing:border-box}
+
+.content{
+    margin-left: var(--nav-collapsed);
+    transition: margin-left .22s ease;
+    min-width: 0; /* 긴 표/그리드 가로 넘침 방지 */
+}
+
 .nav-group {
     display: flex;
     flex-direction: column;

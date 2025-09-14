@@ -2,7 +2,7 @@
 
 <aside class="app-nav" aria-label="주 메뉴">
     <!-- 로고 -->
-    <a href="<c:url value='/dashboard' context='/'/>"
+    <a href="<c:url value='/qure/dashboard' context='/'/>"
        class="nav-btn brand ${nav=='dashboard'?'active':''}"
        aria-label="대시보드"
        <c:if test="${nav=='dashboard'}">aria-current="page"</c:if>>
@@ -13,7 +13,7 @@
     <!-- 메뉴 그룹 -->
     <div class="nav-group">
         <!-- 설비 -->
-        <a href="<c:url value='/facilities' context='/'/>"
+        <a href="<c:url value='/qure/facilities' context='/'/>"
            class="nav-btn ${nav=='facilities'?'active':''}"
            aria-label="설비"
            <c:if test="${nav=='facilities'}">aria-current="page"</c:if>>
@@ -29,7 +29,7 @@
         </a>
 
         <!-- 점검표 -->
-        <a href="<c:url value='/template' context='/'/>"
+        <a href="<c:url value='/qure/template' context='/'/>"
            class="nav-btn ${nav=='template'?'active':''}"
            aria-label="점검표"
            <c:if test="${nav=='template'}">aria-current="page"</c:if>>
@@ -61,7 +61,7 @@
         </a>
 
         <!-- 민원 -->
-        <a href="<c:url value='/admin/complain' context='/'/>"
+        <a href="<c:url value='/qure/admin/complain' context='/'/>"
            class="nav-btn ${nav=='complain'?'active':''}"
            aria-label="민원"
            <c:if test="${nav=='complain'}">aria-current="page"</c:if>>
@@ -77,7 +77,7 @@
         </a>
 
         <!-- 지도 -->
-        <a href="<c:url value='/map' context='/'/>"
+        <a href="<c:url value='/qure/map' context='/'/>"
            class="nav-btn ${nav=='map'?'active':''}"
            aria-label="지도"
            <c:if test="${nav=='map'}">aria-current="page"</c:if>>

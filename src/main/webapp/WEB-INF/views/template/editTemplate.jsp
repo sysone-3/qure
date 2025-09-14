@@ -8,9 +8,15 @@
     <meta charset="UTF-8">
     <title>점검표 수정</title>
     <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>"/>
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/templateForm.css?after'/>"/>
 </head>
 <body>
+<c:set var="nav" value="template" scope="request"/>
+<div class="layout">
+<%@ include file="/WEB-INF/views/fragments/sidebar.jspf" %>
+<main class="content">
 <div class="container">
     <div class="inner-container">
         <div class="title-row">
@@ -182,7 +188,8 @@
         </form>
     </div>
 </div>
-
+</main>
+</div>
 <script src="<c:url value='/assets/js/template.js?ver=20250910'/>"></script>
 </body>
 </html>

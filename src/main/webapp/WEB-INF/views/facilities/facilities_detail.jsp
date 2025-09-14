@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>${facility.name} 상세</title>
     <!-- 기본 레이아웃 CSS 추가 -->
-    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
 
     <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
