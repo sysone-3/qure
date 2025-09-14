@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.snapshot.qure.inspection.repository.IInspectionRepository">
+
+    <!-- 최근 점검 N건 -->
+    <select id="selectRecentInspections"
+            resultType="app.snapshot.qure.inspection.dto.InspectionItemDto">
+    <![CDATA[
+        SELECT *
+        FROM (
+                 SELECT
+                     i.inspection_id AS inspectionId,
+                     i.submitted_at  AS submittedAt,
+                     i.result        AS result,
+                     i.facility_id   AS facilityId,
+                     f.domain        AS domain,
+                     f.name          AS facilityName,
+                     f.floor         AS floor,
+                     f.zone          AS zone,
+                     i.inspector_id  AS inspectorId,
+                     ip.name         AS inspectorName
+                 FROM inspections i
+                          JOIN facilities f              ON f.facility_id = i.facility_id
+                          LEFT JOIN inspector_profile ip ON ip.inspector_id = i.inspector_id
+                 WHERE f.managers_id = #{managerId}
+                 ORDER BY i.submitted_at DESC
+             )
+        WHERE ROWNUM <= #{limit}
+        ]]>
+  </select>
+
+    <!-- 목록 + 페이징 -->
+    <select id="selectInspectionsPage"
+            parameterType="map"
+            resultType="app.snapshot.qure.inspection.dto.InspectionItemDto">
+        SELECT *
+        FROM (
+        SELECT
+        ROW_NUMBER() OVER (ORDER BY i.submitted_at DESC) AS rn,
+        i.inspection_id AS inspectionId,
+        i.submitted_at  AS submittedAt,
+        i.result        AS result,
+        i.facility_id   AS facilityId,
+        f.domain        AS domain,
+        f.name          AS facilityName,
+        f.floor         AS floor,
+        f.zone          AS zone,
+        i.inspector_id  AS inspectorId,
+        ip.name         AS inspectorName
+        FROM inspections i
+        JOIN facilities f              ON f.facility_id = i.facility_id
+        LEFT JOIN inspector_profile ip ON ip.inspector_id = i.inspector_id
+        WHERE f.managers_id = #{managerId}
+        <if test="keyword != null and keyword != ''">
+            AND (LOWER(f.name) LIKE '%' || LOWER(#{keyword}) || '%'
+            OR LOWER(ip.name) LIKE '%' || LOWER(#{keyword}) || '%')
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND i.submitted_at >= CAST(#{startDate} AS DATE)
+            AND i.submitted_at &lt; (CAST(#{endDate} AS DATE) + 1)
+        </if>
+        <if test="status != null and status != ''">
+            AND i.result = #{status}
+        </if>
+        )
+        WHERE rn BETWEEN #{startRow} AND #{endRow}
+    </select>
+
+    <!-- 전체 개수 -->
+    <select id="countInspections" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM inspections i
+        JOIN facilities f              ON f.facility_id = i.facility_id
+        LEFT JOIN inspector_profile ip ON ip.inspector_id = i.inspector_id
+        WHERE f.managers_id = #{managerId}
+        <if test="keyword != null and keyword != ''">
+            AND (LOWER(f.name) LIKE '%' || LOWER(#{keyword}) || '%'
+            OR LOWER(ip.name) LIKE '%' || LOWER(#{keyword}) || '%')
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND i.submitted_at >= CAST(#{startDate} AS DATE)
+            AND i.submitted_at &lt; (CAST(#{endDate} AS DATE) + 1)
+        </if>
+        <if test="status != null and status != ''">
+            AND i.result = #{status}
+        </if>
+    </select>
+
+    <!-- 상세 헤더(접근제어) -->
+    <select id="selectInspectionHeader"
+            resultType="app.snapshot.qure.inspection.dto.InspectionHeaderDto">
+        SELECT
+            i.INSPECTION_ID    AS inspectionId,
+            i.SUBMITTED_AT     AS submittedAt,
+            f.NAME             AS facilityName,
+            f.FLOOR            AS facilityFloor,
+            f.ZONE             AS facilityZone,
+            ip.NAME            AS inspectorName,
+            ip.PHONE           AS inspectorPhone
+        FROM INSPECTIONS i
+                 JOIN FACILITIES f          ON f.FACILITY_ID = i.FACILITY_ID
+                 LEFT JOIN INSPECTOR_PROFILE ip ON ip.INSPECTOR_ID = i.INSPECTOR_ID
+        WHERE i.INSPECTION_ID = #{inspectionId}
+          AND f.MANAGERS_ID = #{managerId}
+    </select>
+
+    <resultMap id="inspectionItemMap"
+               type="app.snapshot.qure.inspection.dto.InspectionResultItemDto">
+        <result column="item_id"      property="itemId"/>
+        <result column="label"        property="label"/>
+        <result column="type"         property="type"/>
+        <result column="order_no"     property="orderNo"/>
+        <result column="answer_text"  property="answerText"/>
+        <result column="status"       property="status"/>
+        <!-- IMAGE일 때만 주입 -->
+        <collection property="imagePaths" ofType="string"
+                    column="result_id"
+                    select="selectImagesByResultId"/>
+    </resultMap>
+
+    <select id="selectInspectionItems" parameterType="map" resultMap="inspectionItemMap">
+        SELECT
+            ci.ITEM_ID            AS item_id,
+            ci.LABEL              AS label,
+            ci.TYPE               AS type,
+            ci.ORDER_NO           AS order_no,
+            iir.RESULT_ID         AS result_id,
+            CASE ci.TYPE
+                WHEN 'BOOL' THEN CASE WHEN NVL(TRIM(iir.VALUE_BOOL), 'N') IN ('Y','1','T') THEN '예' ELSE '아니오' END
+                WHEN 'NUM'  THEN TO_CHAR(iir.VALUE_NUM)
+                WHEN 'TEXT' THEN DBMS_LOB.SUBSTR(iir.VALUE_TEXT, 4000, 1)
+                END AS answer_text,
+            CASE
+                WHEN ci.TYPE = 'BOOL' THEN CASE WHEN NVL(TRIM(iir.VALUE_BOOL), 'N') IN ('N','0','F') THEN '이상' ELSE '완료' END
+                ELSE '완료'
+                END AS status
+        FROM INSPECTION_ITEM_RESULTS iir
+                 JOIN CHECKLIST_ITEMS ci ON ci.ITEM_ID = iir.ITEM_ID
+                 JOIN INSPECTIONS i      ON i.INSPECTION_ID = iir.INSPECTION_ID
+                 JOIN FACILITIES f       ON f.FACILITY_ID = i.FACILITY_ID
+        WHERE iir.INSPECTION_ID = #{inspectionId}
+          AND f.MANAGERS_ID = #{managerId}
+        ORDER BY ci.ORDER_NO NULLS LAST, ci.ITEM_ID
+    </select>
+
+    <select id="selectImagesByResultId" parameterType="long" resultType="string">
+        SELECT '/mobile/file/' || image_id AS url
+        FROM images
+        WHERE result_id = #{resultId}
+        ORDER BY image_id
+    </select>
+</mapper>

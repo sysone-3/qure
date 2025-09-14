@@ -7,12 +7,13 @@
 
   <display-name>qure</display-name>
 
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:/config/mybatis/root-context.xml</param-value>
-  </context-param>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:config/mybatis/root-context.xml</param-value>
+    </context-param>
 
-  <listener>
+
+    <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
@@ -28,22 +29,18 @@
     </filter-mapping>
 
 
-  <servlet>
-    <servlet-name>appServlet</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>
-      <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:config/mybatis/servlet-context.xml</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
+    <servlet>
+        <servlet-name>appServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:config/mybatis/servlet-context.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
-    <multipart-config>
-      <max-file-size>31457280</max-file-size>
-      <max-request-size>31457280</max-request-size>
-    </multipart-config>
-  </servlet>
 
-  <servlet-mapping>
+    <servlet-mapping>
     <servlet-name>appServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
@@ -79,8 +76,4 @@
   </servlet-mapping>
   <!-- TODO: 배포 이후 운영 환경에서는 삭제 -->
 
-  <!-- Welcome File -->
-  <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
 </web-app>

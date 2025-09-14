@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.snapshot.qure.dashboard.repository.IDashboardRepository">
+
+    <!-- 오늘 점검 (facilities.managers_id = :managerId) -->
+    <select id="selectTodayInspectionStats"
+            resultType="app.snapshot.qure.dashboard.dto.TodayInspectionStats">
+        SELECT
+            /* 오늘 전체 예정 */
+            SUM(CASE
+                    WHEN f.next_scheduled_at >= TRUNC(SYSDATE)
+                        AND f.next_scheduled_at &lt; TRUNC(SYSDATE) + 1
+                        THEN 1 ELSE 0 END) AS todayTotal,
+            /* 오늘 완료 */
+            SUM(CASE
+                    WHEN f.next_scheduled_at >= TRUNC(SYSDATE)
+                        AND f.next_scheduled_at &lt; TRUNC(SYSDATE) + 1
+                        AND EXISTS (
+                            SELECT 1
+                            FROM inspections i
+                            WHERE i.facility_id = f.facility_id
+                              AND TRUNC(i.submitted_at) = TRUNC(f.next_scheduled_at)
+                        )
+                        THEN 1 ELSE 0 END) AS todayCompleted
+        FROM facilities f
+        WHERE f.managers_id = #{managerId}
+    </select>
+
+    <!-- 어제까지/예정/미점검 (모두 managers_id 필터) -->
+    <select id="selectOtherInspectionStats"
+            resultType="app.snapshot.qure.dashboard.dto.OtherInspectionStats">
+      <![CDATA[
+        SELECT
+            /* 어제까지 전체 = (어제까지 제출) + (어제까지 예정) */
+            (
+                (SELECT COUNT(*)
+                 FROM inspections i
+                          JOIN facilities f ON f.facility_id = i.facility_id
+                 WHERE TRUNC(i.submitted_at) < TRUNC(SYSDATE)
+                   AND f.managers_id = #{managerId})
+                    +
+                (SELECT COUNT(*)
+                 FROM facilities f
+                 WHERE TRUNC(f.next_scheduled_at) < TRUNC(SYSDATE)
+                   AND f.managers_id = #{managerId})
+                ) AS untilYesterdayTotal,
+
+            /* 어제까지 완료 = 어제까지 제출 */
+            (SELECT COUNT(*)
+             FROM inspections i
+                      JOIN facilities f ON f.facility_id = i.facility_id
+             WHERE TRUNC(i.submitted_at) < TRUNC(SYSDATE)
+               AND f.managers_id = #{managerId}
+            ) AS untilYesterdayCompleted,
+
+            /* 오늘 이후 예정 */
+            (SELECT COUNT(*)
+             FROM facilities f
+             WHERE TRUNC(f.next_scheduled_at) > TRUNC(SYSDATE)
+               AND f.managers_id = #{managerId}
+            ) AS upcomingCount,
+
+            /* 미점검 현황: 어제까지 예정 설비 수 (요청대로 간단 카운트) */
+            (SELECT COUNT(*)
+             FROM facilities f
+             WHERE f.next_scheduled_at < TRUNC(SYSDATE)
+               AND f.managers_id = #{managerId}
+            ) AS overdueUninspected
+        FROM dual
+        ]]>
+    </select>
+
+    <!-- 민원: citizen_reports -> facilities 로 매니저 필터 -->
+    <select id="selectOpenComplaints" resultType="int">
+        SELECT COUNT(*)
+        FROM citizen_reports cr
+                 JOIN facilities f ON f.facility_id = cr.facility_id
+        WHERE cr.status = 'PENDING'
+          AND f.managers_id = #{managerId}
+    </select>
+
+    <!-- 최근 N일 완료율 (managers_id 필터) -->
+    <select id="selectRecentDailyCompletion"
+            resultType="app.snapshot.qure.dashboard.dto.DailyCompletionPoint">
+      <![CDATA[
+        WITH days AS (
+            SELECT TRUNC(SYSDATE) - LEVEL AS day_val
+            FROM dual
+            CONNECT BY LEVEL <= #{days}
+        ),
+             s AS ( -- 예정
+                 SELECT TRUNC(f.next_scheduled_at) AS day_val, f.facility_id
+                 FROM facilities f
+                 WHERE TRUNC(f.next_scheduled_at)
+                     BETWEEN TRUNC(SYSDATE) - #{days} AND TRUNC(SYSDATE) - 1
+                   AND f.managers_id = #{managerId}
+             ),
+             c AS ( -- 완료
+                 SELECT TRUNC(i.submitted_at) AS day_val, i.facility_id
+                 FROM inspections i
+                          JOIN facilities f ON f.facility_id = i.facility_id
+                 WHERE TRUNC(i.submitted_at)
+                     BETWEEN TRUNC(SYSDATE) - #{days} AND TRUNC(SYSDATE) - 1
+                   AND f.managers_id = #{managerId}
+             ),
+             sc AS (SELECT day_val, COUNT(*) AS scheduled_cnt FROM s GROUP BY day_val),
+             cc AS (SELECT day_val, COUNT(*) AS completed_cnt FROM c GROUP BY day_val)
+        SELECT
+            d.day_val AS dayValue,
+            CASE
+                WHEN NVL(sc.scheduled_cnt,0) + NVL(cc.completed_cnt,0) = 0 THEN 100
+                ELSE TRUNC( (NVL(cc.completed_cnt,0) * 100.0) /
+                            (NVL(sc.scheduled_cnt,0) + NVL(cc.completed_cnt,0)) )
+                END AS percent
+        FROM days d
+                 LEFT JOIN sc ON sc.day_val = d.day_val
+                 LEFT JOIN cc ON cc.day_val = d.day_val
+        ORDER BY d.day_val
+        ]]>
+    </select>
+
+</mapper>

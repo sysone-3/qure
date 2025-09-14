@@ -1,0 +1,20 @@
+package app.snapshot.qure.inspection.dto;
+
+import lombok.*;
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class InspectionHeaderDto {
+    private Long inspectionId;
+    private LocalDateTime submittedAt;
+
+    private String facilityName;
+    private String facilityFloor;
+    private String facilityZone;
+
+    private String inspectorName;
+    private String inspectorPhone;
+}

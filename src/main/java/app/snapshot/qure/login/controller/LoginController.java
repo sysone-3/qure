@@ -47,6 +47,11 @@ public class LoginController {
             String email = (String) kakaoAccount.get("email");
             String nickname = (String) profile.get("nickname");
 
+
+            System.out.println("=== 카카오 로그인 성공 ===");
+            System.out.println("카카오에서 받은 email = " + email);
+            System.out.println("카카오에서 받은 nickname = " + nickname);
+
             // 매니저 정보 처리
             ManagerDTO manager = managerService.processLogin(email, nickname);
 
@@ -59,7 +64,7 @@ public class LoginController {
 
             System.out.println("세션에 저장 완료: managerId=" + manager.getManagersId());
 
-            return "manager/home";
+            return "redirect:/dashboard";
         }
 
         // 로그인되지 않은 경우

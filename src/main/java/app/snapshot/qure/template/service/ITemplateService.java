@@ -7,7 +7,7 @@ import app.snapshot.qure.template.model.Template;
 import java.util.List;
 
 public interface ITemplateService {
-    List<Template> getTemplateList();
+    List<Template> getTemplateList(Long managerId);
     Template getTemplateById(Long id);
     long insertTemplate(TemplateCreateForm template);
     int updateTemplate(Template template);
