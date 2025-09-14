@@ -7,16 +7,16 @@
     <meta charset="UTF-8">
     <title>점검자 리스트</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<c:url value='/assets/css/inspectorsList.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/inspectorsList.css'/>" />
 </head>
 <body>
 <c:set var="nav" value="inspectors" scope="request"/>
 
 <div class="layout">
     <%@ include file="../fragments/sidebar.jspf" %>
-
+    <main class="content">
     <div class="innerContainer">
         <!-- 상단 영역 -->
         <div class="topContainer">
@@ -84,6 +84,7 @@
             </div>
         </div>
     </div>
+    </main>
 </div>
 
 <!-- 작업자 등록 모달 -->

@@ -22,12 +22,10 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
-
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
 
     <servlet>
         <servlet-name>appServlet</servlet-name>
@@ -38,7 +36,6 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
 
     <servlet-mapping>
     <servlet-name>appServlet</servlet-name>
@@ -76,4 +73,14 @@
   </servlet-mapping>
   <!-- TODO: 배포 이후 운영 환경에서는 삭제 -->
 
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+        <jsp-property-group>
+            <url-pattern>*.jspf</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
 </web-app>

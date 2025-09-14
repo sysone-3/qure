@@ -10,8 +10,16 @@
     <title>템플릿 목록</title>
     <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>"/>
     <link rel="stylesheet" href="<c:url value='/assets/css/templateList.css?after'/>"/>
+
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
 </head>
 <body>
+<c:set var="nav" value="template" scope="request"/>
+<div class="layout">
+<%@ include file="/WEB-INF/views/fragments/sidebar.jspf" %>
+<main class="content">
+
 <div class="container">
     <div class="inner-container">
         <p class="title">점검표 목록</p>
@@ -74,6 +82,8 @@
             </c:forEach>
         </div>
     </div>
+</div>
+</main>
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
