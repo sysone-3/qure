@@ -49,7 +49,7 @@ public class SecurityConfig {
 
                 .oauth2Login(oauth -> oauth
                         .loginPage("/")
-                        .defaultSuccessUrl("/manager/home", true)
+                        .defaultSuccessUrl("/dashboard", true)
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
                 );
 
