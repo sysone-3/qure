@@ -145,5 +145,40 @@ public class FacilitiesService implements IFacilitiesService {
         facilitiesRepository.attachTemplatesToFacility(facilityId, templateIds , managerId);
     }
 
+    /**
+     * 점검표 변경사항 처리 (삭제된 것들 연결 해제, 추가된 것들 연결)
+     */
+    @Transactional
+    public void updateFacilityTemplates(Long facilityId,
+                                        List<Long> removedTemplateIds,
+                                        List<Long> addedTemplateIds,
+                                        Long managerId) {
+
+        // 1. 삭제된 점검표들 연결 해제
+        if (removedTemplateIds != null && !removedTemplateIds.isEmpty()) {
+            facilitiesRepository.detachTemplatesFromFacility(facilityId, removedTemplateIds, managerId);
+            System.out.println("연결 해제된 점검표: " + removedTemplateIds);
+        }
+
+        // 2. 추가된 점검표들 연결
+        if (addedTemplateIds != null && !addedTemplateIds.isEmpty()) {
+            facilitiesRepository.attachTemplatesToFacility(facilityId, addedTemplateIds, managerId);
+            System.out.println("새로 연결된 점검표: " + addedTemplateIds);
+        }
+    }
+
+    /**
+     * 전체 점검표 교체 (기존 방식 대체)
+     */
+    @Transactional
+    public void replaceAllFacilityTemplates(Long facilityId, List<Long> templateIds, Long managerId) {
+        // 1. 기존 연결 모두 해제
+        facilitiesRepository.detachAllTemplatesFromFacility(facilityId, managerId);
+
+        // 2. 새로운 연결 생성
+        if (templateIds != null && !templateIds.isEmpty()) {
+            facilitiesRepository.attachTemplatesToFacility(facilityId, templateIds, managerId);
+        }
+    }
 }
 

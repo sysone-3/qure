@@ -51,5 +51,11 @@ public interface IFacilitiesRepository {
     void attachTemplatesToFacility(@Param("facilityId") Long facilityId,
                                    @Param("templateIds") List<Long> templateIds, @Param("managerId") Long managerId );
 
+    void detachTemplatesFromFacility(@Param("facilityId") Long facilityId,
+                                     @Param("templateIds") List<Long> templateIds,
+                                     @Param("managerId") Long managerId);
+
+    void detachAllTemplatesFromFacility(@Param("facilityId") Long facilityId,
+                                        @Param("managerId") Long managerId);
 }
 

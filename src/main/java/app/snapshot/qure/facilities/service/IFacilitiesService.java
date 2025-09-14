@@ -38,4 +38,5 @@ public interface IFacilitiesService {
 
     void attachTemplatesToFacility(Long facilityId, List<Long> templateIds, Long managerId);
 
+    void updateFacilityTemplates(Long facilityId, List<Long> removedIds, List<Long> addedIds, Long managerId);
 }

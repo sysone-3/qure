@@ -60,6 +60,7 @@
             f.MEMO,
             f.CREATED_AT,
             f.UPDATED_AT,
+            f.INSPECTOR_ID,
             f.NEXT_SCHEDULED_AT,
 
             CASE
@@ -94,6 +95,7 @@
             f.MEMO,
             f.CREATED_AT,
             f.UPDATED_AT,
+            f.INSPECTOR_ID,
             f.NEXT_SCHEDULED_AT,
 
             CASE
@@ -131,6 +133,7 @@
             f.MEMO,
             f.CREATED_AT,
             f.UPDATED_AT,
+            f.INSPECTOR_ID,
             f.NEXT_SCHEDULED_AT,
 
             CASE
@@ -193,6 +196,35 @@
           AND MANAGERS_ID = #{managerId, jdbcType=INTEGER}
     </update>
 
+    <!-- 점검표 연결 해제 (특정 템플릿들만) -->
+    <update id="detachTemplatesFromFacility">
+        UPDATE CHECKLIST_TEMPLATES t
+        SET t.FACILITY_ID = NULL
+        WHERE t.TEMPLATE_ID IN
+        <foreach collection="templateIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND t.FACILITY_ID = #{facilityId}
+        AND EXISTS (
+        SELECT 1
+        FROM FACILITIES f
+        WHERE f.FACILITY_ID = #{facilityId}
+        AND f.MANAGERS_ID = #{managerId}
+        )
+    </update>
+
+    <!-- 설비의 모든 점검표 연결 해제 -->
+    <update id="detachAllTemplatesFromFacility">
+        UPDATE CHECKLIST_TEMPLATES t
+        SET t.FACILITY_ID = NULL
+        WHERE t.FACILITY_ID = #{facilityId}
+          AND EXISTS (
+            SELECT 1
+            FROM FACILITIES f
+            WHERE f.FACILITY_ID = #{facilityId}
+              AND f.MANAGERS_ID = #{managerId}
+        )
+    </update>
 
     <!-- 삭제(관리자 한정) -->
     <delete id="deleteFacilitiesByManager">
