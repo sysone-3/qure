@@ -74,12 +74,13 @@
 
                     <div class="form-group">
                         <label for="phone">연락처</label>
+                        <input type="hidden" id="phone" name="phone" />
                         <div class="phone-input">
-                            <input type="text" id="phone1" name="phone1" maxlength="3" pattern="\d{3}" required oninput="this.value=this.value.replace(/[^0-9]/g,'');"/>
+                            <input type="text" id="phone1" maxlength="3" required oninput="onlyNumber(this)" />
                             <span>-</span>
-                            <input type="text" id="phone2" name="phone2" maxlength="4" pattern="\d{3,4}" required oninput="this.value=this.value.replace(/[^0-9]/g,'');"/>
+                            <input type="text" id="phone2" maxlength="4" required oninput="onlyNumber(this)" />
                             <span>-</span>
-                            <input type="text" id="phone3" name="phone3" maxlength="4" pattern="\d{4}" required oninput="this.value=this.value.replace(/[^0-9]/g,'');"/>
+                            <input type="text" id="phone3" maxlength="4" required oninput="onlyNumber(this)" />
                          </div>
                      </div>
 

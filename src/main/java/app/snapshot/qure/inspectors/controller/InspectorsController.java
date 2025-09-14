@@ -1,9 +1,12 @@
 package app.snapshot.qure.inspectors.controller;
 import app.snapshot.qure.inspectors.dto.InspectorDTO;
 import app.snapshot.qure.inspectors.service.InspectorsService;
+import oracle.jdbc.proxy.annotation.Post;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -22,14 +25,14 @@ public class InspectorsController {
                                     Model model
     ) {
         int size = 15;
-        List<InspectorDTO> inspectors = inspectorsService.getPagedInspectors(page,size);
+        List<InspectorDTO> inspectors = inspectorsService.getPagedInspectors(page, size);
         int totalCount = inspectorsService.getTotalCount();
-        int totalPages = (int)Math.ceil((double) totalCount/size);
+        int totalPages = (int) Math.ceil((double) totalCount / size);
 
         model.addAttribute("inspectors", inspectors);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("totalCount",totalCount);
+        model.addAttribute("totalCount", totalCount);
         return "inspectors/inspectorsList";
     }
 }
