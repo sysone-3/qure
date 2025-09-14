@@ -7,7 +7,7 @@
        aria-label="대시보드"
        <c:if test="${nav=='dashboard'}">aria-current="page"</c:if>>
         <img src="<c:url value='/assets/images/nav-logo.svg'/>" alt="로고" class="nav-icon">
-        <span class="nav-text">로고</span>
+        <span class="nav-text">홈</span>
     </a>
 
     <!-- 메뉴 그룹 -->

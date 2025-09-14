@@ -13,9 +13,10 @@
                class="btn ${cssClass}"
                style="
                        width: 120px;
+                       height:40px;
                        border: none;
                        border-radius: 50px;
-                       padding: 10px 24px;
+                       padding: 0 24px;
                        font-size: 16px;
                        font-family: 'Pretendard', sans-serif;
                        font-weight: 500;
@@ -28,9 +29,10 @@
                class="btn ${cssClass}"
                style="
                        width: 120px;
+                       height:40x;
                        border: none;
                        border-radius: 50px;
-                       padding: 10px 24px;
+                       padding: 0 24px;
                        font-size: 16px;
                        font-family: 'Pretendard', sans-serif;
                        font-weight: 500;
