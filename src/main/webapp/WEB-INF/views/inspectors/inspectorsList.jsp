@@ -10,25 +10,30 @@
     <link rel="stylesheet" href="<c:url value='/assets/css/inspectorsList.css'/>" />
 </head>
 <body>
-    <div class="innerContainer">
-        <div class="topContainer">
+<%--    <div class="innerContainer">--%>
+<%--        <div class="topContainer">--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<div class="topContainer">
+        <div class="boardContainer" style="
+            margin-left: 20px;
+            margin-right: 20px;
+        ">
             <div class="statusContainer">
                 <span class="subTitle">작업자 현황</span>
                 <div class="buttonContainer">
                     <button class="register">
-                         <img src="<c:url value='/assets/images/plus.svg'/>" alt="+" class="icon" />
-                         작업자 등록
-                     </button>
+                        <img src="<c:url value='/assets/images/plus.svg'/>" alt="+" class="icon" />
+                        작업자 등록
+                    </button>
                     <button type="button" class="delete" id="deleteBtn">
                         <img src="<c:url value='/assets/images/pencil.svg'/>" alt="+" class="icon" />
                         작업자 삭제
                     </button>
                 </div>
             </div>
-        </div>
 
-        <div class="boardContainer">
-            <span class="totalTitle">전체</span>
+                <span class="totalTitle">전체</span>
             <span class="highlight">${totalCount}명</span>
             <table class="inspectorTable">
                  <thead>
