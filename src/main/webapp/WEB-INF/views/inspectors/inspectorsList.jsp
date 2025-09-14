@@ -39,18 +39,24 @@
                         <th>연락처</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <c:forEach var="inspector" items="${inspectors}">
-                        <tr onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'">
-                            <td>
-                                <input type="checkbox" name="selectedIds" value="${inspector.inspectorId}" />
-                                ${inspector.inspectorId}
-                            </td>
-                            <td>${inspector.name}</td>
-                            <td>${inspector.phone}</td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
+               <tbody>
+                   <c:forEach var="inspector" items="${inspectors}">
+                       <tr>
+                           <td>
+                               <label class="checkbox-cell">
+                                   <input type="checkbox" name="selectedIds" value="${inspector.inspectorId}" />
+                                   <span>${inspector.inspectorId}</span>
+                               </label>
+                           </td>
+                           <td onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'" style="cursor:pointer;">
+                               ${inspector.name}
+                           </td>
+                           <td onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'" style="cursor:pointer;">
+                              ${inspector.phone}
+                           </td>
+                       </tr>
+                   </c:forEach>
+               </tbody>
             </table>
             <div class="pagination">
                      <a href="<c:out value='?page=${currentPage - 1}'/>"
