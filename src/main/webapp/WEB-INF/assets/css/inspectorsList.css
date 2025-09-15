@@ -1,342 +1,395 @@
-/* ==== 공통 토큰: facilities.css와 동일 ==== */
-:root{
-    --bg:#f6f6f6;
-    --panel:#ffffff;
-    --line:#efe7dd;
-    --text:#3c3c3c;
-    --muted:#9ca3af;
-    --brand:#FFE59A;
-    --brand-strong:#f2c65b;
-    --ok:#22c55e;
-    --warn:#f59e0b;
-    --danger:#ef4444;
+body {
+    background: #FFFAE6;
+    flex-direction: column;
+    font-family: 'Pretendard';
+    display: flex;
+    overflow-y: auto;
 }
 
-@font-face{
-    font-family:'Pretendard';
-    src: url('../font/PretendardVariable.woff2') format('truetype');
-    font-weight:100 900;
-    font-style:normal;
-    font-display:swap;
+.innerContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 47px 24px;
+    height: 100%;
 }
 
-/* ==== 베이스 ==== */
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{
-    background:var(--bg);
-    color:var(--text);
-    font:14px/1.5 "Pretendard",sans-serif;
-    display:flex;
-    flex-direction:column;
-    overflow-y:auto;
-    border: 1px solid var(--line);
+.topContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* 페이지 폭 및 공통 카드 */
-.innerContainer{max-width:1412px;margin:24px auto;padding:0 16px}
-.boardContainer{
-    background:#fff;
-    border-radius:30px;
-    box-shadow:0 10px 24px rgba(0,0,0,.06);
-    padding:20px;
-    margin-top:24px;
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    font-style: normal;
+    color: #FFBF58;
 }
 
-/* 상단 타이틀 영역 → facilities 스타일 매칭 */
-.topContainer{display:flex;flex-direction:column;gap:8px}
-.title{
-    font-size:20px;
-    font-weight:700;
-    color:#5a4a21;
-}
-.statusContainer{
-    display:flex;justify-content:space-between;align-items:center;
-    background:#ffffff;
-    border-radius:30px;
-    padding:12px 16px;
-}
-.subTitle{
-    color:#5a4a21;
-    font-size:27px;
-    font-weight:800;
-    letter-spacing:.2px;
+.subTitle {
+    color: #474D56;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
 }
 
-.buttonContainer{display:flex;gap:12px}
-
-/* 버튼: facilities의 .btn / .btn-brand 톤 */
-button{appearance:none;border:1px solid var(--line);background:#fff;
-    padding:10px 14px;border-radius:20px;cursor:pointer;
-    font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
-button:hover{background:#fafafa}
-
-.register{
-    background:var(--brand);
-    border-color:#eacb6a;
-    color:#5a4a21;
-}
-.delete{
-    background:#fff;
-    color:#3c3c3c;
+.buttonContainer {
+    display: flex;
+    gap: 12px;
 }
 
-/* 아이콘 크기 통일 */
-.icon{width:16px;height:16px;display:inline-block}
+.boardContainer {
+    flex: 1;
+    align-self: stretch;
+    background: #fff;
+    margin-top: 32px;
+    border-radius: 30px;
+    padding: 30px 20px;
+}
 
-/* “전체 n명” 라벨 */
-.totalTitle{color:#474D56;font-size:16px;font-weight:700;margin-right:6px}
-.highlight{color:#5a4a21;background:#fff8d1;border:1px solid #eacb6a;
-    padding:2px 8px;border-radius:999px;font-weight:800}
+.totalTitle {
+    color: #474D56;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+}
 
-/* ===== 표: 행마다 보더 박스 ===== */
-.inspectorTable{
+.highlight {
+    color: #FFBF58;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.statusContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+button {
+    display: flex;
+    font-family: inherit;
+    align-items: center;
+    padding: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    gap: 6px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.register {
+    background: #FFD28A;
+    border-radius: 10px;
+    color: #fff;
+    border: none;
+}
+
+.delete {
+    background: #FFE59A;
+    border-radius: 10px;
+    color: #fff;
+    border: none;
+}
+
+.inspectorTable {
     width: 100%;
-    border-collapse: separate;   /* 행 간격 허용 */
-    border-spacing: 0 12px;      /* 행 사이 여백 */
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: 'Pretendard';
+    font-size: 15px;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+/* 테이블 헤더 */
+.inspectorTable thead th {
+    background-color: #FFD28A;
+    color: #474D56;
+    padding: 12px;
+    font-weight: 600;
+    border: 1px solid #eee;
+    text-align: left;
+}
+
+/* 테이블 바디 */
+.inspectorTable tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #f2f2f2;
+    text-align: left;
+}
+
+.inspectorTable tbody tr:nth-child(odd) {
+    background-color: #FFF9F0;
+}
+
+.inspectorTable tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+}
+
+.inspectorTable tbody tr:hover {
+    background-color: #FFF2CC;
+}
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.circle-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
     background: transparent;
-    table-layout: fixed;
+    color: #828282;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid #FFD28A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle-btn:hover {
+    background: #FFF2CC;
+}
+
+.circle-btn.active {
+    align-items: center;
+    justify-content: center;
+    background: #FFE699;
+    color: #828282;
+    border: 2px solid #FFE59A;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.circle-btn.disabled {
+    pointer-events: none;
+}
+
+/* ===== 모달 ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 15px;
+    width: 400px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #474D56;
+}
+
+/* 삭제 모달 */
+.delete-modal {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 15px;
+    width: 400px;
+    text-align: center;
+}
+
+.delete-modal h2 {
+    margin: 10px 0 8px 0;
+    color: #474D56;
+}
+
+.delete-modal p {
+    margin: 0 0 20px 0;
+    color: #474D56;
+    font-size: 16px;
+}
+
+.warning-icon {
+    width: 50px;
+    margin: 0 auto 15px auto;
+    display: block;
+}
+
+/* ===== 폼 ===== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #474D56;
+}
+
+.form-group input,
+.form-group select {
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #FFBF58;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #FF9F1C;
+}
+
+/* ===== 연락처 ===== */
+.phone-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.phone-input input {
+    height: 44px;
+    border: 1px solid #FFBF58;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.phone-input input:first-of-type {
+    width: 80px;   /* 첫 번째 좁게 */
+}
+
+.phone-input input:nth-of-type(2),
+.phone-input input:nth-of-type(3) {
+    flex: 1;       /* 두 번째, 세 번째 넓게 균등 */
+}
+
+.phone-input span {
+    color: #FFBF58;
+    font-weight: bold;
+}
+
+/* ===== 버튼 ===== */
+/* 버튼 영역 */
+
+.modal-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-top: 40px;
+}
+
+.modal-buttons .btn {
+    min-height: 44px;
+    flex: 1;
+    max-width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
     font-size: 15px;
-}
-
-/* 헤더 */
-.inspectorTable thead th{
-    background: var(--brand);
-    color:#5a4a21;
-    font-weight:800;
-    padding:14px 18px;
-    text-align:left;
-    border:none;
-}
-
-/* 행을 박스처럼 */
-.inspectorTable tbody tr{
-    background:#fff;
-    border: 1px solid #e5e5e5;    /* 각 행마다 보더 */
-    border-radius: 12px;
-    transition: background-color .15s ease;
-}
-.inspectorTable tbody tr:hover{
-    background:#fffdf2;          /* hover 시 색상만 */
-}
-
-/* 셀 */
-.inspectorTable tbody td{
-    padding:16px 18px;
-    color:#3c3c3c;
-    border:none;                 /* 내부 셀 보더 제거 */
-}
-
-/* 모서리 둥글게 */
-.inspectorTable tbody td:first-child{ border-top-left-radius:12px; border-bottom-left-radius:12px; }
-.inspectorTable tbody td:last-child{  border-top-right-radius:12px; border-bottom-right-radius:12px; }
-
-
-/* 체크박스 + 아이디 */
-.checkbox-cell{ display:flex; align-items:center; gap:10px; }
-
-input[type="checkbox"]{
-    appearance:none;-webkit-appearance:none;-moz-appearance:none;
-    width:18px;height:18px;border:2px solid var(--brand-strong);
-    border-radius:4px;cursor:pointer;position:relative;background:#fff;
-}
-input[type="checkbox"]:checked{
-    background:var(--brand-strong);border-color:var(--brand-strong);
-}
-input[type="checkbox"]:checked::after{
-    content:"✔";color:#fff;font-size:12px;position:absolute;
-    top:50%;left:50%;transform:translate(-50%,-55%);
-}
-
-/* 링크 컬러 상속 */
-a{color:inherit;text-decoration:none}
-
-/* ===== 페이지네이션: facilities 원형 버튼 스타일 ===== */
-.pagination{
-    display:flex;justify-content:center;align-items:center;gap:12px;
-    margin-top:8px;
-}
-
-.circle-btn{
-    width:32px;height:32px;border-radius:50%;
-    background:transparent;color:#828282;font-size:14px;font-weight:600;
-    cursor:pointer;transition:all .2s ease;border:2px solid var(--brand);
-    display:flex;align-items:center;justify-content:center;
-}
-.circle-btn:hover{background:#fff9e6}
-.circle-btn.active{
-    background:#FFE699;color:#5a4a21;border:2px solid #FFE59A;font-weight:800
-}
-.circle-btn.disabled{pointer-events:none;opacity:.45}
-
-/* ===== 모달: facilities 카드 톤 매칭 ===== */
-.modal{
-    display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;
-    background:rgba(0,0,0,.4);justify-content:center;align-items:center;
-}
-.modal-content{
-    background:#fff;padding:30px 32px;border-radius:20px;width:420px;
-    box-shadow:0 10px 24px rgba(0,0,0,.12);position:relative;
-}
-.modal-content h2{
-    text-align:center;margin:0 0 20px 0;color:#3c3c3c;font-weight:800
-}
-
-/* 경고 모달 */
-.delete-modal{
-    background:#fff;padding:28px 32px;border-radius:20px;width:420px;text-align:center
-}
-.warning-icon{width:50px;margin:0 auto 12px auto;display:block}
-.delete-modal h2{margin:10px 0 8px 0;color:#3c3c3c}
-.delete-modal p{margin:0 0 18px 0;color:#474D56;font-size:14px}
-
-/* 폼 컴포넌트 */
-.form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.form-group label{font-weight:700;color:#3c3c3c}
-.form-group input,.form-group select{
-    padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px;outline:none;background:#fff
-}
-.form-group input:focus,.form-group select:focus{border-color:#eacb6a}
-
-.phone-input{display:flex;gap:8px;align-items:center}
-.phone-input input{
-    border:1px solid var(--line);border-radius:8px;text-align:center;font-size:14px;padding:8px 10px
-}
-.phone-input input:first-of-type{width:80px}
-.phone-input input:not(:first-of-type){width:110px}
-.phone-input span{color:#FFBF58;font-weight:800}
-
-/* 모달 버튼 그룹 */
-.modal-buttons{
-    display:flex;justify-content:center;align-items:center;gap:16px;margin-top:28px
-}
-.btn{
-    width:150px;padding:10px 0;border-radius:20px;font-size:14px;font-weight:800;
-    cursor:pointer;border:1px solid var(--line);transition:all .2s ease;
-    display:flex;align-items:center;justify-content:center;background:#fff
-}
-.btn.cancel{background:#FFF2CC;color:#5a4a21;border-color:#f7d58a}
-.btn.cancel:hover{background:#FFE599}
-.btn.submit{background:var(--brand);color:#5a4a21;border-color:#eacb6a}
-.btn.submit:hover{background:#f8d374}
-
-/* 셀 커서(상세 이동 셀) */
-.inspectorTable td[onclick]{cursor:pointer}
-
-/* ==== 폭/여백 확장: 카드가 화면을 넓게 쓰도록 ==== */
-.innerContainer{
-    width: 100%;
-    max-width: 1412px;   /* 필요하면 1600px 등으로 더 키워도 됨 */
-    margin: 24px auto;
-    padding: 0 24px;     /* 좌우 여백 유지 */
-}
-
-.boardContainer{
-    width: 100%;
-    padding: 28px 28px;          /* 안쪽 여백 확대 */
-    border-radius: 30px;
-    box-shadow: 0 10px 24px rgba(0,0,0,.06);
-}
-
-/* 상단 상태 배너도 넓게 */
-.statusContainer{
-    width: 100%;
-    border-radius: 30px;
-    padding: 14px 1px;
-}
-
-/* ==== 표 가독성 업: 폰트/행간/패딩 확장 ==== */
-/* ===== 표: 카드형(엑셀 느낌 제거) ===== */
-.inspectorTable{
-    width: 100%;
-    border-collapse: separate;   /* 중요: 행 사이 간격을 주기 위해 separate */
-    border-spacing: 0 12px;      /* 행 간격 → 카드처럼 띄워 보이게 */
-    background: transparent;     /* 표 바탕 투명 */
-    table-layout: fixed;
-    font-size: 15px;
-}
-
-/* 헤더는 한 줄짜리 배너 느낌 */
-.inspectorTable thead tr{
-    background: var(--brand);
-    border-radius: 14px;
-}
-.inspectorTable thead th{
-    color:#5a4a21;
-    font-weight:800;
-    padding:14px 18px;
-    border:none;
-}
-.inspectorTable thead th:first-child{ border-top-left-radius:14px; border-bottom-left-radius:14px; }
-.inspectorTable thead th:last-child{  border-top-right-radius:14px; border-bottom-right-radius:14px; }
-
-/* 본문 행을 카드처럼 */
-.inspectorTable tbody tr{
-    background:#fff;
-    border-radius:16px;                  /* 카드 라운드 */
-    box-shadow:0 8px 18px rgba(0,0,0,.06);
-    transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
-}
-.inspectorTable tbody tr:hover{
-    transform: translateY(-2px);
-    box-shadow:0 12px 26px rgba(0,0,0,.1);
-    background:#fffdf2;                 /* 살짝 하이라이트 */
-}
-
-/* 셀: 내부 보더 제거하고 여백만 */
-.inspectorTable tbody td{
-    border:none;
-    padding:16px 18px;
-    color:#3c3c3c;
-    overflow:hidden;                     /* 긴 값 줄바꿈 대비 */
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-
-/* 카드 라운드가 깔끔히 보이도록 첫/마지막 셀 모서리 처리 */
-.inspectorTable tbody td:first-child{ border-top-left-radius:16px; border-bottom-left-radius:16px; }
-.inspectorTable tbody td:last-child{  border-top-right-radius:16px; border-bottom-right-radius:16px; }
-
-/* 지그재그 배경 제거 (카드형에서는 불필요) */
-.inspectorTable tbody tr:nth-child(odd),
-.inspectorTable tbody tr:nth-child(even){ background:#fff; }
-
-/* 체크박스/아이디 셀 정렬 + 폭 */
-.checkbox-cell{ display:flex; align-items:center; gap:10px; }
-.inspectorTable tbody td:nth-child(1){ width: 140px; }
-
-/* 이름/연락처 클릭 가능한 셀 표시 강화 */
-.inspectorTable td[onclick]{ cursor:pointer; }
-.inspectorTable td[onclick]:hover{ text-decoration: underline; }
-
-/* 체크박스 스타일 유지(필요시 약간 둥글게) */
-input[type="checkbox"]{
-    appearance:none;
-    width:18px;height:18px;
-    border:2px solid var(--brand-strong);
-    border-radius:6px;
-    background:#fff; cursor:pointer; position:relative;
-}
-input[type="checkbox"]:checked{
-    background:var(--brand-strong); border-color:var(--brand-strong);
-}
-input[type="checkbox"]:checked::after{
-    content:"✔"; color:#fff; font-size:12px; position:absolute; top:50%; left:50%;
-    transform:translate(-50%,-55%);
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
 }
 
 
-/* “전체 26명” 라벨도 살짝 키움 */
-.totalTitle, .highlight{
-    font-size: 17px;
+.btn.cancel {
+    background-color: #FFF2CC;
+    color: #FFBF58;
 }
 
-/* 페이지네이션 버튼도 큼직하게 */
-.pagination{ gap: 16px; margin-top: 12px; }
-.circle-btn{ width: 36px; height: 36px; font-size: 15px; }
-.circle-btn.active{ font-weight: 800; }
+.btn.cancel:hover {
+    background-color: #FFE599;
+}
 
-/* 버튼 패딩/라운드로 존재감 키우기 */
-button{ padding: 12px 16px; border-radius: 22px; }
-.register{ font-weight: 800; }
-.delete{ font-weight: 700; }
+.btn.submit {
+    background-color: #FFBF58;
+    color: white;
+}
+
+.btn.submit:hover {
+    background-color: #e6a843;
+}
+
+/* ===== 셀렉트 ===== */
+select {
+    background-color: #fff;
+    border: 1px solid #FFBF58;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+select option {
+    background: #FFF9F0;
+    color: #474D56;
+}
+
+select option:hover {
+    background: #FFBF58;
+    color: #474D56;
+}
+
+/* ===== 체크박스 ===== */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #FFBF58;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #FFBF58;
+    border-color: #FFBF58;
+}
+
+input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: white;
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+}
+
+.checkbox-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
