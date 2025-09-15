@@ -41,34 +41,32 @@
             </div>
 
             <!-- 설비 주소 (그리드 레이아웃) -->
-            <div class="cell">설비 주소</div>
-            <div id="addressBlock" class="address-grid">
-                <div class="address-row">
-                    <label class="label" for="zipNo">우편번호</label>
-                    <div class="field with-action">
-                        <input type="text" id="zipNo" name="zipNo" class="text-input" readonly>
-                        <button type="button" class="btn-inline-action" onclick="goPopup()">주소검색</button>
-                    </div>
+            <div class="form-box">
+                <div class="address-header">
+                    <label class="label">주소</label>
+                    <button type="button" class="btn-inline-action" onclick="goPopup()">주소검색</button>
                 </div>
 
-                <div class="address-row">
-                    <label class="label" for="roadAddrPart1">도로명주소</label>
-                    <div class="field">
-                        <!-- SSR 기본값: 전체 주소를 일단 도로명에 박아둔다(보여주기 보장) -->
+                <div id="addressBlock" class="address-grid">
+                    <div class="address-row">
+                        <label class="label" for="roadAddrPart1">도로명주소</label>
                         <input type="text" id="roadAddrPart1" name="roadAddrPart1"
-                               class="text-input" value="${facility.address}">
+                               class="text-input" placeholder="도로명주소" readonly>
+                    </div>
+
+
+                    <div class="address-row">
+                        <label class="label" for="addrDetail">상세주소</label>
+                        <div class="field">
+                            <input type="text" id="addrDetail" name="addrDetail" placeholder="상세주소"  class="text-input">
+                        </div>
                     </div>
                 </div>
 
-                <div class="address-row">
-                    <label class="label" for="addrDetail">상세주소</label>
-                    <div class="field">
-                        <input type="text" id="addrDetail" name="addrDetail" class="text-input">
-                    </div>
-                </div>
+                <!-- 서버 전송용 합쳐진 주소 -->
+                <input type="hidden" id="address" name="address"
+                       value="<c:out value='${facility.address}'/>">
             </div>
-            <!-- DB에 저장/전송되는 최종 주소 -->
-            <input type="hidden" id="address" name="address" value="${facility.address}">
 
             <!-- 도메인 -->
             <div class="cell">도메인</div>
@@ -145,13 +143,13 @@
     }
 
     // juso 콜백 - 완전히 새로운 주소로 덮어쓰기
-    function jusoCallBack(fullAddress, roadAddrPart1, addrDetail, zipNo) {
-        console.log('주소 검색 결과:', { fullAddress, roadAddrPart1, addrDetail, zipNo });
+    function jusoCallBack(fullAddress, roadAddrPart1, addrDetail) {
+        console.log('주소 검색 결과:', { fullAddress, roadAddrPart1, addrDetail });
 
         // 모든 주소 필드를 새로운 값으로 완전히 덮어쓰기
         document.getElementById('roadAddrPart1').value = roadAddrPart1 || '';
         document.getElementById('addrDetail').value = addrDetail || '';
-        document.getElementById('zipNo').value = zipNo || '';
+
 
         // hidden address 필드도 새로운 전체 주소로 완전히 교체
         let finalAddress = '';
