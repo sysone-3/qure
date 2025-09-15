@@ -9,30 +9,6 @@ function onlyNumber(el) {
     document.getElementById("phone").value =
         (p1 && p2 && p3) ? `${p1}-${p2}-${p3}` : "";
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    const prevBtn = document.querySelector(".circle-btn.prev");
-    const nextBtn = document.querySelector(".circle-btn.next");
-    const pageNumber = document.getElementById("pageNumber");
-
-    let currentPage = 1;
-
-    if (prevBtn) {
-        prevBtn.addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                pageNumber.textContent = currentPage;
-            }
-        });
-    }
-
-    if (nextBtn) {
-        nextBtn.addEventListener("click", () => {
-            currentPage++;
-            pageNumber.textContent = currentPage;
-        });
-    }
-
     const modal = document.getElementById("inspectorModal");
     const openModalBtn = document.querySelector(".register");
     const cancelBtn = document.querySelector(".btn.cancel");
