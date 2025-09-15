@@ -43,34 +43,30 @@
 
             <!-- 설비 주소 (그리드 레이아웃로 전면 개편) -->
             <div class="form-box">
-                <div class="cell">주소</div>
+                <div class="address-header">
+                    <label class="label">주소</label>
+                    <button type="button" class="btn-inline-action" onclick="goPopup()">주소검색</button>
+                </div>
 
                 <div id="addressBlock" class="address-grid">
                     <div class="address-row">
-                        <label class="label" for="zipNo">우편번호</label>
-                        <div class="field with-action">
-                            <input type="text" id="zipNo" name="zipNo" class="text-input" readonly>
-                            <button type="button" class="btn-inline-action" onclick="goPopup()">주소검색</button>
-                        </div>
+                        <label class="label" for="roadAddrPart1">도로명주소</label>
+                        <input type="text" id="roadAddrPart1" name="roadAddrPart1"
+                               class="text-input" placeholder="도로명주소" readonly>
                     </div>
 
-                    <div class="address-row">
-                        <label class="label" for="roadAddrPart1">도로명주소</label>
-                        <div class="field">
-                            <input type="text" id="roadAddrPart1" name="roadAddrPart1" class="text-input" required>
-                        </div>
-                    </div>
 
                     <div class="address-row">
                         <label class="label" for="addrDetail">상세주소</label>
                         <div class="field">
-                            <input type="text" id="addrDetail" name="addrDetail" class="text-input">
+                            <input type="text" id="addrDetail" name="addrDetail" placeholder="상세주소"  class="text-input">
                         </div>
                     </div>
                 </div>
 
                 <!-- 서버 전송용 합쳐진 주소 -->
                 <input type="hidden" id="address" name="address" value="">
+                <input type="hidden" id="addressForGeocode" name="addressForGeocode" value="">
             </div>
 
             <!-- 도메인 -->
@@ -144,16 +140,60 @@
         var url = "<c:url value='/popup/juso'/>";
         window.open(url, "pop", "width=570,height=420,scrollbars=yes,resizable=yes");
     }
-    // 팝업 콜백
-    function jusoCallBack(fullAddress, roadAddrPart1, addrDetail) {
-        document.getElementById('roadAddrPart1').value = roadAddrPart1 || '';
-        document.getElementById('addrDetail').value    = addrDetail    || '';
-        document.getElementById('address').value =
-            (fullAddress && fullAddress.trim().length > 0)
-                ? fullAddress
-                : [roadAddrPart1, addrDetail].filter(Boolean).join(' ');
+
+    // hidden 값 세터
+    function mergeAddressFields() {
+        const road    = (document.getElementById('roadAddrPart1')?.value || '').trim();
+        const detail  = (document.getElementById('addrDetail')?.value || '').trim();
+        const full    = [road, detail].filter(Boolean).join(' ');
+
+        document.getElementById('address').value = full;
+        document.getElementById('addressForGeocode').value = road;
+
+        console.log('[mergeAddressFields] road="%s", detail="%s", full(address)="%s", forGeocode="%s"',
+            road, detail, full, road);
     }
 
+    function jusoCallBack(fullAddress, roadAddrPart1, addrDetail) {
+        const $road   = document.getElementById('roadAddrPart1');
+        const $detail = document.getElementById('addrDetail');
+
+        if ($road)   $road.value   = roadAddrPart1 || '';
+        if ($detail) $detail.value = addrDetail    || '';
+
+        console.log('[jusoCallBack] full="%s", road="%s", detail="%s"',
+            fullAddress, roadAddrPart1, addrDetail);
+
+        mergeAddressFields(); // hidden 즉시 갱신
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const form    = document.getElementById('facilityForm');
+        const $road   = document.getElementById('roadAddrPart1');
+        const $detail = document.getElementById('addrDetail');
+
+        $road?.addEventListener('input',  mergeAddressFields);
+        $detail?.addEventListener('input', mergeAddressFields);
+
+        form?.addEventListener('submit', (e) => {
+            mergeAddressFields();
+
+            const road = (document.getElementById('addressForGeocode')?.value || '').trim();
+            const full = (document.getElementById('address')?.value || '').trim();
+            console.log('[submit] sending -> addressForGeocode="%s", address="%s"', road, full);
+
+            if (!road) {
+                e.preventDefault();
+                alert('주소검색 버튼으로 "도로명주소"를 선택해 주세요.');
+                return false;
+            }
+            if (selectedTemplates.length === 0) {
+                e.preventDefault();
+                alert('점검표를 선택해주세요.');
+                return false;
+            }
+        });
+    });
     // ===== 점검표 선택 관리 (단일 선택으로 수정하되 기존 구조 유지) =====
     let selectedTemplates = []; // 배열로 유지하되 최대 1개만
 
