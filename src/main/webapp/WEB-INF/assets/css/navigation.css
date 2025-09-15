@@ -57,7 +57,7 @@
     transition: background .15s ease, color .15s ease;
 }
 .nav-btn:hover{ background:#f7f7f7; color:#222; }
-.nav-btn.active{ background:#FFF4E2; color:#F2A94A; }
+.nav-btn.active{ background:#fff7e2; color:#f59e0b; font-weight: 500 }
 .nav-btn.brand{ margin-bottom: 12px; }
 
 .nav-btn .nav-icon{ width:24px; height:24px; flex:0 0 auto; object-fit: scale-down }
