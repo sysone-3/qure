@@ -10,10 +10,7 @@
 <body>
 <div class="error-wrap">
     <div class="error-card" id="card" data-retry="<c:out value='${header[\"Retry-After\"]}' default='15'/>">
-        <picture>
-            <source srcset="<c:url value='/assets/images/error-503.webp'/>" type="image/webp"/>
-            <img class="error-illust" src="<c:url value='/assets/images/error-503.png'/>" alt="503"/>
-        </picture>
+        <img class="error-illust" src="<c:url value='/assets/images/error-503.png'/>" alt="503 error">
 
         <h1 class="error-title">503 Service Unavailable</h1>
         <p class="error-sub">더 나은 서비스를 위해 시스템 점검 중입니다.</p>
