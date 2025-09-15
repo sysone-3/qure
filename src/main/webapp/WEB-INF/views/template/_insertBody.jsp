@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 <div class="container">
     <div class="inner-container">
@@ -11,6 +12,7 @@
         </div>
 
         <form action="<c:url value='/template/insert'/>" method="post" class="form">
+            <sec:csrfInput/>
             <!-- 팝업 상태 유지용 히든필드 -->
             <input type="hidden" name="popup" value="${popup}"/>
             <c:if test="${not empty returnUrl}">
