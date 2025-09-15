@@ -1,7 +1,6 @@
 package app.snapshot.qure.inspectors.controller;
 
 import app.snapshot.qure.inspectors.dto.InspectorRegisterDTO;
-import app.snapshot.qure.facilities.dto.FacilityRegisterDTO;
 import app.snapshot.qure.inspectors.service.InspectorRegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,10 +15,9 @@ public class InspectorRegisterController {
 
     @PostMapping("/inspectors/register")
     public String registerInspectorWithFacility(
-            @ModelAttribute InspectorRegisterDTO inspectorDto,
-            @ModelAttribute FacilityRegisterDTO facilityDto) {
+            @ModelAttribute InspectorRegisterDTO inspectorDto) {
 
-        inspectorRegisterService.registerInspectorWithFacility(inspectorDto, facilityDto);
+        inspectorRegisterService.registerInspectorWithFacility(inspectorDto);
         return "redirect:/inspectors/inspectorsList";
     }
 }
