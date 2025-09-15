@@ -204,5 +204,18 @@
          END
      WHERE facility_id = #{facilityId}
   </update>
+  
+
+<select id="selectFacilityLatLngByTagId" parameterType="int" resultType="map">
+  SELECT f.gps_lat AS gpsLat,
+         f.gps_lng AS gpsLng
+  FROM facility_tags ft
+  JOIN facilities f ON f.facility_id = ft.facility_id
+  WHERE ft.tag_id = #{tagId}
+    AND ft.active = 'Y'
+    AND ft.revoked_at IS NULL
+  FETCH FIRST 1 ROWS ONLY
+</select>
+  
 
 </mapper>

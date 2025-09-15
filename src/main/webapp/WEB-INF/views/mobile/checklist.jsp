@@ -98,6 +98,10 @@
         </div>
       </div>
     </c:forEach>
+    <!-- GPS 위치 정보 -->
+    <input type="hidden" name="submitLat">
+	<input type="hidden" name="submitLng">
+	<input type="hidden" name="gpsAcc">
   </form>
 </div>
 

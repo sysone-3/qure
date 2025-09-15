@@ -64,6 +64,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .csrf(csrf -> csrf.disable())
 
                 .csrf(csrf -> csrf.ignoringRequestMatchers(
                         new AntPathRequestMatcher("/mobile/**", "POST"),
