@@ -13,6 +13,6 @@ public interface ITemplateService {
     long insertTemplate(TemplateCreateForm template);
     int updateTemplate(Template template);
     int deleteTemplate(Long id);
-    long saveAsNewVersion(TemplateUpdateForm form);
+    long saveAsNewVersion(TemplateUpdateForm form, Long managerId);
 }
 

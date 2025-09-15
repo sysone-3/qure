@@ -53,7 +53,7 @@
         INSERT INTO CHECKLIST_TEMPLATES
         (TEMPLATE_ID, DOMAIN, NAME, CYCLE, CYCLE_UNIT, VERSION, IS_ACTIVE, CREATED_AT, FACILITY_ID, MANAGER_ID)
         VALUES
-        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, #{version}, #{isActive}, SYSDATE, #{facilityId,jdbcType=INTEGER}, #{managerId})
+        (#{templateId}, #{domain}, #{name}, #{cycle}, #{cycleUnit}, #{version}, #{isActive}, SYSDATE, #{facilityId, jdbcType=INTEGER}, #{managerId})
     </insert>
 
     <!-- 이전 템플릿 비활성화 (낙관적) -->

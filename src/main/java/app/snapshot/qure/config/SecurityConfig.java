@@ -49,9 +49,27 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                AntPathRequestMatcher.antMatcher("/"),
+                                AntPathRequestMatcher.antMatcher("/mobile/**"),
+                                AntPathRequestMatcher.antMatcher("/popup/**"),
+                                AntPathRequestMatcher.antMatcher("/assets/**"),
+                                AntPathRequestMatcher.antMatcher("/css/**"),
+                                AntPathRequestMatcher.antMatcher("/js/**"),
+                                AntPathRequestMatcher.antMatcher("/images/**"),
+                                AntPathRequestMatcher.antMatcher("/webjars/**"),
+                                AntPathRequestMatcher.antMatcher("/favicon.*"),
+                                AntPathRequestMatcher.antMatcher("/oauth2/**"),
+                                AntPathRequestMatcher.antMatcher("/login/oauth2/**"),
+                                AntPathRequestMatcher.antMatcher("/error")
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable())
+
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        new AntPathRequestMatcher("/mobile/**", "POST"),
+                        new AntPathRequestMatcher("/popup/**", "POST")
+                ))
 
                 // 세션 관리 설정
                 .sessionManagement(session -> session

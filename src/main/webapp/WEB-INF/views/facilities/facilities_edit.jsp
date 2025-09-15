@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,6 +31,7 @@
         </div>
 
         <form id="facilityForm" action="<c:url value='/facilities/${facility.facilityId}'/>" method="post">
+            <sec:csrfInput/>
             <!-- PK hidden -->
             <input type="hidden" name="facilityId" value="${facility.facilityId}"/>
 

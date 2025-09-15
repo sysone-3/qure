@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"   uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -57,6 +58,7 @@
         <div class="actions">
             <form method="post" action="<c:url value='/facilities/${facility.facilityId}/delete'/>"
                   onsubmit="return confirm('삭제하시겠습니까? 한 번 삭제 후 복구 불가능합니다. (ID: ${facility.facilityId})');">
+                <sec:csrfInput/>
                 <button type="submit" class="icon-btn" title="삭제">삭제</button>
             </form>
             <a href="<c:url value='/facilities/${facility.facilityId}/edit'/>" class="icon-btn">수정</a>
@@ -83,6 +85,7 @@
     <!-- 기간 선택 -->
     <div class ="date-range-card">
         <form id="rangeForm" method="get" action="<c:url value='/facilities/${facility.facilityId}'/>" class="date-range">
+            <sec:csrfInput/>
             <input type="date" name="start" id="start" value="${start}">
             ~
             <input type="date" name="end"   id="end"   value="${end}">

@@ -91,7 +91,7 @@ public class TemplateService implements ITemplateService {
 
     @Transactional
     @Override
-    public long saveAsNewVersion(TemplateUpdateForm form) {
+    public long saveAsNewVersion(TemplateUpdateForm form, Long managerId) {
         // 1) 이전 템플릿 조회 & 검증
         Template prev = templateRepository.getTemplateById(form.getTemplateId());
         if (prev == null || prev.getIsActive() != ActiveStatus.Y) {
@@ -116,7 +116,8 @@ public class TemplateService implements ITemplateService {
         next.setCycleUnit(CycleUnit.valueOf(form.getCycleUnit()));
         next.setVersion(supplied + 1);
         next.setIsActive(ActiveStatus.Y);
-        next.setFacilityId(prev.getFacilityId()); // 필요시 유지
+        next.setFacilityId(prev.getFacilityId());
+        next.setManagerId(managerId);
         templateRepository.insertTemplate(next);  // selectKey로 templateId 채워짐
 
         // 3) 새 템플릿 아이템 전량 INSERT(배치)

@@ -1,15 +1,16 @@
 <%@ tag language="java" body-content="empty" %>
 <%@ attribute name="label" required="true" %>
-<%@ attribute name="action" required="false" %>
+<%@ attribute name="action"   required="false" rtexprvalue="true" %>
 <%@ attribute name="cssClass" required="false" %>
 <%@ attribute name="bgColor" required="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <c:choose>
     <c:when test="${not empty action}">
+        <c:url var="resolvedAction" value="${action}"/>
         <input type="button"
                value="${label}"
-               data-action="${action}"
+               data-action="${resolvedAction}"
                class="btn ${cssClass}"
                style="
                        width: 120px;
@@ -29,7 +30,7 @@
                class="btn ${cssClass}"
                style="
                        width: 120px;
-                       height:40x;
+                       height:40px;
                        border: none;
                        border-radius: 50px;
                        padding: 0 24px;

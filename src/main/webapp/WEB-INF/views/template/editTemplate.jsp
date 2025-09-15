@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,15 +20,16 @@
 <main class="content">
 <div class="container">
     <div class="inner-container">
-        <div class="title-row">
-            <h2 class="title">점검표 수정</h2>
-            <div>
-                <my:button label="삭제하기" action="/template/delete" cssClass="js-delete" bgColor="#EAEAEA"/>
-                <my:button label="수정하기" action="/template/update" cssClass="js-update" bgColor="#9de2d0"/>
-            </div>
-        </div>
-
         <form action="<c:url value='/template/update'/>" method="post" class="form">
+            <div class="title-row">
+                <h2 class="title">점검표 수정</h2>
+                <div>
+                    <my:button label="삭제하기" action="/template/delete" cssClass="js-delete" bgColor="#EAEAEA"/>
+                    <my:button label="수정하기" action="/template/update" cssClass="js-update" bgColor="#9de2d0"/>
+                </div>
+            </div>
+
+            <sec:csrfInput/>
             <input type="hidden" name="templateId" value="${template.templateId}"/>
             <input type="hidden" name="version" value="${template.version}"/>
 
