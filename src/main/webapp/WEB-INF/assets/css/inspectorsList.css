@@ -193,6 +193,7 @@ a{color:inherit;text-decoration:none}
     text-decoration: none;
     background: #fff;
     cursor: pointer;
+    color: #5A4A21;
 }
 
 .page-btn:hover {
@@ -215,11 +216,28 @@ a{color:inherit;text-decoration:none}
     background:rgba(0,0,0,.4);justify-content:center;align-items:center;
 }
 .modal-content{
-    background:#fff;padding:30px 32px;border-radius:20px;width:420px;
-    box-shadow:0 10px 24px rgba(0,0,0,.12);position:relative;
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    width:420px;
+    box-shadow:0 10px 24px rgba(0,0,0,.12);
+    position:relative;
+    font-size: 16px !important;
 }
 .modal-content h2{
-    text-align:center;margin:0 0 20px 0;color:#3c3c3c;font-weight:800
+    text-align:center;
+    margin:0 0 20px 0;
+    color:#3c3c3c;
+    font-weight:600
+}
+
+#inspectorModal .modal-content h2 {
+    font-size: 20px;   /* 원하는 크기 */
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 20px 0;
+    color: #3c3c3c;
+    line-height: 1.4;
 }
 
 /* 경고 모달 */
@@ -231,29 +249,81 @@ a{color:inherit;text-decoration:none}
 .delete-modal p{margin:0 0 18px 0;color:#474D56;font-size:14px}
 
 /* 폼 컴포넌트 */
-.form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.form-group label{font-weight:700;color:#3c3c3c}
-.form-group input,.form-group select{
-    padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px;outline:none;background:#fff
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:16px
+}
+.form-group label{
+    font-weight:700;
+    color:#3c3c3c
+}
+.form-group input {
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    line-height: 1.5;
+    font-size:14px;
+    height: 42px;
+    outline:none;
+    background:#fff
+    appearance: none;
+    width: 100%;
 }
 .form-group input:focus,.form-group select:focus{border-color:#eacb6a}
 
-.phone-input{display:flex;gap:8px;align-items:center}
-.phone-input input{
-    border:1px solid var(--line);border-radius:8px;text-align:center;font-size:14px;padding:8px 10px
+.phone-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
-.phone-input input:first-of-type{width:80px}
-.phone-input input:not(:first-of-type){width:110px}
-.phone-input span{color:#FFBF58;font-weight:800}
 
+/* 첫 번째 칸(3자리: 010) → 짧게 */
+.phone-input input:nth-of-type(1) {
+    flex: 1;
+    max-width: 80px;
+}
+
+/* 두 번째 칸(4자리) → 넓게 */
+.phone-input input:nth-of-type(2) {
+    flex: 2;
+}
+
+/* 세 번째 칸(4자리) → 넓게 */
+.phone-input input:nth-of-type(3) {
+    flex: 2;
+}
+
+/* 하이픈(-)은 고정 */
+.phone-input span {
+    flex: 0 0 auto;
+    color: #FFBF58;
+    font-weight: 800;
+}
 /* 모달 버튼 그룹 */
 .modal-buttons{
-    display:flex;justify-content:center;align-items:center;gap:16px;margin-top:28px
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:16px;
+    margin-top:28px
 }
 .btn{
-    width:150px;padding:10px 0;border-radius:20px;font-size:14px;font-weight:800;
-    cursor:pointer;border:1px solid var(--line);transition:all .2s ease;
-    display:flex;align-items:center;justify-content:center;background:#fff
+    width:100%;
+    padding:10px 0;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    border:1px solid var(--line);
+    transition:all .2s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;background:#fff;
+    min-height: 42px;
 }
 .btn.cancel{background:#FFF2CC;color:#5a4a21;border-color:#f7d58a}
 .btn.cancel:hover{background:#FFE599}

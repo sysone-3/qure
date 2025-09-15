@@ -112,22 +112,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="domain">소속</label>
-                                <select id="domain" name="domain" required>
-                                <option value="">소속을 선택하세요</option>
-                                <option value="소방">소방</option>
-                                <option value="순찰">순찰</option>
-                                <option value="청결">청결</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="equipment">설비</label>
-                                <select id="equipment" name="equipment" required/>
-                                <option value="">소속을 먼저 선택하세요</option>
-                                </select>
-                            </div>
                             <div class="modal-buttons">
                                 <button type="button" class="btn cancel">취소</button>
                                 <button type="submit" class="btn submit">등록</button>
