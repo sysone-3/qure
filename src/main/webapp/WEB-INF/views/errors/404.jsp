@@ -10,10 +10,7 @@
 <body>
 <div class="error-wrap">
     <div class="error-card">
-        <picture>
-            <source srcset="<c:url value='/assets/images/error-404.webp'/>" type="image/webp"/>
-            <img class="error-illust" src="<c:url value='/assets/images/error-404.png'/>" alt="404"/>
-        </picture>
+        <img class="error-illust" src="<c:url value='/assets/images/error-404.png'/>" alt="404 error">
 
         <h1 class="error-title">404 Not Found</h1>
         <p class="error-sub">존재하지 않는 주소를 입력하셨거나,</p>
