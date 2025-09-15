@@ -15,7 +15,7 @@
 
 <body>
 <c:set var="nav" value="inspectors" scope="request"/>
-<div class="layout">
+<div class="navigation">
     <%@ include file="../fragments/sidebar.jspf" %>
     <main class="content">
     <div class="container">
@@ -81,6 +81,12 @@
                             <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon" />
                         </a>
                     </div>
+                    <span class="circle-btn active" id="pageNumber">${currentPage}</span>
+
+                    <a href="?page=${currentPage + 1}"
+                       class="circle-btn next ${currentPage == totalPages ? 'disabled' : ''}">
+                       <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon"/>
+                    </a>
                 </div>
 
                 <div id="inspectorModal" class="modal">
@@ -127,24 +133,26 @@
                         </form>
                     </div>
                 </div>
-                <div id="deleteModal" class="modal">
-                    <div class="modal-content delete-modal">
-                        <img src="<c:url value='/assets/images/warning.svg'/>" alt="경고" class="warning-icon" />
-                        <h2>삭제하시겠습니까?</h2>
-                        <p>한번 삭제한 데이터는 복구할 수 없습니다.</p>
-                        <form id="deleteForm" action="<c:url value='/inspectors/delete'/>" method="post">
-                            <input type="hidden" name="selectedIds" id="selectedIdsInput" />
-                            <div class="modal-buttons">
-                                <button type="button" class="btn cancel" id="deleteCancel">취소</button>
-                                <button type="submit" class="btn submit">삭제</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+
 
 
             <!-- JS -->
+
+<!-- 삭제 모달 -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content delete-modal">
+        <img src="<c:url value='/assets/images/warning.svg'/>" alt="경고" class="warning-icon" />
+        <h2>삭제하시겠습니까?</h2>
+        <p>한번 삭제한 데이터는 복구할 수 없습니다.</p>
+        <form id="deleteForm" action="<c:url value='/inspectors/delete'/>" method="post">
+            <input type="hidden" name="selectedIds" id="selectedIdsInput" />
+            <div class="modal-buttons">
+                <button type="button" class="btn cancel" id="deleteCancel">취소</button>
+                <button type="submit" class="btn submit">삭제</button>
+            </div>
+        </form>
+    </div>
+</div>
 <script src="<c:url value='/assets/js/inspectorsList.js'/>"></script>
 </body>
 </html>

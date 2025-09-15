@@ -16,7 +16,14 @@ public class DashboardService implements IDashboardService {
 
     @Override
     public TodayInspectionStats getTodayInspectionStats(Long managerId) {
-        return dashboardRepository.selectTodayInspectionStats(managerId);
+        TodayInspectionStats stats = dashboardRepository.selectTodayInspectionStats(managerId);
+        if (stats == null) {
+            // 기본값으로 채워서 Null 방지
+            stats = new TodayInspectionStats();
+            stats.setTodayTotal(0);
+            stats.setTodayCompleted(0);
+        }
+        return stats;
     }
 
     @Override
@@ -29,7 +36,7 @@ public class DashboardService implements IDashboardService {
 
     @Override
     public DashboardSessionView buildDashboardView(String name, String email, Long managerId) {
-        TodayInspectionStats todayStats = dashboardRepository.selectTodayInspectionStats(managerId);
+        TodayInspectionStats todayStats = getTodayInspectionStats(managerId);
         DashboardSessionView vm = new DashboardSessionView();
         vm.setName(name);
         vm.setEmail(email);
