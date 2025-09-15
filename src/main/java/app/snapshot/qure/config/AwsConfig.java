@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
-@PropertySource("classpath:application-db.properties") // 여길 읽게 함
+@PropertySource("classpath:application.properties") // 여길 읽게 함
 public class AwsConfig {
 
   // 서블릿 컨텍스트에도 플레이스홀더 해석기를 등록
