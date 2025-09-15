@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -97,6 +98,7 @@
     <div class="modal-content">
         <h2>작업자 등록</h2>
         <form action="<c:url value='/inspectors/register'/>" method="post">
+            <sec:csrfInput/>
             <div class="form-group">
                 <label for="name">이름</label>
                 <input type="text" id="name" name="name" required />
@@ -146,6 +148,7 @@
         <h2>삭제하시겠습니까?</h2>
         <p>한번 삭제한 데이터는 복구할 수 없습니다.</p>
         <form id="deleteForm" action="<c:url value='/inspectors/delete'/>" method="post">
+            <sec:csrfInput/>
             <input type="hidden" name="selectedIds" id="selectedIdsInput" />
             <div class="modal-buttons">
                 <button type="button" class="btn cancel" id="deleteCancel">취소</button>

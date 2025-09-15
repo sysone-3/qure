@@ -51,6 +51,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/"),
+                                AntPathRequestMatcher.antMatcher("/mobile/**"),
+                                AntPathRequestMatcher.antMatcher("/popup/**"),
                                 AntPathRequestMatcher.antMatcher("/assets/**"),
                                 AntPathRequestMatcher.antMatcher("/css/**"),
                                 AntPathRequestMatcher.antMatcher("/js/**"),
@@ -63,6 +65,11 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        new AntPathRequestMatcher("/mobile/**", "POST"),
+                        new AntPathRequestMatcher("/popup/**", "POST")
+                ))
 
                 // 세션 관리 설정
                 .sessionManagement(session -> session
