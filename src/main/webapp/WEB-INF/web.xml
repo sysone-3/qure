@@ -12,10 +12,9 @@
         <param-value>classpath:config/mybatis/root-context.xml</param-value>
     </context-param>
 
-
     <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
+      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -95,4 +94,17 @@
             <page-encoding>UTF-8</page-encoding>
         </jsp-property-group>
     </jsp-config>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/views/errors/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/views/errors/500.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>503</error-code>
+        <location>/WEB-INF/views/errors/503.jsp</location>
+    </error-page>
 </web-app>
