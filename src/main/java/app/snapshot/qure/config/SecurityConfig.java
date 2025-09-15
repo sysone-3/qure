@@ -48,14 +48,33 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                AntPathRequestMatcher.antMatcher("/"),
+                                AntPathRequestMatcher.antMatcher("/mobile/**"),
+                                AntPathRequestMatcher.antMatcher("/popup/**"),
+                                AntPathRequestMatcher.antMatcher("/assets/**"),
+                                AntPathRequestMatcher.antMatcher("/css/**"),
+                                AntPathRequestMatcher.antMatcher("/js/**"),
+                                AntPathRequestMatcher.antMatcher("/images/**"),
+                                AntPathRequestMatcher.antMatcher("/webjars/**"),
+                                AntPathRequestMatcher.antMatcher("/favicon.*"),
+                                AntPathRequestMatcher.antMatcher("/oauth2/**"),
+                                AntPathRequestMatcher.antMatcher("/login/oauth2/**"),
+                                AntPathRequestMatcher.antMatcher("/error")
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable())
+
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        new AntPathRequestMatcher("/mobile/**", "POST"),
+                        new AntPathRequestMatcher("/popup/**", "POST")
+                ))
 
                 // 세션 관리 설정
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
+
                 .oauth2Login(oauth -> oauth
                         .loginPage("/")
                         .successHandler((request, response, authentication) -> {
@@ -64,17 +83,12 @@ public class SecurityConfig {
                                     (Map<String, Object>) principal.getAttributes().get("kakao_account");
                             Map<String, Object> profile =
                                     (Map<String, Object>) kakaoAccount.get("profile");
-
                             String email = (String) kakaoAccount.get("email");
                             String nickname = (String) profile.get("nickname");
-
                             ManagerDTO manager = managerService.processLogin(email, nickname);
-
                             HttpSession session = request.getSession();
                             SessionUtil.setManagerSession(session, manager.getManagersId(), email, nickname);
-
                             System.out.println("로그인 성공: " + nickname + " (" + email + ")");
-
                             response.sendRedirect(request.getContextPath() + "/dashboard");
                         })
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
