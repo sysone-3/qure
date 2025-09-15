@@ -10,10 +10,7 @@
 <body>
 <div class="error-wrap">
     <div class="error-card">
-        <picture>
-            <source srcset="<c:url value='/assets/images/error-500.webp'/>" type="image/webp"/>
-            <img class="error-illust" src="<c:url value='/assets/images/error-500.png'/>" alt="500"/>
-        </picture>
+        <img class="error-illust" src="<c:url value='/assets/images/error-500.png'/>" alt="500 error">
 
         <h1 class="error-title">500 Internal Server Error</h1>
         <p class="error-sub">서비스 이용에 불편을 드려 죄송합니다.</p>
