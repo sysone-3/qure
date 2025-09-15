@@ -25,11 +25,11 @@
            </h3>
            <div class="infoRow">
                  <span class="infoLabel">이름</span>
-                 <span class="infoValue">${inspector.name}</span>
+                 <span class="infoValue">${inspectorName}</span>
            </div>
            <div class="infoRow">
                  <span class="infoLabel">연락처</span>
-                 <span class="infoValue">${inspector.phone}</span>
+                 <span class="infoValue">${phone}</span>
            </div>
          </div>
          <div class="infoContainer">
@@ -41,19 +41,35 @@
              <div class="infoRow">
                  <span class="infoLabel">담당 구역</span>
                  <div class="infoList">
-                     <c:forEach var="f" items="${facilities}">
-                         <span class="infoTag">${f.domain}</span>
-                     </c:forEach>
+                     <c:choose>
+                         <c:when test="${not empty facilities and facilities[0].domain != null}">
+                             <c:forEach var="f" items="${facilities}">
+                                 <span class="infoTag">${f.domain}</span>
+                             </c:forEach>
+                         </c:when>
+                         <c:otherwise>
+                             <span class="infoTag">없음</span>
+                         </c:otherwise>
+                     </c:choose>
                  </div>
              </div>
+
              <div class="infoRow">
                  <span class="infoLabel">담당 시설</span>
                  <div class="infoList">
-                     <c:forEach var="f" items="${facilities}">
-                         <span class="infoTag">${f.facility}</span>
-                     </c:forEach>
+                     <c:choose>
+                         <c:when test="${not empty facilities and facilities[0].facility != null}">
+                             <c:forEach var="f" items="${facilities}">
+                                 <span class="infoTag">${f.facility}</span>
+                             </c:forEach>
+                         </c:when>
+                         <c:otherwise>
+                             <span class="infoTag">없음</span>
+                         </c:otherwise>
+                     </c:choose>
                  </div>
              </div>
+
          </div>
      </div>
 </div>

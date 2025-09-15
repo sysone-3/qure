@@ -42,6 +42,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // 세션에 카카오 로그인 정보 저장 (유틸리티 사용)
         HttpSession session = request.getSession(true); // 세션이 없으면 생성
         SessionUtil.setManagerSession(session, manager.getManagersId(), email, name);
+        System.out.println("세션 저장 완료: managerId=" + manager.getManagersId() +
+                ", sessionId=" + session.getId());
 
         // 세션 설정 추가
         session.setMaxInactiveInterval(60 * 60 * 24); // 24시간
@@ -51,6 +53,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 ", sessionId=" + session.getId());
 
         // 홈 페이지로 리다이렉트
-        response.sendRedirect("/manager/home");
+        response.sendRedirect("/dashboard");
     }
 }

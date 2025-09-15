@@ -24,8 +24,9 @@ public class InspectorDetailController {
         List<InspectorDetailDTO> details = inspectorDetailService.getInspectorDetail(id);
 
         if (!details.isEmpty()) {
-            model.addAttribute("inspector", details.get(0)); // 이름/연락처
-            model.addAttribute("facilities", details);       // 시설 리스트
+            model.addAttribute("inspectorName", details.get(0).getInspectorName());
+            model.addAttribute("phone", details.get(0).getPhone());
+            model.addAttribute("facilities", details);
         }
 
         return "inspectors/inspectorDetail";

@@ -1,6 +1,7 @@
 package app.snapshot.qure.mobile.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -22,9 +23,11 @@ import app.snapshot.qure.mobile.dto.SubmitIdDto;
 import app.snapshot.qure.mobile.dto.TagSummaryDto;
 import app.snapshot.qure.mobile.repository.MobileMapper;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 
+@Slf4j
 @Service
 public class MobileService implements IMobileService {
 
@@ -69,6 +72,32 @@ public class MobileService implements IMobileService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Long saveChecklistSubmission(int tagId, ChecklistSubmitForm form) {
+    	
+    	
+    	if (form.getSubmitLat()==null || form.getSubmitLng()==null)
+    	    throw new IllegalStateException("위치 확인 실패");
+
+    	Map<String,Object> m = mobileMapper.selectFacilityLatLngByTagId(tagId);
+    	if (m == null) throw new IllegalStateException("시설 GPS 미등록");
+    	
+    	log.info("SUBMIT_GPS tagId={}, lat={}, lng={}", tagId, form.getSubmitLat(), form.getSubmitLng());
+    	
+
+
+    	Object latObj = (m.get("gpsLat") != null) ? m.get("gpsLat") : m.get("GPSLAT");
+    	Object lngObj = (m.get("gpsLng") != null) ? m.get("gpsLng") : m.get("GPSLNG");
+    	if (latObj == null || lngObj == null) throw new IllegalStateException("시설 GPS 미등록");
+
+    	double fLat = ((Number) latObj).doubleValue();
+    	double fLng = ((Number) lngObj).doubleValue();
+
+
+    	double dist = haversineMeters(form.getSubmitLat(), form.getSubmitLng(), fLat, fLng);
+    	if (dist > 2000.0) throw new IllegalStateException("현장 반경 100m 밖");
+    	
+    	log.info("GPS dist={}m facility=({},{}) submit=({},{})",
+    			  Math.round(dist), fLat, fLng, form.getSubmitLat(), form.getSubmitLng());
+    	
 
         SubmitIdDto submitIdDto = mobileMapper.selectSubmitIdByTagId(tagId);
         if (submitIdDto == null || submitIdDto.getInspectorId() == 0)
@@ -206,4 +235,16 @@ public class MobileService implements IMobileService {
       }
       return dto.getCitizenReportId();
     }
+    
+    // 클래스 내부 유틸
+	private static double haversineMeters(double lat1,double lon1,double lat2,double lon2){
+	  double R=6371000.0;
+	  double dLat=Math.toRadians(lat2-lat1), dLon=Math.toRadians(lon2-lon1);
+	  double a=Math.sin(dLat/2)*Math.sin(dLat/2)+
+	           Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2))*
+	           Math.sin(dLon/2)*Math.sin(dLon/2);
+	  return 2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+	}
 }
+
+
