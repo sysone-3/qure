@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
@@ -26,6 +27,7 @@
         </div>
 
         <form action="<c:url value='/template/insert'/>" method="post" class="form">
+            <sec:csrfInput/>
             <!-- 점검 유형 -->
             <div class="form-box">
                 <span class="subtitle">점검 유형</span>
