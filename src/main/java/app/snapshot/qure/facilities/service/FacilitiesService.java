@@ -1,7 +1,9 @@
 package app.snapshot.qure.facilities.service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import app.snapshot.qure.facilities.dto.*;
 import app.snapshot.qure.facilities.repository.IFacilityTagRepository;
@@ -82,7 +84,25 @@ public class FacilitiesService implements IFacilitiesService {
         return facilitiesRepository.findInspectionByFacilityIdAndPeriodAndManager(facilityId, s, e, managerId);
     }
 
-    /* 등록 시에도 로그인한 관리자 ID 주입 */
+
+    @Override
+    public List<FacilitiesDto> findFacilitiesPaged(Long managerId, String q, int startRow, int endRow) {
+        Map<String, Object> p = new HashMap<>();
+        p.put("managerId", managerId);
+        p.put("q", q);
+        p.put("startRow", startRow);
+        p.put("endRow", endRow);
+        return facilitiesRepository.findFacilitiesPaged(p);
+    }
+
+    @Override
+    public int countFacilities(Long managerId, String q) {
+        Map<String, Object> p = new HashMap<>();
+        p.put("managerId", managerId);
+        p.put("q", q);
+        return facilitiesRepository.countFacilities(p);
+    }
+
     /* 등록 시에도 로그인한 관리자 ID 주입 */
     /** 설비 등록 + QR 태그 발급 (원샷) */
     @Transactional
@@ -180,5 +200,7 @@ public class FacilitiesService implements IFacilitiesService {
             facilitiesRepository.attachTemplatesToFacility(facilityId, templateIds, managerId);
         }
     }
+
+
 }
 

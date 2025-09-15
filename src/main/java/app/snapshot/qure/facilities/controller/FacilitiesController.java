@@ -32,17 +32,36 @@ public class FacilitiesController {
 
 
     // 목록 + 검색
+    // FacilitiesController.java
+
+    // 목록 + 검색 + 페이지네이션
     @GetMapping
     public String list(@RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "page", defaultValue = "1") int page,
                        Model model, HttpSession session) {
+
         Long managerId = SessionUtil.mustManagerId(session);
-        List<FacilitiesDto> facilities = (q == null || q.isBlank())
-                ? facilitiesService.getFacilitiesListByManager(managerId)
-                : facilitiesService.searchFacilitiesByManager(managerId, q.trim());
+
+        final int size = 10;                       // 페이지 당 개수
+        int pageSafe = Math.max(page, 1);
+        int startRow = (pageSafe - 1) * size + 1;  // 1-based (ROW_NUMBER용)
+        int endRow   = pageSafe * size;
+
+        // 데이터 + 총 개수
+        var facilities = facilitiesService.findFacilitiesPaged(managerId, q, startRow, endRow);
+        int totalCount = facilitiesService.countFacilities(managerId, q);
+        int totalPages = (int) Math.ceil(totalCount / (double) size);
+
+        // View로 전달
         model.addAttribute("facilities", facilities);
+        model.addAttribute("q", q);
+        model.addAttribute("page", pageSafe);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalCount", totalCount);
 
         return "facilities/facilities";
     }
+
 
     // 설비 등록 폼
     @GetMapping("/new")
