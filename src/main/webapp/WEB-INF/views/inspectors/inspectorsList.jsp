@@ -128,6 +128,7 @@
         <h2>삭제하시겠습니까?</h2>
         <p>한번 삭제한 데이터는 복구할 수 없습니다.</p>
         <form id="deleteForm" action="<c:url value='/inspectors/delete'/>" method="post">
+           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input type="hidden" name="selectedIds" id="selectedIdsInput" />
             <div class="modal-buttons">
                 <button type="button" class="btn cancel" id="deleteCancel">취소</button>
