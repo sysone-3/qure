@@ -44,7 +44,6 @@ public class SecurityConfig {
         this.kakaoOAuth2UserService = kakaoOAuth2UserService;
         this.managerService = managerService;
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -84,17 +83,12 @@ public class SecurityConfig {
                                     (Map<String, Object>) principal.getAttributes().get("kakao_account");
                             Map<String, Object> profile =
                                     (Map<String, Object>) kakaoAccount.get("profile");
-
                             String email = (String) kakaoAccount.get("email");
                             String nickname = (String) profile.get("nickname");
-
                             ManagerDTO manager = managerService.processLogin(email, nickname);
-
                             HttpSession session = request.getSession();
                             SessionUtil.setManagerSession(session, manager.getManagersId(), email, nickname);
-
                             System.out.println("로그인 성공: " + nickname + " (" + email + ")");
-
                             response.sendRedirect(request.getContextPath() + "/dashboard");
                         })
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
@@ -102,7 +96,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

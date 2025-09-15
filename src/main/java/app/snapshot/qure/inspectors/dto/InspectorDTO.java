@@ -11,4 +11,5 @@ public class InspectorDTO {
     private int inspectorId;
     private String phone;
     private String name;
+    private Long managerId;
 }

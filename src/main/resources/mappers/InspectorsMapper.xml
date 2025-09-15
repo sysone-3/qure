@@ -5,20 +5,29 @@
 
 <mapper namespace="app.snapshot.qure.inspectors.repository.InspectorsMapper">
 
-    <select id="findPaged" resultType="app.snapshot.qure.inspectors.dto.InspectorDTO">
-        SELECT inspector_id, name, phone
+    <!-- 특정 매니저의 작업자 목록 페이징 조회 -->
+    <select id="findPagedByManager" parameterType="map" resultType="app.snapshot.qure.inspectors.dto.InspectorDTO">
+        SELECT inspector_id AS inspectorId,
+        phone,
+        name,
+        manager_id AS managerId
         FROM (
-            SELECT ROW_NUMBER() OVER (ORDER BY inspector_id) AS rn,
-            inspector_id,
-            name,
-            phone
+        SELECT ROW_NUMBER() OVER (ORDER BY inspector_id DESC) AS rn,
+        inspector_id,
+        phone,
+        name,
+        manager_id
         FROM inspector_profile
+        WHERE manager_id = #{managersId}
         )
         WHERE rn BETWEEN #{startRow} AND #{endRow}
     </select>
 
-    <select id="countAll" resultType="int">
-        SELECT COUNT(*) FROM inspector_profile
+    <!-- 특정 매니저의 작업자 총 수 카운트 -->
+    <select id="countByManager" parameterType="long" resultType="int">
+        SELECT COUNT(*)
+        FROM inspector_profile
+        WHERE manager_id = #{managersId}
     </select>
 
 </mapper>
