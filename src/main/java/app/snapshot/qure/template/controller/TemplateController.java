@@ -64,9 +64,10 @@ public class TemplateController {
     }
 
     /** 등록 처리 (POST) — 팝업 모드면 returnUrl로 되돌아가게 */
+    // import org.springframework.ui.Model; 추가
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public String insertTemplate(TemplateCreateForm form, HttpSession session,
-                                 @RequestParam(value = "popup", required = false, defaultValue = "false") boolean popup,
+                                 @RequestParam(value = "popup", defaultValue = "false") boolean popup,
                                  @RequestParam(value = "returnUrl", required = false) String returnUrl,
                                  RedirectAttributes ra) {
         Long id = SessionUtil.getManagerId(session);
@@ -75,15 +76,16 @@ public class TemplateController {
             long templateId = templateService.insertTemplate(form);
             ra.addFlashAttribute("message", templateId + " 번 점검표가 등록되었습니다.");
 
-            if (popup && returnUrl != null && !returnUrl.isBlank()) {
-                // 선택 팝업으로 되돌려 최신 목록에서 방금 만든 템플릿을 선택할 수 있게
+            if (popup) {
+                // 같은 팝업 창에서 선택 목록으로 복귀
+                if (returnUrl == null || returnUrl.isBlank()) returnUrl = "/template/select?popup=true";
                 return "redirect:" + returnUrl;
             }
             return "redirect:/template";
         } catch (RuntimeException ex) {
             ra.addFlashAttribute("message", ex.getMessage());
-            // 실패 시에도 팝업이면 팝업으로 되돌림
-            if (popup && returnUrl != null && !returnUrl.isBlank()) {
+            if (popup) {
+                if (returnUrl == null || returnUrl.isBlank()) returnUrl = "/template/select?popup=true";
                 return "redirect:" + returnUrl;
             }
             return "redirect:/template";
@@ -102,8 +104,9 @@ public class TemplateController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateAsNewVersion(TemplateUpdateForm form, RedirectAttributes ra) {
-        long newId = templateService.saveAsNewVersion(form);
+    public String updateAsNewVersion(TemplateUpdateForm form, RedirectAttributes ra, HttpSession session) {
+        Long managerId = SessionUtil.getManagerId(session);
+        long newId = templateService.saveAsNewVersion(form, managerId);
         ra.addFlashAttribute("message", "새 버전(" + newId + ")으로 저장되었습니다.");
         return "redirect:/template";
     }

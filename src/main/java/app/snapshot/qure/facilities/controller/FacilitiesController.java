@@ -32,17 +32,36 @@ public class FacilitiesController {
 
 
     // 목록 + 검색
+    // FacilitiesController.java
+
+    // 목록 + 검색 + 페이지네이션
     @GetMapping
     public String list(@RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "page", defaultValue = "1") int page,
                        Model model, HttpSession session) {
+
         Long managerId = SessionUtil.mustManagerId(session);
-        List<FacilitiesDto> facilities = (q == null || q.isBlank())
-                ? facilitiesService.getFacilitiesListByManager(managerId)
-                : facilitiesService.searchFacilitiesByManager(managerId, q.trim());
+
+        final int size = 10;                       // 페이지 당 개수
+        int pageSafe = Math.max(page, 1);
+        int startRow = (pageSafe - 1) * size + 1;  // 1-based (ROW_NUMBER용)
+        int endRow   = pageSafe * size;
+
+        // 데이터 + 총 개수
+        var facilities = facilitiesService.findFacilitiesPaged(managerId, q, startRow, endRow);
+        int totalCount = facilitiesService.countFacilities(managerId, q);
+        int totalPages = (int) Math.ceil(totalCount / (double) size);
+
+        // View로 전달
         model.addAttribute("facilities", facilities);
+        model.addAttribute("q", q);
+        model.addAttribute("page", pageSafe);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalCount", totalCount);
 
         return "facilities/facilities";
     }
+
 
     // 설비 등록 폼
     @GetMapping("/new")
@@ -69,12 +88,40 @@ public class FacilitiesController {
     // 주소에서 좌표로 변경
     @PostMapping
     public String create(@ModelAttribute FacilitiesDto dto,
+                         @RequestParam(name = "addressForGeocode", required = false) String addressForGeocode,
                          RedirectAttributes ra,
                          HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);
 
-        // 1) 주소 → 좌표
-        GeocodingService.LatLng ll = geocodingService.geocode(dto.getAddress());
+        // 1) 지오코딩용 "도로명+번지" 핵심만 추출 (hidden이 비어와도 dto.address만으로 안전하게 동작)
+        String roadOnly =
+                preferNonBlank( sanitizeRoad(addressForGeocode),
+                        extractRoadCore(dto.getAddress()) ); // dto.address에서 도로명+번지만 뽑기
+
+        // 2) 후보 쿼리 생성: 순서대로 시도 (첫 성공 시 사용)
+        java.util.List<String> candidates = new java.util.ArrayList<>();
+        if (notBlank(roadOnly)) {
+            candidates.add(roadOnly);                    // "서울특별시 종로구 창경궁로 254"
+            candidates.add(shortenSi(roadOnly));         // "서울 종로구 창경궁로 254"
+            candidates.add(extractGuRoadNum(roadOnly));  // "종로구 창경궁로 254"
+            candidates.add(extractRoadNum(roadOnly));    // "창경궁로 254"
+            candidates.add(joinRoadNumber(roadOnly));    // "창경궁로254"
+        }
+        // 최후의 보루: 전체 주소에서 괄호/동/호 등 제거한 버전
+        String fullNormalized = sanitizeRoad(dto.getAddress());
+        if (notBlank(fullNormalized)) {
+            candidates.add(fullNormalized);
+        }
+        // 중복/공백 제거
+        candidates = candidates.stream().filter(this::notBlank).distinct().toList();
+
+        // 3) 순차 지오코딩
+        GeocodingService.LatLng ll = null;
+        for (String q : candidates) {
+            ll = geocodingService.geocode(q);
+            if (ll != null) break;
+        }
+
         if (ll != null) {
             dto.setGpsLat(round(ll.lat(), 6));
             dto.setGpsLng(round(ll.lng(), 6));
@@ -83,10 +130,10 @@ public class FacilitiesController {
             dto.setGpsLng(null);
         }
 
-        // 2) 시설 + QR 생성
+        // 4) 시설 + QR 생성
         Long facilityId = facilitiesService.createFacilityWithQr(dto, managerId);
 
-        // 3) 템플릿 연결 (선택된 경우에만)
+        // 5) 템플릿 연결
         if (dto.getTemplateIds() != null && !dto.getTemplateIds().isBlank()) {
             facilitiesService.attachTemplatesToFacility(
                     facilityId,
@@ -97,6 +144,72 @@ public class FacilitiesController {
 
         ra.addFlashAttribute("msg", "설비가 등록되었습니다.");
         return "redirect:/facilities/" + facilityId + "/qr";
+    }
+
+// ========== 유틸 ==========
+
+    // dto.address에서 "도로명+번지" 핵심만 추출 (예: "서울특별시 종로구 창경궁로 254 55" → "서울특별시 종로구 창경궁로 254")
+    private static String extractRoadCore(String s) {
+        if (s == null) return null;
+        String t = s.trim();
+        t = t.replaceAll("\\(.*?\\)", "");  // 괄호 제거
+        // 앞에서부터 "…로|…길 + 번지(숫자[-숫자] 가능)"까지 캡처
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("^(.+?(?:로|길)\\s*\\d+(?:-\\d+)?)\\b")
+                .matcher(t);
+        if (m.find()) {
+            return m.group(1).replaceAll("\\s{2,}"," ").trim();
+        }
+        return sanitizeRoad(t); // 그래도 못 뽑으면 일반 정규화
+    }
+
+    // 괄호/동/호 등 제거 + 공백 정리
+    private static String sanitizeRoad(String road) {
+        if (road == null) return null;
+        String s = road.trim();
+        s = s.replaceAll("\\(.*?\\)", ""); // (건물명) 제거
+        s = s.replaceAll("\\b\\d+동\\b", "");
+        s = s.replaceAll("\\b\\d+호\\b", "");
+        s = s.replaceAll("\\b\\d+층\\b", "");
+        s = s.replaceAll("\\s{2,}", " ").trim();
+        return s;
+    }
+
+    // "서울특별시" → "서울", "부산광역시" → "부산" 등
+    private static String shortenSi(String s) {
+        if (s == null) return null;
+        return s.replace("특별시","").replace("광역시","").replace("자치시","")
+                .replaceAll("\\s{2,}"," ").trim();
+    }
+
+    // "서울특별시 종로구 창경궁로 254" → "종로구 창경궁로 254"
+    private static String extractGuRoadNum(String s) {
+        if (s == null) return null;
+        return s.replaceFirst("^.*?\\s(\\S+구|\\S+군)\\s", "$1 ").trim();
+    }
+
+    // "서울특별시 종로구 창경궁로 254" → "창경궁로 254"
+    private static String extractRoadNum(String s) {
+        if (s == null) return null;
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("([가-힣A-Za-z0-9]+(?:로|길)\\s*\\d+(?:-\\d+)?)")
+                .matcher(s);
+        return m.find() ? m.group(1).trim() : s;
+    }
+
+    // "창경궁로 254" → "창경궁로254"
+    private static String joinRoadNumber(String s) {
+        if (s == null) return null;
+        return s.replaceAll("([가-힣A-Za-z]+(?:로|길))\\s+(\\d+(?:-\\d+)?)", "$1$2");
+    }
+
+    private boolean notBlank(String s) {
+        return s != null && !s.trim().isEmpty();
+    }
+
+    private static String preferNonBlank(String a, String b) {
+        if (a != null && !a.isBlank()) return a;
+        return b;
     }
 
     // 쉼표 구분 문자열 → Long 리스트

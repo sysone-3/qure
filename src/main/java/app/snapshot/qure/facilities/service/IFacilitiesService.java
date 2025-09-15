@@ -13,6 +13,10 @@ public interface IFacilitiesService {
     List<FacilitiesDto> getFacilitiesListByManager(Long managerId);
     List<FacilitiesDto> searchFacilitiesByManager(Long managerId, String q);
 
+    /* 목록 페이지네이션 */
+    List<FacilitiesDto> findFacilitiesPaged(Long managerId, String q, int startRow, int endRow);
+    int countFacilities(Long managerId, String q);
+
     /* 단건 조회: 소유 확인 포함 */
     FacilitiesDto getFacilitiesInfoByManager(Long facilityId, Long managerId);
     FacilitiesDto findByfacilityIdAndManager(Long facilityId, Long managerId);
@@ -39,4 +43,6 @@ public interface IFacilitiesService {
     void attachTemplatesToFacility(Long facilityId, List<Long> templateIds, Long managerId);
 
     void updateFacilityTemplates(Long facilityId, List<Long> removedIds, List<Long> addedIds, Long managerId);
+
+
 }
