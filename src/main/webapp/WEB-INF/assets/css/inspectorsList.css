@@ -34,7 +34,7 @@ body{
 }
 
 /* 페이지 폭 및 공통 카드 */
-.innerContainer{max-width:1412px;margin:24px auto;padding:0 16px}
+.innerContainer{max-width:1412pxA;margin:24px auto;padding:0 16px}
 .boardContainer{
     background:#fff;
     border-radius:30px;
