@@ -9,57 +9,14 @@
 
     <style>
         html, body { height:100%; margin:0; font-family: Arial, sans-serif; }
-
-        /* 레이아웃 */
-        .map-container { display:flex; height:100vh; overflow:hidden; }
-
-        /* 시설목록 사이드바 */
-        .facility-panel {
-            width:350px;
-            background:#fff;
-            border-right:1px solid #ddd;
-            overflow-y:auto;
-            flex-shrink:0;
-        }
-        .facility-header {
-            padding:20px;
-            border-bottom:1px solid #eee;
-            background:#f8f9fa;
-        }
-        .facility-header h2 { margin:0; font-size:18px; color:#333; }
-
-        .facility-list { padding:0; }
-        .facility-item { padding:15px 20px; border-bottom:1px solid #eee; cursor:pointer; transition:background-color .2s; }
-        .facility-item:hover { background:#f5f5f5; }
-        .facility-item.active { background:#e3f2fd; border-left:4px solid #2196f3; }
-        .facility-name { font-weight:bold; font-size:14px; color:#333; margin-bottom:4px; }
-        .facility-address { font-size:12px; color:#666; line-height:1.4; }
-        .facility-links { margin-top:8px; font-size:12px; }
-        .facility-links a { color:#0066cc; text-decoration:none; margin-right:8px; }
-        .facility-links a:hover { text-decoration:underline; }
-
-        /* 지도 */
-        .map-wrap { flex:1; position:relative; height:100vh; }
-        #map { width:100%; height:100%; min-height:400px; }
-
-        /* 정보창 */
-        .iw { padding:8px 10px; font-size:14px; line-height:1.4; background:rgba(255,255,255,.95); max-width:280px; max-height:300px; overflow-y:auto; }
-        .iw a { color:#0066cc; text-decoration:none; }
-        .iw a:hover { text-decoration:underline; }
-
-        .loading { text-align:center; padding:40px 20px; color:#666; }
-
-        @media (max-width:768px) {
-            .map-container { flex-direction:column; }
-            .facility-panel { width:100%; height:200px; border-right:none; border-bottom:1px solid #ddd; }
-            .map-wrap { height:calc(100vh - 200px); }
-        }
     </style>
 
     <!-- 기본 레이아웃 CSS 추가 -->
     <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/map.css'/>" />
+
     <!-- autoload=false 로드 -->
     <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoAppKey}&autoload=false"></script>
 </head>
@@ -91,32 +48,17 @@
     // 전역 변수 선언
     var map;
     var facilityData = [];
-    var markers = [];        // 추가된 부분
-    var infoWindows = [];    // 추가된 부분
+    var markers = [];
+    var overlays = []; // InfoWindow 대신 CustomOverlay 관리
 
     function formatDate(timestamp) {
-        console.log('formatDate 호출됨:', timestamp);
-
         if (!timestamp || timestamp === '—') return '—';
-
-        const date = new Date(Number(timestamp)); // Number()로 명시적 변환
-        console.log('Date 객체:', date);
-
+        const date = new Date(Number(timestamp));
         if (isNaN(date.getTime())) return '—';
-
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-
-        console.log('year:', year, 'month:', month, 'day:', day); // 각 값 확인
-
-        const monthStr = month < 10 ? '0' + month : month.toString();
-        const dayStr = day < 10 ? '0' + day : day.toString();
-
-        const result = year + '.' + monthStr + '.' + dayStr;
-        console.log('포맷 결과:', result);
-
-        return result;
+        const y = date.getFullYear();
+        const m = String(date.getMonth()+1).padStart(2,'0');
+        const d = String(date.getDate()).padStart(2,'0');
+        return y + '.' + m + '.' + d;
     }
 
     function renderSidebar(mode, payload) {
@@ -129,20 +71,11 @@
 
         // mode === 'detail'
         var d = payload || {};
-        console.log('payload 데이터:', d); // 디버깅용
-
         var title = d.name || '시설';
         var addr  = d.address || '';
         var domain = d.domain || '—';
         var zone   = d.zone || '—';
-
-        // 안전한 접근 방식
-        var updatedAt = '—';
-        if (d.updatedAt) {
-            console.log('원본 timestamp:', d.updatedAt);
-            updatedAt = formatDate(d.updatedAt);
-            console.log('포맷된 결과:', updatedAt);
-        }
+        var updatedAt = d.updatedAt ? formatDate(d.updatedAt) : '—';
         var inspectorId   = (typeof d.inspectorId !== 'undefined' && d.inspectorId !== null) ? d.inspectorId : '—';
         var inspectorName = d.inspectorName || '—';
         var inspectorPhone= d.inspectorPhone || '—';
@@ -199,8 +132,6 @@
             var name = f.name ? f.name : '이름없음';
             var addr = f.address ? f.address : '';
             var detailLink = '<c:url value="/facilities/"/>' + f.facilityId;
-            var mapLink = 'https://map.kakao.com/link/map/' + encodeURIComponent(name) + ',' + lat + ',' + lng;
-            var dirLink = 'https://map.kakao.com/link/to/'  + encodeURIComponent(name) + ',' + lat + ',' + lng;
 
             html += ''
                 + '<div class="facility-item" data-index="' + i + '" onclick="selectFacility(' + i + ')">'
@@ -231,7 +162,6 @@
         if (el) el.classList.add('active');
 
         try {
-            // DTO: facilities + inspector_profile 요약 엔드포인트
             var res = await fetch('<c:url value="/api/facilities/"/>' + f.facilityId + '/summary', {
                 credentials: 'same-origin',
                 headers: { 'Accept': 'application/json' }
@@ -239,13 +169,12 @@
             if (!res.ok) throw new Error('요약 API 실패: ' + res.status);
             var summary = await res.json();
 
-            // 사이드바 상세 전환
             renderSidebar('detail', summary);
 
-            // 해당 마커 말풍선도 열어줌(있을 때)
-            if (infoWindows[index]) {
-                infoWindows.forEach(function(iw){ iw && iw.close(); });
-                infoWindows[index].open(map, markers[index]);
+            // 해당 마커의 말풍선 열기
+            if (overlays[index]) {
+                overlays.forEach(function(ov){ ov && ov.setMap(null); });
+                overlays[index].setMap(map);
             }
         } catch (e) {
             console.error(e);
@@ -253,11 +182,23 @@
         }
     }
 
-    // safeRelayout 함수 추가
     function safeRelayout(map) {
         if (map && typeof map.relayout === 'function') {
             map.relayout();
         }
+    }
+
+    // CustomOverlay 생성 유틸
+    function createBalloonOverlay(position, innerHTML, asList) {
+        var container = document.createElement('div');
+        container.className = 'balloon' + (asList ? ' balloon--list' : '');
+        container.innerHTML = innerHTML;
+        return new kakao.maps.CustomOverlay({
+            position: position,
+            content: container,
+            yAnchor: 1,
+            xAnchor: 0.5
+        });
     }
 
     kakao.maps.load(async function () {
@@ -277,19 +218,23 @@
             if (!res.ok) throw new Error('API 실패: ' + res.status);
 
             const data = await res.json();
-            console.log('마커 데이터:', data);
 
             if (!data || data.length === 0) {
                 document.getElementById('facility-list').innerHTML = '<div class="loading">표시할 시설이 없습니다.</div>';
-                new kakao.maps.InfoWindow({ position: map.getCenter(), content: '<div class="iw">표시할 시설이 없습니다.</div>' }).open(map);
+                // 중앙에 말풍선 표시
+                var centerOverlay = createBalloonOverlay(
+                    map.getCenter(),
+                    '<div>표시할 시설이 없습니다.</div>',
+                    false
+                );
+                centerOverlay.setMap(map);
                 return;
             }
 
             facilityData = data;
             renderFacilityList(data);
 
-            // ====== 안전한 위치 그룹화 (숫자 좌표 보관) ======
-            // key: 문자열, value: { lat:Number, lng:Number, facilities:Array<{... , originalIndex:Number}> }
+            // 위치 그룹화
             var locationGroups = new Map();
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
@@ -301,22 +246,17 @@
                 if (!locationGroups.has(key)) locationGroups.set(key, { lat: lat, lng: lng, facilities: [] });
                 locationGroups.get(key).facilities.push(Object.assign({}, item, { originalIndex: i }));
             }
-            console.log('locationGroups size =', locationGroups.size);
 
             var bounds = new kakao.maps.LatLngBounds();
             var locationCount = 0;
 
-            // (선택) 커스텀 마커 이미지
+            // 마커 이미지
             var imgSingle = new kakao.maps.MarkerImage(
                 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
                 new kakao.maps.Size(24, 35),
                 { offset: new kakao.maps.Point(12, 35) }
             );
-            var imgMulti = new kakao.maps.MarkerImage(
-                'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
-                new kakao.maps.Size(24, 35),
-                { offset: new kakao.maps.Point(12, 35) }
-            );
+            var imgMulti = imgSingle;
 
             locationGroups.forEach(function(group){
                 var lat = group.lat, lng = group.lng, facilities = group.facilities;
@@ -331,51 +271,66 @@
                     bounds.extend(pos);
                     locationCount++;
 
-                    // 정보창 HTML (문자열 연결만 사용)
-                    var html = '<div class="iw">';
+                    // 오버레이 내용 구성
+                    var overlay;
                     if (facilities.length === 1) {
                         var f = facilities[0];
                         var name = f.name ? f.name : '이름없음';
+                        var addr = f.address ? f.address : '';
                         var detailLink = '<c:url value="/facilities/"/>' + f.facilityId;
 
-                        html += '<div><b>' + name + '</b></div>'
-                            +  '<div style="color:#666">' + (f.address ? f.address : '') + '</div>'
-                            +  '<div style="margin-top:6px">'
-                            +  '  <a href="' + detailLink + '">상세보기</a> '
-                            +  '</div>';
+                        var html =
+                            '<div><b>' + name + '</b></div>' +
+                            '<div style="color:#666">' + addr + '</div>' +
+                            '<div style="margin-top:6px"><a href="' + detailLink + '">상세보기</a></div>';
+
+                        overlay = createBalloonOverlay(pos, html, false);
+
+                        // 인덱스 매핑
+                        overlays[f.originalIndex] = overlay;
+                        markers[f.originalIndex] = marker;
+
                     } else {
-                        html += '<div style="font-weight:bold; margin-bottom:6px">📍 이 위치의 시설들 (' + facilities.length + '개)</div>';
+                        var listHtml = '<div class="balloon-title">📍 이 위치의 시설들 (' + facilities.length + '개)</div>';
                         for (var j = 0; j < facilities.length; j++) {
                             var ff = facilities[j];
                             var nm = ff.name ? ff.name : '이름없음';
-                            var addr = ff.address ? ff.address : '';
-                            html += '<div style="padding:6px 0; border-top:1px solid #eee; cursor:pointer"'
-                                +  '     onclick="selectFacility(' + ff.originalIndex + ')">'
-                                +  '  <div style="color:#0066cc; font-weight:bold">' + nm + '</div>'
-                                +  '  <div style="color:#666">' + addr + '</div>'
-                                +  '</div>';
+                            var ad = ff.address ? ff.address : '';
+                            listHtml +=
+                                '<div class="balloon-item" data-idx="' + ff.originalIndex + '">' +
+                                '  <div class="name">' + nm + '</div>' +
+                                '  <div class="addr">' + ad + '</div>' +
+                                '</div>';
                         }
+
+                        overlay = createBalloonOverlay(pos, listHtml, true);
+
+                        // 리스트 항목 클릭 → selectFacility 연결
+                        // (content는 DOM이므로 이벤트 위임)
+                        var contentEl = overlay.getContent();
+                        contentEl.addEventListener('click', function(e){
+                            var itemEl = e.target.closest('.balloon-item');
+                            if (!itemEl) return;
+                            var idx = Number(itemEl.getAttribute('data-idx'));
+                            overlays.forEach(function(ov){ ov && ov.setMap(null); });
+                            selectFacility(idx);
+                        });
+
+                        facilities.forEach(function(f){
+                            overlays[f.originalIndex] = overlay;
+                            markers[f.originalIndex] = marker;
+                        });
                     }
 
-                    html += '</div>';
-
-                    var iw = new kakao.maps.InfoWindow({ content: html, removable: true });
-                    facilities.forEach(function(f){
-                        markers[f.originalIndex] = marker;
-                        infoWindows[f.originalIndex] = iw;
-                    });
-
                     kakao.maps.event.addListener(marker, 'click', function () {
-                        infoWindows.forEach(function(x){ x && x.close(); });
-                        iw.open(map, marker);
+                        overlays.forEach(function(ov){ ov && ov.setMap(null); });
+                        overlay.setMap(map);
                     });
 
                 } catch (e) {
-                    console.error('마커 생성 실패:', e, { lat: lat, lng: lng, facilities: facilities });
+                    console.error('마커/오버레이 생성 실패:', e, { lat: lat, lng: lng, facilities: facilities });
                 }
             });
-
-            console.log('마커 생성 완료:', locationCount, '개 위치, 총', data.length, '개 시설');
 
             if (locationCount > 0) {
                 if (locationCount === 1) {
@@ -393,7 +348,14 @@
             console.error('지도 로딩 오류:', err);
             document.getElementById('facility-list').innerHTML =
                 '<div class="loading">오류: 시설 데이터를 불러오지 못했습니다.</div>';
-            new kakao.maps.InfoWindow({ position: map.getCenter(), content: '<div class="iw">오류: 시설 데이터를 불러오지 못했습니다.</div>' }).open(map);
+
+            // 오류도 말풍선으로 안내
+            var errorOverlay = createBalloonOverlay(
+                map.getCenter(),
+                '<div>오류: 시설 데이터를 불러오지 못했습니다.</div>',
+                false
+            );
+            errorOverlay.setMap(map);
         }
     });
 </script>
