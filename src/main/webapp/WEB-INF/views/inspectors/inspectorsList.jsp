@@ -15,7 +15,7 @@
 
 <body>
 <c:set var="nav" value="inspectors" scope="request"/>
-<div class="layout">
+<div class="navigation">
     <%@ include file="../fragments/sidebar.jspf" %>
     <main class="content">
     <div class="container">
@@ -82,8 +82,9 @@
 
                     <span class="circle-btn active" id="pageNumber">${currentPage}</span>
 
-                    <a href="?page=${currentPage + 1}" class="circle-btn next">
-                        <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon"/>
+                    <a href="?page=${currentPage + 1}"
+                       class="circle-btn next ${currentPage == totalPages ? 'disabled' : ''}">
+                       <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon"/>
                     </a>
                 </div>
             </div>
@@ -154,8 +155,6 @@
         </form>
     </div>
 </div>
-
-<!-- JS -->
 <script src="<c:url value='/assets/js/inspectorsList.js'/>"></script>
 </body>
 </html>
