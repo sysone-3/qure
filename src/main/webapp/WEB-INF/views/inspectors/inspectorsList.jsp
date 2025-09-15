@@ -22,10 +22,7 @@
         <div class="innerContainer">
             <!-- 상단 영역 -->
             <div class="topContainer">
-                <div class="boardContainer" style="
-            margin-left: 20px;
-            margin-right: 20px;
-        ">
+                <div class="boardContainer">
                     <div class="statusContainer">
                         <span class="subTitle">작업자 현황</span>
                         <div class="buttonContainer">
@@ -34,7 +31,7 @@
                                 작업자 등록
                             </button>
                             <button type="button" class="delete" id="deleteBtn">
-                                <img src="<c:url value='/assets/images/pencil.svg'/>" alt="+" class="icon" />
+                                <img src="<c:url value='/assets/images/trash.svg'/>" alt="+" class="icon" />
                                 작업자 삭제
                             </button>
                         </div>
@@ -70,25 +67,30 @@
                         </tbody>
                     </table>
                     <div class="pagination">
-                        <a href="<c:out value='?page=${currentPage - 1}'/>"
-                           class="circle-btn prev ${currentPage == 1 ? 'disabled' : ''}">
-                            <img src="<c:url value='/assets/images/left.svg'/>" alt="left" class="icon" />
+                        <!-- 이전 블록 -->
+                        <a href="?page=${startPage - 1}"
+                           class="page-btn ${startPage == 1 ? 'disabled' : ''}">
+                            <img src="<c:url value='/assets/images/left.svg'/>" alt="이전" class="icon" />
                         </a>
 
-                        <span class="circle-btn active" id="pageNumber">${currentPage}</span>
+                        <!-- 페이지 번호 -->
+                        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+                            <c:choose>
+                                <c:when test="${i == currentPage}">
+                                    <span class="page-btn active">${i}</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="?page=${i}" class="page-btn">${i}</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
 
-                        <a href="?page=${currentPage + 1}" class="circle-btn next">
-                            <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon" />
+                        <!-- 다음 블록 -->
+                        <a href="?page=${endPage + 1}"
+                           class="page-btn ${endPage >= totalPages ? 'disabled' : ''}">
+                            <img src="<c:url value='/assets/images/right.svg'/>" alt="다음" class="icon" />
                         </a>
                     </div>
-                    <span class="circle-btn active" id="pageNumber">${currentPage}</span>
-
-                    <a href="?page=${currentPage + 1}"
-                       class="circle-btn next ${currentPage == totalPages ? 'disabled' : ''}">
-                       <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon"/>
-                    </a>
-                </div>
-
                 <div id="inspectorModal" class="modal">
                     <div class="modal-content">
                         <h2>작업자 등록</h2>
@@ -112,7 +114,7 @@
 
                             <div class="form-group">
                                 <label for="domain">소속</label>
-                                <select id="domain" name="domain" required/>
+                                <select id="domain" name="domain" required>
                                 <option value="">소속을 선택하세요</option>
                                 <option value="소방">소방</option>
                                 <option value="순찰">순찰</option>
@@ -133,9 +135,6 @@
                         </form>
                     </div>
                 </div>
-
-
-
             <!-- JS -->
 
 <!-- 삭제 모달 -->
