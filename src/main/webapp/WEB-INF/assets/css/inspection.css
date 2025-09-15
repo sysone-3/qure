@@ -351,3 +351,15 @@ body{
 .pagination a:hover {
     background: #FFF8E7;
 }
+
+.daterangepicker .drp-calendar .calendar-table thead th {
+    background: #fff !important;
+    color: #111 !important;
+    font-weight: normal;
+}
+
+.daterangepicker select.monthselect,
+.daterangepicker select.yearselect {
+    background: #fff !important;
+    color: #111 !important;
+}

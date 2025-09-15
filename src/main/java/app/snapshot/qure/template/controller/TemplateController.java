@@ -102,8 +102,9 @@ public class TemplateController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateAsNewVersion(TemplateUpdateForm form, RedirectAttributes ra) {
-        long newId = templateService.saveAsNewVersion(form);
+    public String updateAsNewVersion(TemplateUpdateForm form, RedirectAttributes ra, HttpSession session) {
+        Long managerId = SessionUtil.getManagerId(session);
+        long newId = templateService.saveAsNewVersion(form, managerId);
         ra.addFlashAttribute("message", "새 버전(" + newId + ")으로 저장되었습니다.");
         return "redirect:/template";
     }
