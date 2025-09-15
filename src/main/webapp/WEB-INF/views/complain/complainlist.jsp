@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="_csrf"        content="${_csrf.token}">
     <meta name="_csrf_header" content="${_csrf.headerName}">
+    <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/complainlist.css'/>" />
     <script defer src="<c:url value='/assets/js/complainlist.js'/>"></script>
 

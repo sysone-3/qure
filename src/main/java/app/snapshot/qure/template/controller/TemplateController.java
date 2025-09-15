@@ -25,12 +25,15 @@ public class TemplateController {
     @Autowired ITemplateService templateService;
     @Autowired IChecklistService checklistService;
 
-    @RequestMapping(value="")
-    public String getAllTemplates(Model model, HttpSession session) {
+    @RequestMapping(value = "")
+    public String getAllTemplates(@RequestParam(value = "domain", required = false) String domain,
+                                  @RequestParam(value = "q",      required = false) String q,
+                                  Model model, HttpSession session) {
         Long managerId = SessionUtil.getManagerId(session);
-        List<Template> list = templateService.getTemplateList(managerId);
+        List<Template> list = templateService.getTemplateListFiltered(managerId, domain, q);
         model.addAttribute("templateList", list);
-
+        model.addAttribute("domain", domain);
+        model.addAttribute("q", q);
         return "template/templateList";
     }
 

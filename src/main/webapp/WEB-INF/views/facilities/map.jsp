@@ -57,7 +57,8 @@
     </style>
 
     <!-- 기본 레이아웃 CSS 추가 -->
-    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
     <!-- autoload=false 로드 -->
     <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoAppKey}&autoload=false"></script>
@@ -68,7 +69,7 @@
 
 <div class="layout">
     <!-- 전역 메뉴 사이드바 -->
-    <%@ include file="../fragments/sidebar.jspf" %>
+    <%@ include file="/WEB-INF/views/fragments/sidebar.jspf" %>
 
     <!-- 메인 콘텐츠 -->
     <main class="content">

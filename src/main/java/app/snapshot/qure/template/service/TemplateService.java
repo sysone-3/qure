@@ -45,6 +45,11 @@ public class TemplateService implements ITemplateService {
     }
 
     @Override
+    public List<Template> getTemplateListFiltered(Long managerId, String domain, String q) {
+        return templateRepository.getTemplateListFiltered(managerId, domain, q);
+    }
+
+    @Override
     public long insertTemplate(TemplateCreateForm form) {
         Template template = new Template();
         template.setDomain(DomainType.valueOf(form.getDomain()));

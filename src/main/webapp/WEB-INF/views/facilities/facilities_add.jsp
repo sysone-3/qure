@@ -7,7 +7,7 @@
     <title>설비 추가</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 기본 레이아웃 CSS 추가 -->
-    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
     <!-- facilities 전용 CSS만 사용 -->
     <link rel="stylesheet" href="<c:url value='/assets/css/facilities_add.css'/>">

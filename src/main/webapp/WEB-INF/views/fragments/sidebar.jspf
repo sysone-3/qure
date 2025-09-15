@@ -1,40 +1,104 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<aside class="sidebar app-nav">
-    <a href="<c:url value='/home' context='/'/>"
-       class="nav-btn ${nav=='home'?'active':''}" aria-label="대시보드"
-       <c:if test="${nav=='home'}">aria-current="page"</c:if>>
-        <img src="<c:url value='/assets/images/LOGO.svg'/>" alt="대시보드" class="nav-img">
+<aside class="app-nav" aria-label="주 메뉴">
+    <!-- 로고 -->
+    <a href="<c:url value='/qure/dashboard' context='/'/>"
+       class="nav-btn brand ${nav=='dashboard'?'active':''}"
+       aria-label="대시보드"
+       <c:if test="${nav=='dashboard'}">aria-current="page"</c:if>>
+        <img src="<c:url value='/assets/images/nav-logo.svg'/>" alt="로고" class="nav-icon">
+        <span class="nav-text">홈</span>
     </a>
-    <a href="<c:url value='/facilities' context='/'/>"
-       class="nav-btn ${nav=='facilities'?'active':''}" aria-label="설비"
-       <c:if test="${nav=='facilities'}">aria-current="page"</c:if>>
-        <img src="<c:url value='/assets/images/ICON_1.svg'/>" alt="설비" class="nav-img">
-    </a>
-    <a href="<c:url value='/inspections' context='/'/>"
-       class="nav-btn ${nav=='inspections'?'active':''}" aria-label="점검표"
-       <c:if test="${nav=='inspections'}">aria-current="page"</c:if>>
-        <img src="<c:url value='/assets/images/ICON_2.svg'/>" alt="점검표" class="nav-img">
-    </a>
-    <a href="<c:url value='/inspectors/inspectorsList?page=1'/>"
-       class="nav-btn ${nav=='inspectors'?'active':''}" aria-label="작업자"
-       <c:if test="${nav=='inspectors'}">aria-current="page"</c:if>>
-        <img src="<c:url value='/assets/images/ICON_3.svg'/>" alt="작업자" class="nav-img">
-    </a>
-    <a href="<c:url value='/admin/complain' context='/'/>"
-       class="nav-btn ${nav=='complain'?'active':''}" aria-label="민원"
-       <c:if test="${nav=='complain'}">aria-current="page"</c:if>>
-        <img src="<c:url value='/assets/images/ICON_4.svg'/>" alt="민원" class="nav-img">
-    </a>
-    <a href="<c:url value='/map' context='/'/>"
-       class="nav-btn ${nav=='map'?'active':''}" aria-label="지도"
-       <c:if test="${nav=='map'}">aria-current="page"</c:if>>
-        <img src="<c:url value='/assets/images/ICON_5.svg'/>" alt="지도" class="nav-img">
-    </a>
+
+    <!-- 메뉴 그룹 -->
+    <div class="nav-group">
+        <!-- 설비 -->
+        <a href="<c:url value='/qure/facilities' context='/'/>"
+           class="nav-btn ${nav=='facilities'?'active':''}"
+           aria-label="설비"
+           <c:if test="${nav=='facilities'}">aria-current="page"</c:if>>
+            <c:choose>
+                <c:when test="${nav=='facilities'}">
+                    <img src="<c:url value='/assets/images/nav-facility-active.svg'/>" alt="설비" class="nav-icon">
+                </c:when>
+                <c:otherwise>
+                    <img src="<c:url value='/assets/images/nav-facility.svg'/>" alt="설비" class="nav-icon">
+                </c:otherwise>
+            </c:choose>
+            <span class="nav-text">설비</span>
+        </a>
+
+        <!-- 점검표 -->
+        <a href="<c:url value='/qure/template' context='/'/>"
+           class="nav-btn ${nav=='template'?'active':''}"
+           aria-label="점검표"
+           <c:if test="${nav=='template'}">aria-current="page"</c:if>>
+            <c:choose>
+                <c:when test="${nav=='template'}">
+                    <img src="<c:url value='/assets/images/nav-template-active.svg'/>" alt="점검표" class="nav-icon">
+                </c:when>
+                <c:otherwise>
+                    <img src="<c:url value='/assets/images/nav-template.svg'/>" alt="점검표" class="nav-icon">
+                </c:otherwise>
+            </c:choose>
+            <span class="nav-text">점검표</span>
+        </a>
+
+        <!-- 작업자 -->
+        <a href="<c:url value='/inspectors/inspectorsList?page=1'/>"
+           class="nav-btn ${nav=='inspectors'?'active':''}"
+           aria-label="작업자"
+           <c:if test="${nav=='inspectors'}">aria-current="page"</c:if>>
+            <c:choose>
+                <c:when test="${nav=='inspectors'}">
+                    <img src="<c:url value='/assets/images/nav-inspector-active.svg'/>" alt="작업자" class="nav-icon">
+                </c:when>
+                <c:otherwise>
+                    <img src="<c:url value='/assets/images/nav-inspector.svg'/>" alt="작업자" class="nav-icon">
+                </c:otherwise>
+            </c:choose>
+            <span class="nav-text">작업자</span>
+        </a>
+
+        <!-- 민원 -->
+        <a href="<c:url value='/qure/admin/complain' context='/'/>"
+           class="nav-btn ${nav=='complain'?'active':''}"
+           aria-label="민원"
+           <c:if test="${nav=='complain'}">aria-current="page"</c:if>>
+            <c:choose>
+                <c:when test="${nav=='complain'}">
+                    <img src="<c:url value='/assets/images/nav-report-active.svg'/>" alt="민원" class="nav-icon">
+                </c:when>
+                <c:otherwise>
+                    <img src="<c:url value='/assets/images/nav-report.svg'/>" alt="민원" class="nav-icon">
+                </c:otherwise>
+            </c:choose>
+            <span class="nav-text">민원</span>
+        </a>
+
+        <!-- 지도 -->
+        <a href="<c:url value='/qure/map' context='/'/>"
+           class="nav-btn ${nav=='map'?'active':''}"
+           aria-label="지도"
+           <c:if test="${nav=='map'}">aria-current="page"</c:if>>
+            <c:choose>
+                <c:when test="${nav=='map'}">
+                    <img src="<c:url value='/assets/images/nav-map-active.svg'/>" alt="지도" class="nav-icon">
+                </c:when>
+                <c:otherwise>
+                    <img src="<c:url value='/assets/images/nav-map.svg'/>" alt="지도" class="nav-icon">
+                </c:otherwise>
+            </c:choose>
+            <span class="nav-text">지도</span>
+        </a>
+    </div>
 
     <div class="spacer"></div>
 
+    <!-- 로그아웃 -->
     <a href="<c:url value='/logout' context='/'/>" class="nav-btn" aria-label="로그아웃">
-        <img src="<c:url value='/assets/images/ICON_6.svg'/>" alt="로그아웃" class="nav-img">
+        <img src="<c:url value='/assets/images/nav-logout.svg'/>" alt="로그아웃" class="nav-icon">
+        <span class="nav-text">로그아웃</span>
     </a>
 </aside>
+

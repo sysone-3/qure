@@ -7,11 +7,11 @@
     <meta charset="UTF-8">
     <title>설비 목록</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 기본 레이아웃 CSS 추가 -->
-    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
     <!-- 설비 페이지 전용 CSS -->
     <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
+    <!-- 기본 레이아웃 CSS 추가 -->
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
 </head>
 <body>
 <!-- nav 변수 설정 (사이드바에서 '설비' 메뉴 활성화) -->

@@ -1,9 +1,21 @@
+html,body{height:100%}
+*{box-sizing:border-box}
 body {
+    margin: 0;
     background: #FFFAE6;
     flex-direction: column;
     font-family: 'Pretendard';
     display: flex;
     overflow-y: auto;
+}
+.container{
+    max-width:1180px;
+    margin:40px auto;
+    padding: 0 16px 40px;
+    font-family: 'Pretendard', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
 
 .innerContainer {
