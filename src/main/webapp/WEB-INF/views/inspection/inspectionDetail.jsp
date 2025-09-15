@@ -7,9 +7,15 @@
     <meta charset="UTF-8"/>
     <title>점검 결과</title>
     <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>"/>
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/inspectionDetail.css'/>"/>
 </head>
 <body>
+<c:set var="nav" value="inspectors" scope="request"/>
+<div class="layout">
+<%@ include file="../fragments/sidebar.jspf" %>
+<main class="content">
 <div class="card">
     <h3 style="font-size:23px;font-weight:600">점검 결과</h3>
 
@@ -64,5 +70,6 @@
         </div>
     </div>
 </div>
+</main>
 </body>
 </html>

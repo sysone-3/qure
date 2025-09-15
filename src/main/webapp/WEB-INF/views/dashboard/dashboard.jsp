@@ -9,12 +9,22 @@
     <meta charset="UTF-8"/>
     <title>대시보드</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>"/>
     <link rel="stylesheet" href="<c:url value='/assets/css/dashboard.css?after'/>"/>
+
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<div class="container">
+<body>
+    <c:set var="nav" value="dashboard" scope="request"/>
+    <div class="layout">
+    <%@ include file="/WEB-INF/views/fragments/sidebar.jspf" %>
+    <main class="content">
+    <div class="container">
     <!-- 상단 3열 -->
     <div class="grid">
         <!-- 인사 카드 -->
@@ -134,6 +144,8 @@
             </tbody>
         </table>
     </section>
+</div>
+</main>
 </div>
 
 <script>

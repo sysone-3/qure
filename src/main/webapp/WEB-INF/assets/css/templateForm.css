@@ -252,7 +252,7 @@ html, body {
     padding: 0 42px 0 16px;                /* 우측 화살표 여백 확보 */
     border: 1px solid #eaeaea;             /* 더 옅은 보더 */
     border-radius: 12px;                   /* 동일 둥근 모서리 */
-    background: #fff url("/assets/images/arrow-down.svg")
+    background: #fff url("../images/arrow-down.svg")
     no-repeat right 12px center / 16px 16px;  /* 화살표 */
     font-size: 16px;
     font-family: Pretendard, sans-serif;
@@ -415,12 +415,26 @@ html, body {
 .form::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 8px; }
 .form::-webkit-scrollbar-track { background: transparent; }
 
+
 /* === 마스크 아이콘 (currentColor 사용) === */
-.icon { display: inline-block; width: 24px; height: 24px; background-color: currentColor; }
-.icon-check  { -webkit-mask: url("/assets/images/checklist.svg") no-repeat center/contain; mask: url("/assets/images/checklist.svg") no-repeat center/contain; }
-.icon-text   { -webkit-mask: url("/assets/images/text.svg") no-repeat center/contain;     mask: url("/assets/images/text.svg") no-repeat center/contain; }
-.icon-number { -webkit-mask: url("/assets/images/number.svg") no-repeat center/contain;   mask: url("/assets/images/number.svg") no-repeat center/contain; }
-.icon-image  { -webkit-mask: url("/assets/images/image.svg") no-repeat center/contain;    mask: url("/assets/images/image.svg") no-repeat center/contain; }
+.icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: currentColor;
+
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+}
+.icon-check  { mask-image: url("../images/checklist.svg");  -webkit-mask-image: url("../images/checklist.svg"); }
+.icon-text   { mask-image: url("../images/text.svg");       -webkit-mask-image: url("../images/text.svg"); }
+.icon-number { mask-image: url("../images/number.svg");     -webkit-mask-image: url("../images/number.svg"); }
+.icon-image  { mask-image: url("../images/image.svg");      -webkit-mask-image: url("../images/image.svg"); }
 
 .btn-inline {
     width: auto;
