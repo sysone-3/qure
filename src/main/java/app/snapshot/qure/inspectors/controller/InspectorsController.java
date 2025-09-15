@@ -1,6 +1,8 @@
 package app.snapshot.qure.inspectors.controller;
 import app.snapshot.qure.inspectors.dto.InspectorDTO;
 import app.snapshot.qure.inspectors.service.InspectorsService;
+import app.snapshot.qure.login.util.SessionUtil;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +21,16 @@ public class InspectorsController {
 
     @GetMapping("/inspectors/inspectorsList")
     public String showInspectorList(@RequestParam(defaultValue = "1") int page,
-                                    Model model) {
+                                    Model model, HttpSession session) {
         int size = 15; // 한 페이지 데이터 수
-        List<InspectorDTO> inspectors = inspectorsService.getPagedInspectors(page, size);
-        int totalCount = inspectorsService.getTotalCount();
+        Long managersId = SessionUtil.getManagerId(session);
+        System.out.println("세션 managersId: " + managersId);
+        if (managersId == null) {
+            return "redirect:/dashboard";
+        }
+
+        List<InspectorDTO> inspectors = inspectorsService.getPagedInspectors(page, size,managersId);
+        int totalCount = inspectorsService.getTotalCount(Math.toIntExact(managersId));
         int totalPages = (int) Math.ceil((double) totalCount / size);
         int pageBlock = 3;
         int currentBlock = (int) Math.ceil((double) page / pageBlock);

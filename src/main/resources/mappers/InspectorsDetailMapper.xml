@@ -6,13 +6,15 @@
 <mapper namespace="app.snapshot.qure.inspectors.repository.InspectorsDetailMapper">
 
     <select id="getInspectorDetail" resultType="app.snapshot.qure.inspectors.dto.InspectorDetailDTO">
-        SELECT ip.inspector_id,
-        ip.name AS name,      -- DTO의 name 필드랑 맞춤
-        ip.phone,
-        f.domain,
-        f.name AS facility
+        SELECT
+        ip.inspector_id        AS inspectorId,
+        ip.name                AS inspectorName,
+        ip.phone               AS phone,
+        f.domain               AS domain,
+        f.name                 AS facility
         FROM inspector_profile ip
-        JOIN facilities f ON ip.inspector_id = f.inspector_id
+        LEFT JOIN facilities f
+        ON ip.inspector_id = f.inspector_id
         WHERE ip.inspector_id = #{inspectorId}
     </select>
 

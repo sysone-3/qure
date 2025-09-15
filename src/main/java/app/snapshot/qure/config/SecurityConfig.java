@@ -54,9 +54,8 @@ public class SecurityConfig {
 
                 // 세션 관리 설정
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 )
-
                 .oauth2Login(oauth -> oauth
                         .loginPage("/")
                         .successHandler((request, response, authentication) -> {

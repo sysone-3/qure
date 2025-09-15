@@ -6,8 +6,8 @@
 <mapper namespace="app.snapshot.qure.inspectors.repository.InspectorsRegisterMapper">
 
     <insert id="insertInspector" parameterType="app.snapshot.qure.inspectors.dto.InspectorRegisterDTO">
-        INSERT INTO inspector_profile (inspector_id, name, phone)
-        VALUES (inspector_seq.NEXTVAL, #{name}, #{phone})
+        INSERT INTO inspector_profile (inspector_id, name, phone, manager_id)
+        VALUES (inspector_seq.NEXTVAL, #{name}, #{phone}, #{managerId})
     </insert>
 
     <select id="getLastInsertedId" resultType="int">
