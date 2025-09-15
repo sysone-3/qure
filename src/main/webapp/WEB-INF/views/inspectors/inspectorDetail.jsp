@@ -19,15 +19,25 @@
         </div>
      <div class="boardContainer">
          <div class="infoContainer">
-             <h3 class="sectionTitle">개인 정보</h3>
-             <div class="infoRow">
+            <h3 class="sectionTitle">
+                <img src="<c:url value='/assets/images/user.svg'/>" alt="User Icon" class="sectionIcon" />
+                개인 정보
+           </h3>
+           <div class="infoRow">
                  <span class="infoLabel">이름</span>
                  <span class="infoValue">${inspector.name}</span>
-             </div>
-             <div class="infoRow">
+           </div>
+           <div class="infoRow">
                  <span class="infoLabel">연락처</span>
                  <span class="infoValue">${inspector.phone}</span>
-             </div>
+           </div>
+         </div>
+         <div class="infoContainer">
+              <h3 class="sectionTitle">
+                  <img src="<c:url value='/assets/images/community.svg'/>" alt="People Icon" class="sectionIcon" />
+                  소속
+              </h3>
+
              <div class="infoRow">
                  <span class="infoLabel">담당 구역</span>
                  <div class="infoList">

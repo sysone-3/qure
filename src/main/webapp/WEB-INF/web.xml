@@ -84,7 +84,6 @@
     <servlet-name>jsp</servlet-name>
     <url-pattern>*.jsp</url-pattern>
   </servlet-mapping>
-  <!-- TODO: 배포 이후 운영 환경에서는 삭제 -->
 
     <jsp-config>
         <jsp-property-group>
