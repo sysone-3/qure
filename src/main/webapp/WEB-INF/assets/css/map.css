@@ -51,6 +51,7 @@
     border:1px solid #eee;
 }
 .balloon * {
+    width:200px;
     white-space: normal;          /* 한 줄 고정 방지 */
     word-break: break-word;       /* 긴 단어 중간에서도 줄바꿈 */
     overflow-wrap: anywhere;      /* 브라우저가 어디서든 줄바꿈 허용 */
