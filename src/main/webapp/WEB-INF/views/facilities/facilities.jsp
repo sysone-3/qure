@@ -8,10 +8,10 @@
     <title>설비 목록</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 설비 페이지 전용 CSS -->
-    <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
     <!-- 기본 레이아웃 CSS 추가 -->
     <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
     <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/facilities.css'/>" />
 </head>
 <body>
 <!-- nav 변수 설정 (사이드바에서 '설비' 메뉴 활성화) -->
@@ -27,17 +27,20 @@
             <!-- 검색/필터 -->
             <div class="card">
                 <form class="toolbar" method="get" action="<c:url value='/facilities'/>">
-                    <div class="search">
-                        <!-- 돋보기 -->
-                        <svg class="glass" viewBox="0 0 24 24" fill="none">
-                            <path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                        </svg>
-                        <input type="text" name="q" placeholder="검색: 시설명/도메인" value="${param.q}">
-                    </div>
-                    <button type="submit" class="btn">검색</button>
-                    <!-- 상단 우측 설비 추가 -->
-                    <div class="top-actions">
-                        <a class="btn btn-brand" href="<c:url value='/facilities/new'/>">설비 추가</a>
+                    <h3 style="font-size:23px;font-weight:600">설비 목록</h3>
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex: 0.5">
+                        <div class="search">
+                            <!-- 돋보기 -->
+                            <svg class="glass" viewBox="0 0 24 24" fill="none">
+                                <path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                            </svg>
+                            <input type="text" name="q" placeholder="검색: 시설명/도메인" value="${param.q}">
+                        </div>
+                        <button type="submit" class="btn-search">검색</button>
+                        <!-- 상단 우측 설비 추가 -->
+                        <div class="top-actions">
+                            <a class="btn btn-brand btn-add" href="<c:url value='/facilities/new'/>">설비 추가</a>
+                        </div>
                     </div>
                 </form>
 

@@ -9,8 +9,8 @@ public class SessionUtil {
     public static final String KAKAO_NAME = "KAKAO_NAME";
 
     // 세션에 매니저 정보 저장
-    public static void setManagerSession(HttpSession session, Long managerId, String email, String name) {
-        session.setAttribute(LOGIN_MANAGER_ID, managerId);
+    public static void setManagerSession(HttpSession session, Long managersId, String email, String name) {
+        session.setAttribute(LOGIN_MANAGER_ID, managersId);
         session.setAttribute(KAKAO_EMAIL, email);
         session.setAttribute(KAKAO_NAME, name);
     }

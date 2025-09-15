@@ -1,7 +1,10 @@
 package app.snapshot.qure.mobile.repository;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
+
 import app.snapshot.qure.checklist.model.ChecklistType;
 import app.snapshot.qure.mobile.dto.ChecklistItemDto;
 import app.snapshot.qure.mobile.dto.ChecklistTemplateDto;
@@ -45,4 +48,8 @@ public interface MobileMapper {
         @Param("cycle") int cycle,
         @Param("cycleUnit") String cycleUnit
     );
+    
+    Map<String,Object> selectFacilityLatLngByTagId(@Param("tagId") int tagId); // ★추가
+
+
 }

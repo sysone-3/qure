@@ -1,5 +1,5 @@
 :root{
-    --bg:#f7f7f7; --card:#fff; --muted:#5C5C5C; --ring:#ffd966; --track:#e5e7eb;
+    --bg:#f7f7f7; --card:#fff; --muted:#5C5C5C; --ring: #f3f3f3; --track:#e5e7eb;
     --ok:#10b981; --accent:#111; --warn:#f59e0b; --danger:#ef4444;
     --shadow:0 8px 24px rgba(0,0,0,.06);
     --radius:18px;
