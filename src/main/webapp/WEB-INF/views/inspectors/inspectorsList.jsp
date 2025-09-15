@@ -8,82 +8,88 @@
     <title>점검자 리스트</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<c:url value='/assets/css/inspectorsList.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/assets/css/layout.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>"/>
     <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
 </head>
+
 <body>
 <c:set var="nav" value="inspectors" scope="request"/>
-
 <div class="layout">
     <%@ include file="../fragments/sidebar.jspf" %>
-
-    <div class="innerContainer">
-        <!-- 상단 영역 -->
-        <div class="topContainer">
-            <span class="title">작업자</span>
-            <div class="statusContainer">
-                <span class="subTitle">현황</span>
-                <div class="buttonContainer">
-                    <button class="register">
-                        <img src="<c:url value='/assets/images/plus.svg'/>" alt="+" class="icon" />
-                        작업자 등록
-                    </button>
-                    <button type="button" class="delete" id="deleteBtn">
-                        <img src="<c:url value='/assets/images/pencil.svg'/>" alt="+" class="icon" />
-                        작업자 삭제
-                    </button>
+    <main class="content">
+    <div class="container">
+        <div class="innerContainer">
+            <!-- 상단 영역 -->
+            <div class="topContainer">
+                <span class="title">작업자</span>
+                <div class="statusContainer">
+                    <span class="subTitle">현황</span>
+                    <div class="buttonContainer">
+                        <button class="register">
+                            <img src="<c:url value='/assets/images/plus.svg'/>" alt="+" class="icon"/>
+                            작업자 등록
+                        </button>
+                        <button type="button" class="delete" id="deleteBtn">
+                            <img src="<c:url value='/assets/images/pencil.svg'/>" alt="+" class="icon"/>
+                            작업자 삭제
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 목록 영역 -->
-        <div class="boardContainer">
-            <span class="totalTitle">전체</span>
-            <span class="highlight">${totalCount}명</span>
+            <!-- 목록 영역 -->
+            <div class="boardContainer">
+                <span class="totalTitle">전체</span>
+                <span class="highlight">${totalCount}명</span>
 
-            <table class="inspectorTable">
-                <thead>
+                <table class="inspectorTable">
+                    <thead>
                     <tr>
                         <th>아이디</th>
                         <th>이름</th>
                         <th>연락처</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <c:forEach var="inspector" items="${inspectors}">
                         <tr>
                             <td>
                                 <label class="checkbox-cell">
-                                    <input type="checkbox" name="selectedIds" value="${inspector.inspectorId}" />
+                                    <input type="checkbox" name="selectedIds" value="${inspector.inspectorId}"/>
                                     <span>${inspector.inspectorId}</span>
                                 </label>
                             </td>
-                            <td onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'" style="cursor:pointer;">
-                                ${inspector.name}
+                            <td onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'"
+                                style="cursor:pointer;">
+                                    ${inspector.name}
                             </td>
-                            <td onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'" style="cursor:pointer;">
-                                ${inspector.phone}
+                            <td onclick="location.href='${pageContext.request.contextPath}/inspectors/detail/${inspector.inspectorId}'"
+                                style="cursor:pointer;">
+                                    ${inspector.phone}
                             </td>
                         </tr>
                     </c:forEach>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
-            <!-- 페이지네이션 -->
-            <div class="pagination">
-                <a href="<c:out value='?page=${currentPage - 1}'/>"
-                   class="circle-btn prev ${currentPage == 1 ? 'disabled' : ''}">
-                    <img src="<c:url value='/assets/images/left.svg'/>" alt="left" class="icon" />
-                </a>
+                <!-- 페이지네이션 -->
+                <div class="pagination">
+                    <a href="<c:out value='?page=${currentPage - 1}'/>"
+                       class="circle-btn prev ${currentPage == 1 ? 'disabled' : ''}">
+                        <img src="<c:url value='/assets/images/left.svg'/>" alt="left" class="icon"/>
+                    </a>
 
-                <span class="circle-btn active" id="pageNumber">${currentPage}</span>
+                    <span class="circle-btn active" id="pageNumber">${currentPage}</span>
 
-                <a href="?page=${currentPage + 1}" class="circle-btn next">
-                    <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon" />
-                </a>
+                    <a href="?page=${currentPage + 1}" class="circle-btn next">
+                        <img src="<c:url value='/assets/images/right.svg'/>" alt="right" class="icon"/>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+    </main>
 </div>
 
 <!-- 작업자 등록 모달 -->

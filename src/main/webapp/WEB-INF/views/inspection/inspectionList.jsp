@@ -16,9 +16,15 @@
         <script type="text/javascript"
                 src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <link rel="stylesheet" href="<c:url value='/assets/css/reset.css'/>"/>
+        <link rel="stylesheet" href="<c:url value='/assets/css/navigation.css'/>" />
+        <link rel="stylesheet" href="<c:url value='/assets/css/components.css'/>" />
         <link rel="stylesheet" href="<c:url value='/assets/css/inspection.css?after'/>"/>
     </head>
     <body>
+        <c:set var="nav" value="dashboard" scope="request"/>
+        <div class="layout">
+        <%@ include file="/WEB-INF/views/fragments/sidebar.jspf" %>
+        <main class="content">
         <div class="container">
             <section class="card card-table">
                 <div class="header">
@@ -132,6 +138,8 @@
                     </div>
                 </div>
             </section>
+        </div>
+        </main>
         </div>
         <script>
             $(document).ready(function () {

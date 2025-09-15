@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Map;
 
@@ -30,7 +31,7 @@ import java.util.Map;
 public class SecurityConfig {
 
     private final KakaoOAuth2UserService kakaoOAuth2UserService;
-    private final ManagerService managerService;   // ✅ ManagerService 주입
+    private final ManagerService managerService;
 
     @Value("${kakao.client-id}")
     private String kakaoClientId;
@@ -38,7 +39,6 @@ public class SecurityConfig {
     @Value("${kakao.client-secret}")
     private String kakaoClientSecret;
 
-    // ✅ 생성자에서 두 서비스 모두 주입
     public SecurityConfig(KakaoOAuth2UserService kakaoOAuth2UserService,
                           ManagerService managerService) {
         this.kakaoOAuth2UserService = kakaoOAuth2UserService;
@@ -49,9 +49,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                AntPathRequestMatcher.antMatcher("/"),
+                                AntPathRequestMatcher.antMatcher("/assets/**"),
+                                AntPathRequestMatcher.antMatcher("/css/**"),
+                                AntPathRequestMatcher.antMatcher("/js/**"),
+                                AntPathRequestMatcher.antMatcher("/images/**"),
+                                AntPathRequestMatcher.antMatcher("/webjars/**"),
+                                AntPathRequestMatcher.antMatcher("/favicon.*"),
+                                AntPathRequestMatcher.antMatcher("/oauth2/**"),
+                                AntPathRequestMatcher.antMatcher("/login/oauth2/**"),
+                                AntPathRequestMatcher.antMatcher("/error")
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable())
 
                 // 세션 관리 설정
                 .sessionManagement(session -> session

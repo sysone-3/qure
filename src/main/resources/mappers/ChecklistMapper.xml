@@ -28,6 +28,4 @@
         VALUES
             (CHECKLIST_ITEMS_SEQ.NEXTVAL, #{orderNo}, #{label}, #{type}, 'Y', NULL, NULL, #{templateId})
     </insert>
-
-
 </mapper>
