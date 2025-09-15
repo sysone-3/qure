@@ -120,6 +120,62 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
+                <!-- 페이지네이션 UI 추가 -->
+                <c:if test="${totalPages > 1}">
+                    <nav class="pagination">
+                        <!-- 처음 / 이전 -->
+                        <a class="page-link ${page == 1 ? 'disabled' : ''}"
+                           href="<c:url value='/facilities'>
+                                    <c:param name='page' value='1'/>
+                                    <c:if test='${not empty param.q}'>
+                                        <c:param name='q' value='${param.q}'/>
+                                    </c:if>
+                                 </c:url>">« 처음</a>
+
+                        <a class="page-link ${page == 1 ? 'disabled' : ''}"
+                           href="<c:url value='/facilities'>
+                                    <c:param name='page' value='${page-1}'/>
+                                    <c:if test='${not empty param.q}'>
+                                        <c:param name='q' value='${param.q}'/>
+                                    </c:if>
+                                 </c:url>">‹ 이전</a>
+
+                        <!-- 가운데 숫자 -->
+                        <c:set var="start" value="${page - 2 < 1 ? 1 : page - 2}"/>
+                        <c:set var="end" value="${start + 4}"/>
+                        <c:if test="${end > totalPages}">
+                            <c:set var="end" value="${totalPages}"/>
+                            <c:set var="start" value="${end - 4 < 1 ? 1 : end - 4}"/>
+                        </c:if>
+
+                        <c:forEach var="p" begin="${start}" end="${end}">
+                            <a class="page-link ${p == page ? 'active' : ''}"
+                               href="<c:url value='/facilities'>
+                                        <c:param name='page' value='${p}'/>
+                                        <c:if test='${not empty param.q}'>
+                                            <c:param name='q' value='${param.q}'/>
+                                        </c:if>
+                                     </c:url>">${p}</a>
+                        </c:forEach>
+
+                        <!-- 다음 / 마지막 -->
+                        <a class="page-link ${page == totalPages ? 'disabled' : ''}"
+                           href="<c:url value='/facilities'>
+                                    <c:param name='page' value='${page+1}'/>
+                                    <c:if test='${not empty param.q}'>
+                                        <c:param name='q' value='${param.q}'/>
+                                    </c:if>
+                                 </c:url>">다음 ›</a>
+
+                        <a class="page-link ${page == totalPages ? 'disabled' : ''}"
+                           href="<c:url value='/facilities'>
+                                    <c:param name='page' value='${totalPages}'/>
+                                    <c:if test='${not empty param.q}'>
+                                        <c:param name='q' value='${param.q}'/>
+                                    </c:if>
+                                 </c:url>">마지막 »</a>
+                    </nav>
+                </c:if>
             </div>
         </div>
     </main>

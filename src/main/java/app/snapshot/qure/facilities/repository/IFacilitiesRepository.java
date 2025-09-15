@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface IFacilitiesRepository {
@@ -19,6 +20,9 @@ public interface IFacilitiesRepository {
 
     FacilitiesDto getFacilitiesInfoByManager(@Param("facilityId") Long facilityId,
                                              @Param("managerId") Long managerId);
+
+    List<FacilitiesDto> findFacilitiesPaged(Map<String, Object> params);
+    int countFacilities(Map<String, Object> params);
 
     Long insertFacilitiesByManager(@Param("f") FacilitiesDto f,
                                   @Param("managerId") Long managerId);

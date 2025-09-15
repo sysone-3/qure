@@ -31,7 +31,7 @@
 <body>
 <div class="header">
     <h3>점검표 선택</h3>
-    <button type="button" onclick="openCreate()">새로 만들기</button>
+    <button type="button" class="select-btn" onclick="openCreate()">새로 만들기</button>
 </div>
 
 <div class="list">
@@ -80,10 +80,16 @@
     }
 
     function openCreate() {
-        const returnUrl = encodeURIComponent("<c:url value='/template/select?popup=true'/>");
+        // JSP에서 컨텍스트 경로 주입
+        var ctx = '${pageContext.request.contextPath}'; // "/qure"
+        var path = window.location.pathname;            // "/qure/template/select"
+        if (path.startsWith(ctx)) path = path.substring(ctx.length); // "/template/select"
+        var q = window.location.search || '';           // "?popup=true"
+
+        const returnUrl = encodeURIComponent(path + q); // "/template/select?popup=true"
         const url = "<c:url value='/template/insert'/>?popup=true&returnUrl=" + returnUrl;
-        window.open(url, "templateCreatePop",
-            "width=840,height=700,scrollbars=yes,resizable=yes");
+
+        window.location.href = url;
     }
 </script>
 </body>

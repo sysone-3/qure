@@ -1,9 +1,7 @@
 package app.snapshot.qure.inspectors.service;
 
 import app.snapshot.qure.inspectors.dto.InspectorRegisterDTO;
-import app.snapshot.qure.facilities.dto.FacilityRegisterDTO;
 import app.snapshot.qure.inspectors.repository.InspectorsRegisterMapper;
-import app.snapshot.qure.facilities.repository.FacilitiesRegisterMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,24 +11,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class InspectorRegisterService {
 
     private final InspectorsRegisterMapper inspectorsRegisterMapper;
-    private final FacilitiesRegisterMapper facilitiesRegisterMapper;
 
+    /**
+     * 점검자 등록
+     * - 이름, 전화번호로 중복 체크
+     * - 없으면 새로 등록, 있으면 무시
+     */
     @Transactional
-    public void registerInspectorWithFacility(InspectorRegisterDTO inspectorDto, FacilityRegisterDTO facilityDto) {
-        // 1. 이미 존재하는 작업자인지 확인
-        Integer existingId = inspectorsRegisterMapper.findInspectorIdByNameAndPhone(inspectorDto.getName(), inspectorDto.getPhone());
+    public void registerInspector(InspectorRegisterDTO inspectorDto) {
+        // 이미 존재하는 작업자인지 확인
+        Integer existingId = inspectorsRegisterMapper
+                .findInspectorIdByNameAndPhone(inspectorDto.getName(), inspectorDto.getPhone());
 
-        int inspectorId;
         if (existingId != null) {
-            inspectorId = existingId; // 기존 inspector 재사용
-        } else {
-            inspectorsRegisterMapper.insertInspector(inspectorDto);
-            inspectorId = inspectorsRegisterMapper.getLastInsertedId();
+            System.out.println("이미 존재하는 점검자 → id=" + existingId);
+            return;
         }
 
-        // 2. 설비 등록
-        facilityDto.setInspectorId(inspectorId);
-        facilitiesRegisterMapper.insertFacility(facilityDto);
+        inspectorsRegisterMapper.insertInspector(inspectorDto);
+        int newId = inspectorsRegisterMapper.getLastInsertedId();
+        System.out.println("새 점검자 등록 완료 → id=" + newId);
     }
-
 }

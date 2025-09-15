@@ -7,4 +7,5 @@ public class InspectorRegisterDTO {
     private Integer inspectorId;
     private String name;
     private String phone;
+    private Long managerId;
 }
