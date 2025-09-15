@@ -12,6 +12,8 @@ public class ChecklistSubmitForm {
     private String templateId;
     private String tagId;
     private String nonce;
+    private Double submitLat;   // 위도 추가
+    private Double submitLng;   // 경도 추가
     private List<ResultRow> results;
     
     @Data
