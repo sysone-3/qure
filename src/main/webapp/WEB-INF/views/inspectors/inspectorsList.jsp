@@ -95,6 +95,7 @@
                     <div class="modal-content">
                         <h2>작업자 등록</h2>
                         <form action="<c:url value='/inspectors/register'/>" method="post">
+                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                             <div class="form-group">
                                 <label for="name">이름</label>
                                 <input type="text" id="name" name="name" required />
