@@ -103,3 +103,19 @@
         padding-bottom: 80px;
     }
 }
+
+.nav-btn-form {
+    display: inline;   /* form 자체를 inline으로 */
+    margin: 0;
+    padding: 0;
+}
+
+.nav-btn-form .nav-btn {
+    background: none;   /* 버튼 기본 배경 제거 */
+    border: none;       /* 버튼 테두리 제거 */
+    cursor: pointer;    /* 마우스 커서 손가락 모양 */
+    display: flex;      /* 원래 a.nav-btn처럼 flex 유지 */
+    align-items: center;
+    width: 100%;        /* 기존 a 태그처럼 차지하도록 */
+    text-align: left;   /* 텍스트 정렬 */
+}

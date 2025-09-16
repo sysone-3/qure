@@ -96,9 +96,12 @@
     <div class="spacer"></div>
 
     <!-- 로그아웃 -->
-    <a href="<c:url value='/logout' context='/'/>" class="nav-btn" aria-label="로그아웃">
-        <img src="<c:url value='/assets/images/nav-logout.svg'/>" alt="로그아웃" class="nav-icon">
-        <span class="nav-text">로그아웃</span>
-    </a>
+    <form action="<c:url value='/logout'/>" method="post" class="nav-btn-form">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <button type="submit" class="nav-btn" aria-label="로그아웃">
+            <img src="<c:url value='/assets/images/nav-logout.svg'/>" alt="로그아웃" class="nav-icon">
+            <span class="nav-text">로그아웃</span>
+        </button>
+    </form>
 </aside>
 

@@ -93,8 +93,13 @@ public class SecurityConfig {
                             response.sendRedirect(request.getContextPath() + "/dashboard");
                         })
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 );
-
         return http.build();
     }
     @Bean
