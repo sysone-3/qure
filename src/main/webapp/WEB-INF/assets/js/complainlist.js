@@ -1,4 +1,4 @@
-// complainlist.js
+// 작성자 : 최온유
 document.addEventListener('DOMContentLoaded', function () {
   // --- CSRF 헬퍼 ---
   function withCsrf(headers) {

@@ -1,3 +1,5 @@
+// 작성자 : 최온유
+
 (function(){
   const inputs=[...document.querySelectorAll('.pin input')];
   const pad=document.querySelector('.pad');

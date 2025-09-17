@@ -1,4 +1,5 @@
 package app.snapshot.qure.config;
+//작성자 : 최온유
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 /**
  * /mobile/{tagId}/checklist 엔드포인트 전용 접근 제어.
  * - 세션 플래그 INSPECT_OK:{tagId} 가 true일 때만 통과.
- * - 다른 경로는 전혀 건드리지 않음.
  */
 @Component
 public class InspectorAuthInterceptor implements HandlerInterceptor {
