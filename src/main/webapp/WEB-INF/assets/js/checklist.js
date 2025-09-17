@@ -1,10 +1,11 @@
+// 작성자 : 최온유
 (function () {
   const form     = document.getElementById('chkForm');
   const btn      = document.getElementById('btnSubmit');
   const doneCnt  = document.getElementById('doneCnt');   // 채워진 "필수" 개수
   const totalCnt = document.getElementById('totalCnt');  // 전체 "필수" 개수
   const cards    = Array.from(document.querySelectorAll('.card'));
-
+	
   // 기본 방어. 필수 요소 없으면 종료
   if (!form || !btn) return;
 
