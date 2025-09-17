@@ -9,7 +9,7 @@
          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:property-placeholder
-            location="classpath:application-db.properties,classpath:application-map.properties"
+            location="classpath:application.properties,classpath:application-map.properties"
             ignore-unresolvable="true"/>
 
 
@@ -20,10 +20,10 @@
 
     <!-- DataSource -->
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${db.driver:oracle.jdbc.OracleDriver}"/>
-        <property name="url"             value="${db.url}"/>
-        <property name="username"        value="${db.user}"/>
-        <property name="password"        value="${db.pass}"/>
+        <property name="driverClassName" value="${spring.datasource.driver-class-name:oracle.jdbc.OracleDriver}"/>
+        <property name="url"             value="${spring.datasource.url}"/>
+        <property name="username"        value="${spring.datasource.username}"/>
+        <property name="password"        value="${spring.datasource.password}"/>
     </bean>
 
     <!-- MyBatis -->

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
+// 작성자: 김민서
 @Getter
 @Service
 @PropertySource("classpath:application-map.properties")
@@ -16,7 +17,4 @@ public class MapService {
         this.kakaoAppKey = kakaoAppKey;
         this.kakaoApiKey = kakaoApiKey;
     }
-
-
-
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+// 작성자: 김민서
 @Controller
 public class MapController {
 
@@ -17,6 +18,6 @@ public class MapController {
     @GetMapping("/map")
     public String addForm(Model model) {
         model.addAttribute("kakaoAppKey", mapService.getKakaoAppKey());
-        return "facilities/map"; // /WEB-INF/views/facilities/map.jsp
+        return "facilities/map";
     }
 }

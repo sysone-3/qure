@@ -16,6 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+// 작성자: 김민서
 @Controller
 @RequestMapping("/facilities")
 public class FacilitiesController {
@@ -30,9 +32,6 @@ public class FacilitiesController {
         this.geocodingService = geocodingService;
     }
 
-
-    // 목록 + 검색
-    // FacilitiesController.java
 
     // 목록 + 검색 + 페이지네이션
     @GetMapping
@@ -146,7 +145,6 @@ public class FacilitiesController {
         return "redirect:/facilities/" + facilityId + "/qr";
     }
 
-// ========== 유틸 ==========
 
     // dto.address에서 "도로명+번지" 핵심만 추출 (예: "서울특별시 종로구 창경궁로 254 55" → "서울특별시 종로구 창경궁로 254")
     private static String extractRoadCore(String s) {
@@ -258,7 +256,7 @@ public class FacilitiesController {
             return "redirect:/facilities";
         }
 
-        // ★ 설비에 연결된 템플릿 조회 → 모델에 넣기
+        // 설비에 연결된 템플릿 조회 → 모델에 넣기
         var attached = facilitiesService.findTemplatesByFacilityIdAndManager(facilityId, managerId);
         model.addAttribute("facility", facility);
         model.addAttribute("attachedTemplates", attached); // ← JSP는 이것만 사용
@@ -338,24 +336,12 @@ public class FacilitiesController {
                 facilitiesService.updateFacilityTemplates(facilityId, removedIds, addedIds, managerId);
                 System.out.println("점검표 변경 처리 - 삭제: " + removedIds + ", 추가: " + addedIds);
             }
-
-        /* 또는 전체 교체 방식 (더 단순하지만 덜 효율적)
-        if (facility.getTemplateIds() != null && !facility.getTemplateIds().isBlank()) {
-            facilitiesService.replaceAllFacilityTemplates(
-                    facilityId,
-                    parseIds(facility.getTemplateIds()),
-                    managerId
-            );
-        } else {
-            // 모든 점검표 연결 해제
-            facilitiesService.replaceAllFacilityTemplates(facilityId, new ArrayList<>(), managerId);
-        }
-        */
         }
 
         ra.addFlashAttribute("msg", rows > 0 ? "설비가 수정되었습니다." : "수정 권한이 없거나 실패했습니다.");
         return "redirect:/facilities/" + facilityId;
     }
+
     @PostMapping("/{facilityId}/delete")
     public String delete(@PathVariable Long facilityId, RedirectAttributes ra, HttpSession session) {
         Long managerId = SessionUtil.mustManagerId(session);

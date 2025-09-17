@@ -7,6 +7,7 @@ import app.snapshot.qure.facilities.dto.FacilitiesDto;
 import app.snapshot.qure.facilities.dto.FacilityTagDto;
 import app.snapshot.qure.facilities.dto.InspectionDto;
 
+// 작성자: 김민서
 public interface IFacilitiesService {
 
     /* 목록/검색: 로그인한 관리자 소유만 */

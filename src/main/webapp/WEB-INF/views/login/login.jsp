@@ -6,7 +6,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>The Cure</title>
+    <title>The Qure</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<c:url value='/assets/css/login.css'/>" />
 </head>
@@ -16,7 +16,7 @@
         <div class="text-container">
             QR 하나로 끝나는 <br>
             완벽한 시설 점검<br>
-            <span class="highlight">THE CURE</span>
+            <span class="highlight">THE QURE</span>
         </div>
        <a href="<c:url value='/oauth2/authorization/kakao'/>" class="kakao-login">
            <img src="<c:url value='/assets/images/kakao.svg'/>" alt="카카오 로그인 버튼" />

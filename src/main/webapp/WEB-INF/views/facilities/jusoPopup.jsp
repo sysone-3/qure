@@ -1,3 +1,6 @@
+<!-- 작성자: 김민서 -->
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
@@ -23,7 +26,8 @@
                 var f = document.getElementById('jusoForm');
                 f.confmKey.value  = "devU01TX0FVVEgyMDI1MDkwOTEwMzUxNjExNjE2MTk="; // !!반드시 본인 승인키로 교체!!
 // 절대경로로 (내 서버) 세팅
-                f.returnUrl.value = "<%= request.getScheme() %>://<%= request.getServerName() %>:<%= request.getServerPort() %><%= request.getContextPath() %>/popup/juso";
+// 💡 host를 하드코딩해 버리면 끝
+                f.returnUrl.value = 'https://qure.site' + '<c:url value="/popup/juso"/>';
                 f.resultType.value = "4";
                 f.action = "https://business.juso.go.kr/addrlink/addrLinkUrl.do";
                 f.submit();

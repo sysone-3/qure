@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.Date;
 
+// 작성자: 김민서
 @Data
 public class FacilitiesDto {
 	private Long facilityId;

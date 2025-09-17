@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!-- 작성자 : 김민서 -->
 <mapper namespace="app.snapshot.qure.facilities.repository.IFacilitiesRepository">
 
     <!-- Dto 매핑 -->
@@ -348,28 +348,41 @@
 
     <!-- 목록 페이징 -->
     <select id="findFacilitiesPaged" parameterType="map" resultMap="FacilityMap">
+  <![CDATA[
         SELECT *
         FROM (
-        SELECT
-        f.FACILITY_ID,
-        f.NAME,
-        f.DOMAIN,
-        f.ZONE,
-        f.UPDATED_AT,
-        f.NEXT_SCHEDULED_AT,
-        ROW_NUMBER() OVER (ORDER BY f.FACILITY_ID DESC) AS rn
-        FROM FACILITIES f
-        WHERE f.MANAGERS_ID = #{managerId}
-        <if test="q != null and q != ''">
-            AND (
-            LOWER(f.NAME)   LIKE '%' || LOWER(#{q}) || '%'
-            OR LOWER(f.DOMAIN) LIKE '%' || LOWER(#{q}) || '%'
-            OR LOWER(f.ZONE)   LIKE '%' || LOWER(#{q}) || '%'
-            )
-        </if>
-        ) t
+                 SELECT
+                     f.FACILITY_ID,
+                     f.NAME,
+                     f.DOMAIN,
+                     f.ZONE,
+                     f.UPDATED_AT,
+                     f.NEXT_SCHEDULED_AT,
+
+                     CASE
+                         WHEN f.NEXT_SCHEDULED_AT IS NULL THEN 'NONE'
+                         WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE)) THEN 'OVERDUE'
+                         ELSE 'UPCOMING'
+                         END AS SCHEDULE_STATUS,
+
+                     CASE
+                         WHEN f.NEXT_SCHEDULED_AT IS NULL THEN NULL
+                         WHEN TRUNC(f.NEXT_SCHEDULED_AT) < TRUNC(NVL(f.UPDATED_AT, SYSDATE))
+                             THEN TRUNC(NVL(f.UPDATED_AT, SYSDATE)) - TRUNC(f.NEXT_SCHEDULED_AT)
+                         ELSE TRUNC(f.NEXT_SCHEDULED_AT) - TRUNC(SYSDATE)
+                         END AS DAYS_DELTA,
+
+                     ROW_NUMBER() OVER (ORDER BY f.FACILITY_ID DESC) AS rn
+                 FROM FACILITIES f
+                 WHERE f.MANAGERS_ID = #{managerId}
+                 /* 검색 조건 */
+                 /* 동적 SQL은 CDATA 밖으로 빼도 되지만 안전하게 넣어도 무방 */
+             ) t
         WHERE t.rn BETWEEN #{startRow} AND #{endRow}
-    </select>
+        ]]>
+</select>
+
+
 
     <!-- 총 개수 -->
     <select id="countFacilities" parameterType="map" resultType="int">

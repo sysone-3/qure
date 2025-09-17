@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+// 작성자: 김민서
 @RestController
 @RequestMapping("/api/facilities")
 public class FacilitiesApiController {

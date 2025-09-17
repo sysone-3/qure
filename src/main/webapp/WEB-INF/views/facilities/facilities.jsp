@@ -1,6 +1,10 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!-- 작성자: 김민서 -->
+
+%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"   uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -92,26 +96,27 @@
                                         <div class="cell col-actions">
                                             <div class="facility-header">
                                                 <c:choose>
-                                                    <c:when test="${f.scheduleStatus == 'OVERDUE'}">
+                                                    <c:when test="${fn:trim(f.scheduleStatus) eq 'OVERDUE'}">
                                                         <span class="badge badge-danger">점검 지연</span>
                                                         <span class="note">
-                                                            <fmt:formatDate value="${f.nextScheduledAt}" pattern="yyyy.MM.dd"/>
-                                                            &nbsp;이후 <strong>${f.daysDelta}</strong>일 경과
-                                                          </span>
+      <fmt:formatDate value="${f.nextScheduledAt}" pattern="yyyy.MM.dd"/>
+      &nbsp;이후 <strong>${f.daysDelta}</strong>일 경과
+    </span>
                                                     </c:when>
 
-                                                    <c:when test="${f.scheduleStatus == 'UPCOMING'}">
+                                                    <c:when test="${fn:trim(f.scheduleStatus) eq 'UPCOMING'}">
                                                         <span class="badge badge-info">다음 점검</span>
                                                         <span class="note">
-                                                            <fmt:formatDate value="${f.nextScheduledAt}" pattern="yyyy.MM.dd"/>
-                                                            &nbsp;(D<c:if test="${f.daysDelta >= 0}">-</c:if>${f.daysDelta})
-                                                          </span>
+                                                          <fmt:formatDate value="${f.nextScheduledAt}" pattern="yyyy.MM.dd"/>
+                                                          &nbsp;(D<c:if test="${f.daysDelta >= 0}">-</c:if>${f.daysDelta})
+                                                        </span>
                                                     </c:when>
 
                                                     <c:otherwise>
                                                         <span class="badge">점검 예정 없음</span>
                                                     </c:otherwise>
                                                 </c:choose>
+
                                             </div>
                                         </div>
                                     </div>

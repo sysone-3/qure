@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// 작성자: 김민서
 @RestController
 @RequestMapping("/api/facilities")
 public class FacilitySummaryApiController {

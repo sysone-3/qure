@@ -213,7 +213,6 @@
     </dependencies>
 
     <build>
-        <finalName>qure</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
