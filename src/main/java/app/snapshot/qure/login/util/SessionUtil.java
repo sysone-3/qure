@@ -2,6 +2,7 @@ package app.snapshot.qure.login.util;
 
 import jakarta.servlet.http.HttpSession;
 
+// 작성자: 김민서
 public class SessionUtil {
 
     public static final String LOGIN_MANAGER_ID = "LOGIN_MANAGER_ID";

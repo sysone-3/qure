@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!-- 작성자 : 김민서 -->
 <mapper namespace="app.snapshot.qure.facilities.repository.IFacilityTagRepository">
 
     <!-- 다음 TAG_ID 뽑기 -->
@@ -34,7 +34,7 @@
         WHERE TAG_ID = #{tagId}
     </select>
 
-    <!-- (옵션) 기존 활성 태그를 비활성화할 때 사용 -->
+    <!--  기존 활성 태그를 비활성화할 때 사용 -->
     <update id="deactivateActiveTags" parameterType="Long">
         UPDATE FACILITY_TAGS
         SET ACTIVE='N', REVOKED_AT=SYSTIMESTAMP

@@ -5,6 +5,7 @@ import app.snapshot.qure.facilities.repository.IFacilitySummaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+// 작성자: 김민서
 @Service
 public class FacilitySummaryService {
     @Autowired

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+// 작성자: 김민서
 @Mapper
 public interface IFacilitiesRepository {
     List<FacilitiesDto> getFacilitiesListByManager(@Param("managerId") Long managerId);

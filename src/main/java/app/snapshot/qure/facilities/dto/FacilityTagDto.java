@@ -3,6 +3,7 @@ package app.snapshot.qure.facilities.dto;
 import java.sql.Timestamp;
 import lombok.Data;
 
+// 작성자: 김민서
 @Data
 public class FacilityTagDto {
     private Long tagId;

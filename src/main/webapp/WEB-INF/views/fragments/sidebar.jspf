@@ -1,3 +1,5 @@
+<!-- 작성자: 김민서 -->
+
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <aside class="app-nav" aria-label="주 메뉴">

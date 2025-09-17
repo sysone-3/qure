@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import app.snapshot.qure.facilities.repository.IFacilitiesRepository;
 
+// 작성자: 김민서
 @Service
 public class FacilitiesService implements IFacilitiesService {
 
@@ -24,7 +25,7 @@ public class FacilitiesService implements IFacilitiesService {
     IFacilityTagRepository facilityTagRepository;
 
     @Autowired
-    GeocodingService geocodingService; // ← 주소→좌표 변환용 주입
+    GeocodingService geocodingService; // 주소→좌표 변환용 주입
 
 
     @Value("${app.public-domain}")

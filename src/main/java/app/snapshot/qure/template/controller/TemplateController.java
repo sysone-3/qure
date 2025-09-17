@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+// 팝업 관련 작성자: 김민서
 @Slf4j
 @Controller
 @RequestMapping("/template")

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
+// 작성자: 김민서
 @Controller
 @RequiredArgsConstructor
 public class QrController {

@@ -1,5 +1,6 @@
 package app.snapshot.qure.login.controller;
 // 작성자 : 구희원
+// 세션 관련 작성자: 김민서
 import app.snapshot.qure.login.dto.ManagerDTO;
 import app.snapshot.qure.login.service.ManagerService;
 import app.snapshot.qure.login.util.SessionUtil;

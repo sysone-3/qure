@@ -10,6 +10,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+// 작성자: 김민서
 @Service
 public class GeocodingService {
 
