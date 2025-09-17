@@ -1,5 +1,5 @@
 package app.snapshot.qure.login.dto;
-
+// 작성자 : 구희원
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Data
+
 public class ManagerDTO {
     private Long managersId;
     private String name;

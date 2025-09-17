@@ -1,5 +1,5 @@
 package app.snapshot.qure.config;
-
+// 작성자 : 구희원
 import app.snapshot.qure.login.dto.ManagerDTO;
 import app.snapshot.qure.login.service.KakaoOAuth2UserService;
 import app.snapshot.qure.login.service.ManagerService;

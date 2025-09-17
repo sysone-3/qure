@@ -1,5 +1,5 @@
 package app.snapshot.qure.login.controller;
-
+// 작성자 : 구희원
 import app.snapshot.qure.login.dto.ManagerDTO;
 import app.snapshot.qure.login.service.ManagerService;
 import app.snapshot.qure.login.util.SessionUtil;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Map;
 
 @Controller
+
 public class LoginController {
 
     private final ManagerService managerService;

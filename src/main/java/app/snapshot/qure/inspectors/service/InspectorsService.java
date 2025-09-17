@@ -1,5 +1,5 @@
 package app.snapshot.qure.inspectors.service;
-
+//작성자 : 구희원
 import app.snapshot.qure.inspectors.dto.InspectorDTO;
 import app.snapshot.qure.inspectors.repository.InspectorsMapper;
 import org.springframework.stereotype.Service;

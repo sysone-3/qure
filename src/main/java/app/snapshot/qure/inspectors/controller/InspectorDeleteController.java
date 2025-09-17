@@ -1,5 +1,5 @@
 package app.snapshot.qure.inspectors.controller;
-
+//작성자 : 구희원
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
