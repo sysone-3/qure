@@ -1,5 +1,5 @@
 package app.snapshot.qure.config;
-
+// 작성자 : 구희원
 import app.snapshot.qure.login.dto.ManagerDTO;
 import app.snapshot.qure.login.service.KakaoOAuth2UserService;
 import app.snapshot.qure.login.service.ManagerService;
@@ -93,8 +93,13 @@ public class SecurityConfig {
                             response.sendRedirect(request.getContextPath() + "/dashboard");
                         })
                         .userInfoEndpoint(userInfo -> userInfo.userService(kakaoOAuth2UserService))
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 );
-
         return http.build();
     }
     @Bean

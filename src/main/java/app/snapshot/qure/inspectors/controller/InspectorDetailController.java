@@ -1,5 +1,5 @@
 package app.snapshot.qure.inspectors.controller;
-
+//작성자 : 구희원
 import app.snapshot.qure.inspectors.dto.InspectorDetailDTO;
 import app.snapshot.qure.inspectors.repository.InspectorsDetailMapper;
 import app.snapshot.qure.inspectors.service.InspectorDetailService;

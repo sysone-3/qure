@@ -1,4 +1,5 @@
 package app.snapshot.qure.inspectors.controller;
+//작성자 : 구희원
 import app.snapshot.qure.inspectors.dto.InspectorDTO;
 import app.snapshot.qure.inspectors.service.InspectorsService;
 import app.snapshot.qure.login.util.SessionUtil;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-
 @Controller
 public class InspectorsController {
 

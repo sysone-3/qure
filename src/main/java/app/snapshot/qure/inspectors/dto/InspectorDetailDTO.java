@@ -1,5 +1,5 @@
 package app.snapshot.qure.inspectors.dto;
-
+// 작성자 : 구희원
 import lombok.Data;
 
 @Data

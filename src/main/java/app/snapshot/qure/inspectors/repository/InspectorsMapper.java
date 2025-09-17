@@ -1,5 +1,5 @@
 package app.snapshot.qure.inspectors.repository;
-
+// 작성자 : 구희원
 import app.snapshot.qure.inspectors.dto.InspectorDTO;
 import org.apache.ibatis.annotations.Mapper;
 

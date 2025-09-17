@@ -1,4 +1,4 @@
-// 플래시 메시지 모달 표시 (성공/실패)
+// 작성자 : 최온유
 (function () {
   function pickFlash() {
     // __flash 우선(민원용). 없으면 FLASH(success/error) 사용(점검용 유지)

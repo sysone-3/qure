@@ -1,3 +1,4 @@
+// 작성자 : 구희원
 function onlyNumber(el) {
     el.value = el.value.replace(/[^0-9]/g, '');
 

@@ -1,4 +1,5 @@
 package app.snapshot.qure.config;
+//작성자 : 최온유
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
