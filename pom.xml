@@ -169,6 +169,7 @@
         </dependency>
 
         <!-- Spring Security -->
+        <!-- 작성자: 구희원 (Security)-->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>

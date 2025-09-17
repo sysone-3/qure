@@ -1,11 +1,12 @@
 package app.snapshot.qure.login.service;
-
+//직성자 : 구희원
 import app.snapshot.qure.login.dto.ManagerDTO;
 import app.snapshot.qure.login.repository.ManagerMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+
 public class ManagerService {
     private final ManagerMapper managerMapper;
 
