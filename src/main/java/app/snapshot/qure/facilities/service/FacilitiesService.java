@@ -118,7 +118,7 @@ public class FacilitiesService implements IFacilitiesService {
         FacilityTagDto tag = new FacilityTagDto();
         tag.setTagId(nextTagId);
         tag.setFacilityId(dto.getFacilityId());
-        tag.setCode(publicDomain + "/mobile/main/" + nextTagId);
+        tag.setCode(publicDomain + "qure/mobile/main/" + nextTagId);
 
         facilityTagRepository.insertFacilityTagWithGivenId(tag);
         return dto.getFacilityId();
