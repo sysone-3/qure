@@ -1,3 +1,5 @@
+// 작성자 : 최온유
+
 (function(){
   const frm = document.getElementById('frm');
   const title = document.getElementById('title');

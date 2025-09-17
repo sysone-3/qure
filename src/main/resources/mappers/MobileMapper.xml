@@ -3,7 +3,9 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="app.snapshot.qure.mobile.repository.MobileMapper">
-
+		<!-- 작성자 : 최온유 -->
+	
+	
   <select id="selectTagSummaryById" parameterType="int"
           resultType="app.snapshot.qure.mobile.dto.TagSummaryDto">
     SELECT

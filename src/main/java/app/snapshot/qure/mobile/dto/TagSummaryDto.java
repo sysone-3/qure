@@ -1,4 +1,5 @@
 package app.snapshot.qure.mobile.dto;
+//작성자 : 최온유
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
