@@ -1,4 +1,5 @@
 package app.snapshot.qure.dashboard.controller;
+// 작성자: 최이서
 
 import app.snapshot.qure.dashboard.dto.DailyCompletionPoint;
 import app.snapshot.qure.dashboard.dto.DashboardSessionView;

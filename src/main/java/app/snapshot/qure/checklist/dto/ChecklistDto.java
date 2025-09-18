@@ -1,4 +1,5 @@
 package app.snapshot.qure.checklist.dto;
+// 작성자: 최이서
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

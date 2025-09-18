@@ -1,3 +1,4 @@
+<%--작성자: 최이서--%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ tag language="java" body-content="empty" %>
 <%@ attribute name="label" required="true" %>

@@ -1,4 +1,5 @@
 package app.snapshot.qure.checklist.repository;
+// 작성자: 최이서
 
 import app.snapshot.qure.checklist.model.Checklist;
 

@@ -1,4 +1,5 @@
 package app.snapshot.qure.inspection.dto;
+// 작성자: 최이서
 
 import lombok.*;
 import java.time.LocalDateTime;

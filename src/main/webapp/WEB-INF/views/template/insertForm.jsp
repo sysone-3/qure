@@ -1,3 +1,4 @@
+<%--작성자: 최이서--%>
 <!-- 팝업 관련 작성자: 김민서 -->
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"

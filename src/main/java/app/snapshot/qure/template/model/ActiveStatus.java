@@ -1,4 +1,5 @@
 package app.snapshot.qure.template.model;
+// 작성자: 최이서
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

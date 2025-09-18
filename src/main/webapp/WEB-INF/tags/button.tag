@@ -1,3 +1,4 @@
+<%--작성자: 최이서--%>
 <%@ tag language="java" body-content="empty" %>
 <%@ attribute name="label" required="true" %>
 <%@ attribute name="action"   required="false" rtexprvalue="true" %>

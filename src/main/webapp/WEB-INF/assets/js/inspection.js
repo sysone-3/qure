@@ -1,3 +1,4 @@
+// 작성자: 최이서
 (function(){
     var wrap     = document.getElementById('status-filter');
     if(!wrap) return;
