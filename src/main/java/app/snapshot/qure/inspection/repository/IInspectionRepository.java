@@ -1,4 +1,5 @@
 package app.snapshot.qure.inspection.repository;
+// 작성자: 최이서
 
 import app.snapshot.qure.inspection.dto.InspectionHeaderDto;
 import app.snapshot.qure.inspection.dto.InspectionItemDto;

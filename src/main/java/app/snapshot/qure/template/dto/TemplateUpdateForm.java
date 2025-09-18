@@ -1,7 +1,8 @@
 package app.snapshot.qure.template.dto;
+// 작성자: 최이서
+
 import app.snapshot.qure.checklist.dto.CheckItemForm;
 import lombok.Data;
-
 import java.util.List;
 
 @Data

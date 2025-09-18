@@ -1,4 +1,5 @@
 package app.snapshot.qure.template.repository;
+// 작성자: 최이서
 
 import app.snapshot.qure.template.model.Template;
 import org.apache.ibatis.annotations.Mapper;

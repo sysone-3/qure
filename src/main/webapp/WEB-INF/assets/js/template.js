@@ -1,3 +1,4 @@
+// 작성자: 최이서
 (function () {
     'use strict';
 

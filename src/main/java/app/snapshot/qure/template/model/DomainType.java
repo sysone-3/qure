@@ -1,4 +1,5 @@
 package app.snapshot.qure.template.model;
+// 작성자: 최이서
 
 public enum DomainType {
     CLEANING("CLEANING"),
