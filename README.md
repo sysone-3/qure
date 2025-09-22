@@ -1,37 +1,15 @@
 # QURE — QR 시설 관리 서비스
-<img width="1437" height="564" alt="image" src="https://github.com/user-attachments/assets/fc217e40-8ba0-4bdf-ab47-7cfd4347112c" />
+<img width="1437" height="564" alt="image" src="https://github.com/user-attachments/assets/f7762132-477d-4080-b202-867c09fe812d" /> <br/>
 
-> QR 태그로 **점검**과 **민원**을 한 플랫폼에서 처리하는 풀스택 웹앱.  
-> 클라우드 3-Tier(웹/애플리케이션/DB) 구조, 모바일 현장 사용 최적화.
+> QR 태그로 **점검**과 **민원**을 한 플랫폼에서 처리하는 풀스택 웹앱 <br />
+> 클라우드 3-Tier(웹/애플리케이션/DB) 구조, 모바일 현장 사용 최적화
 
 ---
 
-## 1) 개요
-- 기간: 2025-09-03 ~ 2025-09-16
+## 1) 프로젝트 개요
+- 기간: 2025-09-03 ~ 2025-09-16 (2주)
 - 팀: 3조 SNAPSHOT (김민서, 구희원, 최온유, 최이서)
 - 목적: 종이 점검표·전화 민원을 **디지털 전환**. 실시간 데이터로 **예방적 관리**와 **처리 속도** 향상.
-
-### 차별점
-- 관리자 **지도 기반** 통합 관리
-- **점검 + 민원** 단일 플랫폼
-
-### 스크린 샷
-
-<img width="2558" height="1327" alt="image" src="https://github.com/user-attachments/assets/c5b3392c-d1c8-4691-a36d-d4c4fb1245cb" />
-
-#### 로그인 화면
-
-<img width="2533" height="1346" alt="image" src="https://github.com/user-attachments/assets/eaa28290-c04f-4ef2-abc5-b52239f5cb22" />
-
-#### 대시보드 화면
-
-<img width="1326" height="696" alt="image" src="https://github.com/user-attachments/assets/b79d5a92-12c7-4eb1-abf3-d87fecb72b12" />
-
-#### 지도 화면
-
-
-
-
 
 ---
 
@@ -92,8 +70,8 @@
 ## 3) 아키텍처
 <img width="1659" height="922" alt="image" src="https://github.com/user-attachments/assets/bbdad673-68d1-4958-87be-69e7d2f07eb2" />
 
-- 프런트: JSP/JSTL
-- 백엔드: Spring MVC 6, Spring Security, MyBatis
+- Front-end: JSP/JSTL
+- Back-end: Spring MVC 6, Spring Security, MyBatis
 - DB: Oracle Autonomous DB(OCI)
 - 저장소: AWS S3
 - 외부: Kakao Map, Kakao OAuth2
@@ -112,40 +90,32 @@
 
 ---
 
-## 5) 팀과 역할
-<img width="1588" height="588" alt="image" src="https://github.com/user-attachments/assets/1576f618-9e60-4059-824a-d6277332444f" />
-
-| 팀명 | 이름 | 수행 역할 |
-|---|---|---|
-| SNAPSHOT | 최온유 | AWS S3 연동, Geolocation 위치검증, 모바일 점검/민원 제출 UI·구현, 민원관리 UI |
-|  | 구희원 | 카카오 OAuth2 + Spring Security 회원관리, 점검자 관리 UI·구현, 로그인 UI |
-|  | 최이서 | Chart.js 대시보드, 점검표 관리 UI, 점검 결과 페이지 |
-|  | 김민서(팀장) | Jira 도입·운영, OCI HTTPS 배포(인증서/보안헤더), 설비/QR 관리 UI, Kakao Map, Oracle Cloud 연결 |
+## 5) 팀원
+| 구희원 | 김민서(팀장) | 최온유 | 최이서 |
+|:---:|:---:|:---:|:---:|
+|<a href="https://github.com/HeHelee"><img src="https://github.com/HeHelee.png" alt="HeHelee" style="width: 100px; height: 100px; border-radius: 50%;"></a>|<a href="https://github.com/mimmimkim"><img src="https://github.com/mimmimkim.png" alt="mimmimkim" style="width: 100px; height: 100px; border-radius: 50%;"></a>|<a href="https://github.com/onu96"><img src="https://github.com/onu96.png" alt="onu96" style="width: 100px; height: 100px; border-radius: 50%;"></a>|<a href="https://github.com/chtoqur"><img src="https://github.com/chtoqur.png" alt="chtoqur" style="width: 100px; height: 100px; border-radius: 50%;"></a>|
+|회원관리<br />점검자 관리|OCI HTTPS 배포<br/>설비·QR 관리<br/>지도|AWS S3 연동<br/>모바일 점검·민원<br/>민원 관리|대시보드<br/>점검 템플릿<br/>점검 결과|
 
 ---
 
 ## 6) 성과 요약
-- **점검·민원 통합** 웹앱 완성. 현장 QR → 즉시 입력 → 대시보드 집계.
-- **OCI HTTPS 배포** 안정화. 외부 API 연동 보안 확인.
-- **지도 기반 운영**과 **최근 10일 통계**로 관리 효율 향상.
-- 브랜치·PR·빌드 검증 흐름 정착.
+- **점검·민원 통합** 웹앱 완성. 현장 QR → 즉시 입력 → 대시보드 집계
+- **OCI HTTPS 배포** 안정화. 외부 API 연동 보안 확인
+- **지도 기반 운영**과 **최근 10일 통계**로 관리 효율 향상
 
 ---
 
 ## 사전 요구사항 (Prerequisites)
 
-- **운영체제**: Linux, macOS, Windows (Oracle Cloud 환경 권장)
+- **운영체제**: Linux, macOS, Windows
 - **Java**: JDK 17 (LTS)
 - **빌드 도구**: Maven (최소 3.8.x 이상)
-- **애플리케이션 서버**: Apache Tomcat (WAR 배포 지원 버전)
-- **데이터베이스**: Oracle Database (Oracle Autonomous Database 권장)
+- **애플리케이션 서버**: Apache Tomcat
+- **데이터베이스**: Oracle Database
 - **패키지 관리자 / 연결 도구**
-  - Git (저장소 클론 및 협업)
+  - Git
   - Oracle JDBC Driver (ojdbc8)
-  - Oracle SQL Developer (DB 관리용, 선택적)
-- **추가 요구사항**
-  - 인터넷 연결 (외부 API 연동: 카카오맵, 카카오 OAuth2, 행안부 API 등)
-  - AWS 계정 및 S3 접근 권한 (점검 이미지 및 첨부파일 저장용)
+  - Oracle SQL Developer
 
 ---
 
